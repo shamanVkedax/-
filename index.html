@@ -86,6 +86,7 @@ function renderGroup(group, tagClass, showGenTag) {
   h += '<article class="group">';
   h += '<div class="group-head">';
   h += '<h2>' + esc(group.title);
+  // Показываем метку поколения ТОЛЬКО если это уровень центра (наше поколение)
   if (showGenTag) {
     h += ' <span class="group-tag tag-' + tagClass + '" style="font-size:13px;color:var(--muted2);margin-left:10px;text-transform:uppercase;letter-spacing:.05em;">' + esc(levelLabelText(group.level)) + '</span>';
   }
@@ -157,7 +158,7 @@ function render(data) {
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
       var g = lvGroups[j];
-      // Показываем метку поколения только если это уровень центра (наше поколение)
+      // Метка поколения показывается ТОЛЬКО на уровне центра (2)
       var showGenTag = (g.level === centerLevel);
       html += renderGroup(g, String(levelNum), showGenTag);
     }
@@ -165,27 +166,7 @@ function render(data) {
   }
   html += '</div>';
 
-  // Отдельный блок для племянников и всех, кто не на уровне центра
-  var specialGroups = [];
-  for (var i = 0; i < groups.length; i++) {
-    var g = groups[i];
-    if (g.level !== undefined && g.level !== centerLevel) {
-      specialGroups.push(g);
-    }
-  }
-
-  if (specialGroups.length > 0) {
-    html += '<div class="close-section">';
-    html += '<div class="close-divider"><div class="line"></div><span class="label">Племянники и племянницы</span><div class="line"></div></div>';
-    html += '<div class="close-grid">';
-    for (var k = 0; k < specialGroups.length; k++) {
-      // Для этого блока никогда не показываем метку поколения
-      html += renderGroup(specialGroups[k], "special", false);
-    }
-    html += '</div></div>';
-  }
-
-  // Блок closePeople (священник, подруги и т.п.)
+  // Блок "Особые люди" (священник, подруги и т.п.) — без меток поколений
   if (closePeople.length > 0) {
     html += '<div class="close-section">';
     html += '<div class="close-divider"><div class="line"></div><span class="label">Особые люди</span><div class="line"></div></div>';
