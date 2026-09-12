@@ -86,7 +86,7 @@ h1{
   letter-spacing:.05em;
 }
 
-/* Центральная карточка (внутри уровня) */
+/* Центральная карточка */
 .center-card{
   min-width:min(320px,100%);text-align:center;
   padding:24px 28px;border-radius:22px;
@@ -106,6 +106,27 @@ h1{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .center-card .role{display:block;color:#cfbce7;margin-top:4px;font-size:13px;font-style:italic}
+
+/* Карточка жены (как пара) */
+.partner-card{
+  min-width:min(320px,100%);text-align:center;
+  padding:24px 28px;border-radius:22px;
+  border:1px solid var(--border-bright);
+  background:linear-gradient(135deg,rgba(255,121,198,.18),rgba(176,124,255,.08)),rgba(20,15,37,.95);
+  box-shadow:0 16px 50px rgba(255,121,198,.15);
+  position:relative;flex:1 1 320px;max-width:380px;
+}
+.partner-card::before{
+  content:'';position:absolute;inset:-2px;border-radius:22px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent),var(--accent3));
+  z-index:-1;opacity:.25;filter:blur(10px);
+}
+.partner-card .icon{font-size:32px;line-height:1}
+.partner-card .name{display:block;font-size:24px;font-weight:800;margin-top:6px;
+  background:linear-gradient(100deg,var(--accent2),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.partner-card .role{display:block;color:#cfbce7;margin-top:4px;font-size:13px;font-style:italic}
 
 /* Группы-карточки */
 .group{
@@ -190,15 +211,14 @@ h1{
 
 /* Анимация */
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.group,.center-card{animation:fadeIn .4s ease-out}
+.group,.center-card,.partner-card{animation:fadeIn .4s ease-out}
 
 /* Адаптив */
-@media(max-width:1000px){.group,.center-card{flex:1 1 280px;max-width:340px}}
+@media(max-width:1000px){.group,.center-card,.partner-card{flex:1 1 280px;max-width:340px}}
 @media(max-width:680px){
   .page{padding:28px 12px 40px}
-  .group,.center-card{flex:1 1 100%;max-width:none}
-  .center-card{padding:20px 16px}
-  .center-card .name{font-size:22px}
+  .group,.center-card,.partner-card{flex:1 1 100%;max-width:none}
+  .center-card .name,.partner-card .name{font-size:22px}
   .parent-badge{margin-left:0;margin-top:4px}
 }
 </style>
@@ -231,7 +251,7 @@ function levelLabelText(level){
     2: 'Мы — дети и братья',
     3: 'Наши дети'
   };
-  return labels[level] || `Уровень ${level}`;
+  return labels[level] || `Уровень \${level}`;
 }
 
 function parentLabel(parent){
@@ -247,19 +267,19 @@ function renderGroup(group, tagClass, tagText){
     <article class="group">
       <div class="group-head">
         <h2>
-          ${esc(group.title)}
+          \${esc(group.title)}
           <span class="group-tag tag-${tagClass}">${esc(tagText)}</span>
           ${pLabel ? `<span class="parent-badge">${esc(pLabel)}</span>` : ''}
         </h2>
-        <div class="sub">${esc(group.subtitle || '')}</div>
+        <div class="sub">\${esc(group.subtitle || '')}</div>
       </div>
       <div class="people">
-        ${(group.people || []).map(person => `
+        \${(group.people || []).map(person => `
           <div class="person">
-            <div class="avatar">${esc(person.icon || '💜')}</div>
+            <div class="avatar">\${esc(person.icon || '💜')}</div>
             <div class="person-info">
-              <div class="person-name">${esc(person.name)}</div>
-              <div class="person-role">${esc(person.role || '')}</div>
+              <div class="person-name">\${esc(person.name)}</div>
+              <div class="person-role">\${esc(person.role || '')}</div>
             </div>
           </div>
         `).join('')}
@@ -271,9 +291,19 @@ function renderGroup(group, tagClass, tagText){
 function renderCenter(center){
   return `
     <div class="center-card">
-      <div class="icon">${esc(center.icon || '💜')}</div>
-      <span class="name">${esc(center.name || 'Я')}</span>
-      <span class="role">${esc(center.role || '')}</span>
+      <div class="icon">\${esc(center.icon || '💜')}</div>
+      <span class="name">\${esc(center.name || 'Я')}</span>
+      <span class="role">\${esc(center.role || '')}</span>
+    </div>
+  `;
+}
+
+function renderPartner(partner){
+  return `
+    <div class="partner-card">
+      <div class="icon">\${esc(partner.icon || '💍')}</div>
+      <span class="name">\${esc(partner.name || 'Жена')}</span>
+      <span class="role">\${esc(partner.role || '')}</span>
     </div>
   `;
 }
@@ -288,6 +318,7 @@ function render(data){
   const center = data.center || {};
   const centerLevel = center.level !== undefined ? center.level : 2;
   const groups = Array.isArray(data.groups) ? data.groups : [];
+  const extendedGroups = Array.isArray(data.extendedGroups) ? data.extendedGroups : [];
   const closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
 
   // Группируем по уровням
@@ -313,7 +344,6 @@ function render(data){
     if(idx > 0){
       const prevLevel = Number(sortedLevels[idx-1]);
       let note = '';
-      // Определяем, от кого идёт связь
       if(levelNum === 1) note = '↓ дети дедушки и бабушки';
       else if(levelNum === 2) note = '↓ дети бати и мамы';
       else if(levelNum === 3) note = '↓ следующее поколение';
@@ -328,15 +358,26 @@ function render(data){
 
     // Метка уровня
     html += `<div class="level-row">`;
-    html += `<div class="level-label">${esc(levelLabelText(levelNum))}</div>`;
+    html += `<div class="level-label">\${esc(levelLabelText(levelNum))}</div>`;
 
     // Если на этом уровне есть центр — вставляем его первым
     if(levels[lv]._hasCenter){
       html += renderCenter(center);
+      
+      // ВАЖНО: Сразу после центра (на уровне 2) рисуем жену как отдельную карточку-пару
+      if(levelNum === 2){
+        const wifeGroup = groups.find(g => g.title === '💍 Любимая Жена');
+        if(wifeGroup && wifeGroup.people.length > 0){
+          html += renderPartner(wifeGroup.people);
+        }
+      }
     }
 
     // Группы этого уровня
     levels[lv].forEach(group => {
+      // Пропускаем группу жены, так как мы её уже отрисовали отдельно как пару
+      if(levelNum === 2 && group.title === '💍 Любимая Жена') return;
+      
       const tag = String(levelNum);
       const tagText = levelLabelText(levelNum);
       html += renderGroup(group, tag, tagText);
@@ -345,6 +386,31 @@ function render(data){
     html += '</div>';
   });
 
+  // --- ОТДЕЛЬНЫЙ БЛОК ДЛЯ ПЛЕМЯШЕК (extendedGroups) ---
+  if(extendedGroups.length > 0){
+    // Находим максимальный уровень основных групп, чтобы поставить племяшек ниже
+    const maxMainLevel = sortedLevels.length > 0 ? Number(sortedLevels[sortedLevels.length-1]) : 0;
+    const extendedLevel = maxMainLevel + 1;
+    
+    // Рисуем коннектор к этому отдельному блоку
+    html += `
+      <div class="connector">
+        <div class="vline"></div>
+        <div class="parent-note">↓ дети братьев и сестёр (племянники)</div>
+      </div>
+      <div class="level-row">
+        <div class="level-label">${esc(`Племянники и племянницы (Уровень ${extendedLevel})`)}</div>
+    `;
+    
+    extendedGroups.forEach(group => {
+      const tag = String(extendedLevel);
+      const tagText = 'Племянники';
+      html += renderGroup(group, tag, tagText);
+    });
+    
+    html += '</div>';
+  }
+  
   html += '</div>';
 
   // Секция близких людей
@@ -371,15 +437,15 @@ async function loadFamily(){
   const status = document.getElementById('status');
   try{
     const response = await fetch(`${JSON_FILE}?v=${Date.now()}`, {cache:'no-store'});
-    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    if(!response.ok) throw new Error(`HTTP \${response.status}`);
     const text = await response.text();
     if(text !== lastJSON){
       const data = JSON.parse(text);
       render(data);
       lastJSON = text;
-      status.innerHTML = `<span class="dot"></span>Обновлено: ${new Date().toLocaleTimeString('ru-RU')}`;
+      status.innerHTML = `<span class="dot"></span>Обновлено: \${new Date().toLocaleTimeString('ru-RU')}`;
     } else {
-      status.innerHTML = `<span class="dot"></span>Проверено: ${new Date().toLocaleTimeString('ru-RU')}`;
+      status.innerHTML = `<span class="dot"></span>Проверено: \${new Date().toLocaleTimeString('ru-RU')}`;
     }
   } catch(err){
     status.innerHTML = '<span class="dot" style="background:#f87171"></span>Не удалось загрузить family.json';
