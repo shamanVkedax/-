@@ -35,13 +35,33 @@
     {
       "title": "💍 Любимая Жена",
       "subtitle": "Пока жены нет — но в этом доме всегда найдётся место и для неё.",
-      "level": 1,
+      "level": 2,
       "people": []
+    },
+    {
+      "title": "🤝 Братья",
+      "subtitle": "Братская банда",
+      "level": 2,
+      "people": [
+        {"icon": "⚔️", "name": "John․Wick f3fd", "role": "брат"},
+        {"icon": "💥", "name": "KILLAСБЭУМОЁВСЕ b521", "role": "брат"},
+        {"icon": "🎮", "name": "Jana dcee", "role": "брат"},
+        {"icon": "🧟", "name": "Andrey_Zombie", "role": "брат"}
+      ]
+    },
+    {
+      "title": "🌷 Сёстры",
+      "subtitle": "Любимые сестрички",
+      "level": 2,
+      "people": [
+        {"icon": "🍦", "name": "vanilnaya9", "role": "сестра"},
+        {"icon": "☕", "name": "C0fee4ka_a", "role": "сестра"}
+      ]
     },
     {
       "title": "👧 Любимые дочки",
       "subtitle": "Восемь прекрасных дочерей",
-      "level": 2,
+      "level": 3,
       "people": [
         {"icon": "🌸", "name": "Yandera_YouTube", "role": "любимая дочка"},
         {"icon": "💎", "name": "Diamonita 3ee4", "role": "любимая дочка"},
@@ -56,45 +76,26 @@
     {
       "title": "👦 Любимые сыновья",
       "subtitle": "Сильная половина",
-      "level": 2,
+      "level": 3,
       "people": [
         {"icon": "🎯", "name": "Ваншот", "role": "сын"},
         {"icon": "🔥", "name": "༒FrͥeaͣkͫTV༒", "role": "сын"}
       ]
     },
     {
-      "title": "🤝 Братья",
-      "subtitle": "Братская банда",
-      "level": 1,
-      "people": [
-        {"icon": "⚔️", "name": "John․Wick f3fd", "role": "брат"},
-        {"icon": "💥", "name": "KILLAСБЭУМОЁВСЕ b521", "role": "брат"},
-        {"icon": "🎮", "name": "Jana dcee", "role": "брат"},
-        {"icon": "🧟", "name": "Andrey_Zombie", "role": "брат"}
-      ]
-    },
-    {
-      "title": "🌷 Сёстры",
-      "subtitle": "Любимые сестрички",
-      "level": 1,
-      "people": [
-        {"icon": "🍦", "name": "vanilnaya9", "role": "сестра"},
-        {"icon": "☕", "name": "C0fee4ka_a", "role": "сестра"}
-      ]
-    },
-    {
       "title": "🧒 Племяшки",
-      "subtitle": "Младшее поколение (дети братьев и сестёр)",
-      "level": 1,
+      "subtitle": "Дети братьев и сестёр — не мои, но родные",
+      "level": 3,
       "people": [
         {"icon": "🎀", "name": "X0RI23", "role": "племянница"},
         {"icon": "🧩", "name": "qp_Zero_qp", "role": "племянник"}
       ]
-    },
+    }
+  ],
+  "closePeople": [
     {
       "title": "🕯️ Священник",
       "subtitle": "Духовная опора семьи",
-      "level": 0,
       "people": [
         {"icon": "🙏", "name": "YamíMidarí", "role": "священник"}
       ]
@@ -102,7 +103,6 @@
     {
       "title": "💖 Лучшие подруги",
       "subtitle": "Близкие по духу",
-      "level": 0,
       "people": [
         {"icon": "🌟", "name": "Velens 5b31", "role": "лучшая подруга"},
         {"icon": "🦊", "name": "Foxyk_Lishton", "role": "лучшая подруга"}
@@ -111,7 +111,6 @@
     {
       "title": "🎶 Особые люди",
       "subtitle": "Те, кто делает жизнь ярче",
-      "level": 0,
       "people": [
         {"icon": "🩺", "name": "Nócta", "role": "психотерапевт"},
         {"icon": "🎤", "name": "MrNiles57", "role": "музыкант"}
