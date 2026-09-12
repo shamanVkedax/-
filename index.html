@@ -1,502 +1,393 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Семейное древо</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128156;</text></svg>">
-<style>
-:root {
-  --bg-dark: #0f0a1a;
-  --bg-panel: rgba(22, 18, 36, 0.88);
-  --accent-1: #7c3aed;       /* глубокий фиолетовый */
-  --accent-2: #ec4899;      /* малиновый */
-  --accent-3: #10b981;      /* мятный */
-  --text-main: #ffffff;
-  --text-muted: #a18cb4;
-  --border-inner: rgba(124, 58, 237, 0.6);
-  --border-outer: rgba(255, 255, 255, 0.08);
-  --glow: 0 0 12px rgba(124, 58, 237, 0.36);
-  --line-color: rgba(255, 255, 255, 0.18);
-  --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Семейное древо</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128156;</text></svg>">
+  <style>
+    :root {
+      --bg-body: #0b0c1a;
+      --bg-panel: rgba(20, 22, 38, 0.86);
+      --accent-1: #8b5cf6;
+      --accent-2: #f97316;
+      --accent-3: #10b981;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border-inner: rgba(139, 92, 246, 0.4);
+      --glow: 0 0 20px rgba(139, 92, 246, 0.28);
+      --line: rgba(156, 163, 175, 0.18);
+    }
 
-body {
-  min-height: 100vh;
-  margin: 0;
-  color: var(--text-main);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at 15% 20%, rgba(124, 58, 237, 0.12) 0%, transparent 35%),
-              radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.1) 0%, transparent 30%),
-              linear-gradient(160deg, var(--bg-dark), #140e26);
-  background-attachment: fixed;
-  overflow-x: hidden;
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.page {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 40px 16px;
-}
+    body {
+      min-height: 100vh;
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 35%),
+                  radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.06) 0%, transparent 30%),
+                  linear-gradient(160deg, var(--bg-body), #0f1120);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
 
-.hero {
-  text-align: center;
-  margin-bottom: 48px;
-}
+    .page { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
 
-.eyebrow {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 999px;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
+    /* --- Hero --- */
+    .hero { text-align: center; margin-bottom: 50px; }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+    }
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: 1.05;
+      font-weight: 800;
+      background: linear-gradient(to right, #fff, #cbd5e1);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 0 24px rgba(211, 214, 221, 0.3);
+    }
+    .subtitle {
+      max-width: 680px;
+      margin: 0 auto 20px;
+      color: var(--text-muted);
+      font-size: 16px; line-height: 1.6;
+    }
+    .status {
+      margin: 12px auto 0;
+      width: fit-content;
+      padding: 8px 16px;
+      border-radius: 999px;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.3);
+      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .status .dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-3); margin-right: 8px; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    /* --- Tree Layout --- */
+    .tree { display: flex; flex-direction: column; align-items: center; }
+    .level-row {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 28px;
+      width: 100%;
+      position: relative;
+      margin-bottom: 36px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scrollbar-width: thin;
+    }
+    .level-row::-webkit-scrollbar { height: 6px; }
+    .level-row::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
 
-h1 {
-  margin: 12px 0 6px;
-  font-size: clamp(28px, 5vw, 56px);
-  line-height: 1.05;
-  font-weight: 800;
-  background: linear-gradient(100deg, #fff, #c4b5e0, #ffdbeb);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 16px rgba(124, 58, 237, 0.24);
-}
+    .level-label {
+      width: 100%; text-align: center; margin-bottom: 12px;
+      font-size: 15px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--text-muted);
+      text-shadow: 0 0 12px rgba(139,92,246,0.2);
+    }
 
-.subtitle {
-  max-width: 640px;
-  margin: 0 auto 16px;
-  color: var(--text-muted);
-  font-size: 15px;
-  line-height: 1.6;
-}
+    .connector { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 12px 0; position: relative; }
+    .vline { width: 2px; height: 44px; background: linear-gradient(to bottom, transparent, var(--line), transparent); }
+    /* --- Cards (Center & Groups) --- */
+    .center-card, .group {
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--bg-panel);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.48), var(--glow);
+      position: relative;
+      transition: transform .25s cubic-bezier(0.25,1,0.5,1), border-color .2s;
+    }
+    .center-card::before, .group::before {
+      content: ''; position: absolute; inset: -2px; border-radius: 20px;
+      background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(249,115,22,0.08));
+      z-index: -1; filter: blur(8px); opacity: 0.6;
+    }
+    .center-card:hover, .group:hover { transform: translateY(-6px); border-color: var(--border-inner); }
 
-.status {
-  margin: 12px auto 0;
-  width: fit-content;
-  padding: 6px 12px;
-  border-radius: 999px;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
+    .center-card {
+      min-width: min(340px, 100%);
+      text-align: center; padding: 32px;
+      flex: 0 0 auto; width: fit-content; max-width: none;
+    }
+    .center-card .icon { font-size: 42px; line-height: 1; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+    .center-card .name {
+      font-size: 26px; font-weight: 800; line-height: 1.1;
+      background: linear-gradient(90deg, #fff, var(--accent-1));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .center-card .role { color: var(--text-muted); font-size: 15px; margin-top: 6px; font-style: italic; }
 
-.status .dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-3);
-  margin-right: 6px;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.tree {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.level-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-  width: 100%;
-  position: relative;
-  margin-bottom: 32px;
-}
-
-.level-label {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-shadow: 0 0 8px rgba(124, 58, 237, 0.18);
-}
-
-.connector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 10px 0;
-  position: relative;
-}
-
-.connector .vline {
-  width: 2px;
-  height: 36px;
-  background: var(--line-grad);
-}
-
-.connector .parent-note {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  letter-spacing: 0.04em;
-}
-
-.center-card {
-  min-width: min(320px, 100%);
-  text-align: center;
-  padding: 28px;
-  border-radius: 20px;
-  border: 1px solid var(--border-inner);
-  background: var(--bg-panel);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), var(--glow);
-  position: relative;
-  flex: 1 1 320px;
-  max-width: 400px;
-  backdrop-filter: blur(12px);
-}
-
-.center-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
-  z-index: -1;
-  opacity: 0.16;
-  filter: blur(10px);
-}
-
-.center-card .icon {
-  font-size: 34px;
-  line-height: 1;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.36));
-}
-
-.center-card .name {
-  display: block;
-  font-size: 24px;
-  font-weight: 800;
-  margin-top: 4px;
-  background: linear-gradient(100deg, var(--accent-1), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  line-height: 1.1;
-  text-shadow: 0 0 12px rgba(124, 58, 237, 0.32);
-}
-
-.center-card .role {
-  display: block;
-  color: var(--text-muted);
-  margin-top: 6px;
-  font-size: 15px;
-  font-style: italic;
-  line-height: 1.4;
-}
-
-.group {
-  flex: 1 1 320px;
-  max-width: 400px;
-  border: 1px solid var(--border-outer);
-  border-radius: 18px;
-  background: var(--bg-panel);
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.group:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-inner);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36), var(--glow);
-}
-
-.group-head {
-  padding: 14px 18px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.group-head h2 {
-  font-size: 17px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: var(--text-main);
-  text-shadow: 0 0 8px rgba(124, 58, 237, 0.2);
-}
-
-.group-head .sub {
-  margin-top: 6px;
-  color: var(--text-muted);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.people {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-}
-
-.person {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.02);
-  transition: all 0.16s ease;
-}
-
-.person:hover {
-  background: rgba(124, 58, 237, 0.06);
-  border-color: rgba(124, 58, 237, 0.24);
-}
-
-.avatar {
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  font-size: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-main);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.24);
-}
-
-.person-info {
-  min-width: 0;
-  flex: 1;
-}
-
-.person-name {
-  font-weight: 600;
-  font-size: 15px;
-  overflow-wrap: anywhere;
-  line-height: 1.3;
-  color: var(--text-main);
-}
-
-.person-role {
-  margin-top: 2px;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-.close-section {
-  margin-top: 64px;
-}
-
-.close-divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 0 auto 32px;
-  max-width: 600px;
-}
-
-.close-divider .line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.16), transparent);
-}
-
-.close-divider .label {
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  text-shadow: 0 0 10px rgba(236, 72, 153, 0.36);
-  white-space: nowrap;
-}
-</style>
+    .group {
+      flex: 0 0 auto;
+      width: fit-content;
+      max-width: none;
+      display: flex; flex-direction: column;
+    }
+    .group-head {
+      padding: 18px 22px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .group-head h2 {
+      font-size: 17px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      text-shadow: 0 0 8px rgba(139,92,246,0.24);
+    }
+    .group-head .sub {
+      margin-top: 4px; color: var(--text-muted); font-size: 13px; line-height: 1.4;
+    }
+    .people { display: flex; flex-direction: column; gap: 10px; padding: 14px 22px; }
+    .person {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: all .18s;
+    }
+    .person:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.24); }
+    .avatar {
+      flex: 0 0 36px; width: 36px; height: 36px;
+      display: grid; place-items: center; border-radius: 10px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      font-size: 18px;
+    }
+    .person-info { flex: 1; min-width: 0; }
+    .person-name { font-weight: 600; font-size: 15px; line-height: 1.3; color: #fff; }
+    .person-role { color: var(--text-muted); font-size: 13px; margin-top: 2px; line-height: 1.3; }
+    /* --- Close People Section --- */
+    .close-section { margin-top: 72px; }
+    .close-divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px; margin: 0 auto 40px; max-width: 800px; text-align: center;
+    }
+    .close-divider .line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--line), transparent); }
+    .close-divider .label {
+      font-size: 19px; font-weight: 800; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--accent-2);
+      text-shadow: 0 0 16px rgba(249,115,22,0.4); white-space: nowrap;
+    }
+    .close-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+      max-width: 1360px; margin: 0 auto;
+    }
+    .special-card {
+      background: var(--bg-panel); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px; padding: 18px; backdrop-filter: blur(10px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.4), var(--glow);
+      transition: transform .3s cubic-bezier(0.25,1,0.5,1);
+    }
+    .special-card:hover { transform: translateY(-4px); border-color: var(--border-inner); }
+    .special-card h3 {
+      margin: 0 0 8px; font-size: 17px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 8px; line-height: 1.2;
+      text-shadow: 0 0 8px rgba(139,92,246,0.24);
+    }
+    .special-category-badge {
+      flex: 0 0 16px; height: 16px; border-radius: 4px;
+      background: var(--accent-3); display: grid; place-items: center; font-size: 10px; color: #000;
+    }
+    .category-desc {
+      font-size: 13px; color: var(--text-muted); margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; line-height: 1.4;
+    }
+    .special-people-list { display: flex; flex-direction: column; gap: 8px; }
+    .special-person-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; background: rgba(255,255,255,0.03);
+      border-radius: 8px; transition: background .2s;
+    }
+    .special-person-row:hover { background: rgba(139,92,246,0.08); }
+    .special-avatar {
+      flex: 0 0 32px; width: 32px; height: 32px;
+      border-radius: 8px; display: grid; place-items: center;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); font-size: 16px;
+    }
+    .special-info { flex: 1; min-width: 0; }
+    .special-name { font-weight: 600; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .special-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .final-quote {
+      max-width: 900px;
+      margin: 72px auto 0;
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .final-quote .heart {
+      color: var(--accent-2);
+      animation: pulse-small 2s infinite;
+    }
+    @keyframes pulse-small {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
 </head>
 <body>
-<main class="page">
-  <header class="hero">
-    <div class="eyebrow" id="eyebrow">Загрузка...</div>
-    <h1 id="title">Семейное древо</h1>
-    <p class="subtitle" id="subtitle"></p>
-    <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
-  </header>
-  <section id="content"></section>
-  <footer class="footer" id="footer"></footer>
-</main>
-<script>
-var JSON_FILE = "./family.json";
-var REFRESH_MS = 30000;
-var lastJSON = "";
+  <div class="page">
+    <!-- Hero -->
+    <section class="hero">
+      <span class="eyebrow">✦ 💜 Наш маленький хаос ✦</span>
+      <h1>Семейное древо</h1>
+      <p class="subtitle">Тут собраны самые любимые и родные — те, кто делает нашу историю особенной. 💜</p>
+      <div class="status">
+        <span class="dot"></span>
+        Статус: в работе — добавляем новые ветви
+      </div>
+    </section>
 
-function esc(v) {
-  v = v || "";
-  v = String(v);
-  return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-}
+    <!-- Tree Layout -->
+    <div class="tree">
+      <!-- Уровень 1: Центр -->
+      <div class="level-row">
+        <div class="level-label">Центр семьи</div>
+        <div class="center-card">
+          <span class="icon">💜</span>
+          <div class="name">shamanVkedax</div>
+          <div class="role">Центр этого прекрасного семейного хаоса</div>
+        </div>
+      </div>
 
-function levelLabelText(level) {
-  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники",4:"Мои Дети"};
-  return labels[level] || ("Уровень " + level);
-}
+      <!-- Линия-соединитель -->
+      <div class="connector">
+        <div class="vline"></div>
+      </div>
 
-function renderGroup(group, tagClass, showGenTag) {
-  var h = "";
-  h += '<article class="group">';
-  h += '<div class="group-head">';
-  h += '<h2>' + esc(group.title);
-  
-  // БЫЛО: эта строка рисовала надпись "ДЕТИ СВОИХ РОДИТЕЛЕЙ"
-  // ОСТАВЛЯЕМ ЕЁ ЗАКОММЕНТИРОВАННОЙ, чтобы надпись не появлялась нигде
-  /*
-  if (showGenTag) {
-    h += ' <span class="group-tag tag-' + tagClass + '" style="font-size:13px;color:var(--muted2);margin-left:10px;text-transform:uppercase;letter-spacing:.05em;">' + esc(levelLabelText(group.level)) + '</span>';
-  }
-  */
-  
-  h += '</h2>';
-  h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
-  h += '</div>';
-  h += '<div class="people">';
-  var ppl = group.people || [];
-  for (var i = 0; i < ppl.length; i++) {
-    var p = ppl[i];
-    h += '<div class="person">';
-    h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
-    h += '<div class="person-info">';
-    h += '<div class="person-name">' + esc(p.name) + '</div>';
-    h += '<div class="person-role">' + esc(p.role || "") + '</div>';
-    h += '</div>';
-    h += '</div>';
-  }
-  h += '</div>';
-  h += '</article>';
-  return h;
-}
+      <!-- Уровень 2: Родители -->
+      <div class="level-row">
+        <div class="level-label">Родители</div>
+        <div class="group">
+          <div class="group-head">
+            <h2>Мама</h2>
+            <span class="sub">Хранительница уюта и семейных историй</span>
+          </div>
+          <div class="people">
+            <div class="person">
+              <div class="avatar">👩</div>
+              <div class="person-info">
+                <div class="person-name">Имя Мамы</div>
+                <div class="person-role">Мама, бабушка</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-function renderCenter(center) {
-  var h = '<div class="center-card">';
-  h += '<div class="icon">' + esc(center.icon || "\uD83D\uDC9C") + '</div>';
-  h += '<span class="name">' + esc(center.name || "Я") + '</span>';
-  h += '<span class="role">' + esc(center.role || "") + '</span>';
-  h += '</div>';
-  return h;
-}
+        <div class="group">
+          <div class="group-head">
+            <h2>Папа</h2>
+            <span class="sub">Опора и главный рассказчик семейных легенд</span>
+          </div>
+          <div class="people">
+            <div class="person">
+              <div class="avatar">👨</div>
+              <div class="person-info">
+                <div class="person-name">Имя Папы</div>
+                <div class="person-role">Папа, дедушка</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-function render(data) {
-  document.title = data.title || "Семейное древо";
-  document.getElementById("eyebrow").textContent = data.eyebrow || "";
-  document.getElementById("title").textContent = data.title || "Семейное древо";
-  document.getElementById("subtitle").textContent = data.subtitle || "";
-  document.getElementById("footer").innerHTML = (data.footer || "").replace(/\uD83D\uDC9C/g, '<span class="heart">\uD83D\uDC9C</span>');
+      <!-- Линия-соединитель -->
+      <div class="connector">
+        <div class="vline"></div>
+      </div>
 
-  var center = data.center || {};
-  var centerLevel = (center.level !== undefined) ? center.level : 2;
-  var groups = Array.isArray(data.groups) ? data.groups : [];
-  var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
+      <!-- Уровень 3: Дети (наше поколение) -->
+      <div class="level-row">
+        <div class="level-label">Наше поколение (Дети родителей)</div>
+        <div class="group">
+          <div class="group-head">
+            <h2>Дети</h2>
+            <span class="sub">Продолжаем историю семьи</span>
+          </div>
+          <div class="people">
+            <div class="person">
+              <div class="avatar">🧒</div>
+              <div class="person-info">
+                <div class="person-name">Имя Ребёнка 1</div>
+                <div class="person-role">Сын / Дочь</div>
+              </div>
+            </div>
+            <div class="person">
+              <div class="avatar">👧</div>
+              <div class="person-info">
+                <div class="person-name">Имя Ребёнка 2</div>
+                <div class="person-role">Дочь / Сын</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  var levels = {};
-  for (var i = 0; i < groups.length; i++) {
-    var g = groups[i];
-    var lv = (g.level !== undefined) ? g.level : 0;
-    if (!levels[lv]) levels[lv] = [];
-    levels[lv].push(g);
-  }
-  if (!levels[centerLevel]) levels[centerLevel] = [];
-  levels[centerLevel]._hasCenter = true;
+    <!-- Close People Section -->
+    <section class="close-section">
+      <div class="close-divider">
+        <div class="line"></div>
+        <span class="label">Особые люди рядом</span>
+        <div class="line"></div>
+      </div>
 
-  var sortedLevels = Object.keys(levels).sort(function(a,b){return Number(a)-Number(b)});
+      <div class="close-grid">
+        <!-- Пример карточки -->
+        <article class="special-card">
+          <h3>
+            <span class="special-category-badge">❤️</span>
+            Близкие друзья семьи
+          </h3>
+          <p class="category-desc">Те, кто стал почти родными и всегда рядом в важные моменты.</p>
+          <div class="special-people-list">
+            <div class="special-person-row">
+              <div class="special-avatar">🧑‍🤝‍🧑</div>
+              <div class="special-info">
+                <div class="special-name">Имя Друга</div>
+                <div class="special-role">Друг семьи, крёстный</div>
+              </div>
+            </div>
+          </div>
+        </article>
 
-  var html = '<div class="tree">';
-  for (var idx = 0; idx < sortedLevels.length; idx++) {
-    var lv = sortedLevels[idx];
-    var levelNum = Number(lv);
-    if (idx > 0) {
-      html += '<div class="connector"><div class="vline"></div></div>';
-    }
-    html += '<div class="level-row">';
-    html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
-    if (levels[lv]._hasCenter) {
-      html += renderCenter(center);
-    }
-    var lvGroups = levels[lv];
-    for (var j = 0; j < lvGroups.length; j++) {
-      var g = lvGroups[j];
-      // Метка поколения показывается ТОЛЬКО на уровне центра (2)
-      var showGenTag = (g.level === centerLevel);
-      html += renderGroup(g, String(levelNum), showGenTag);
-    }
-    html += '</div>';
-  }
-  html += '</div>';
+        <!-- Ещё одна карточка (можно копировать и менять содержимое) -->
+        <article class="special-card">
+          <h3>
+            <span class="special-category-badge">🐾</span>
+            Наши пушистые члены семьи
+          </h3>
+          <p class="category-desc">Без них дом не был бы таким тёплым и живым.</p>
+          <div class="special-people-list">
+            <div class="special-person-row">
+              <div class="special-avatar">🐶</div>
+              <div class="special-info">
+                <div class="special-name">Кличка Питомца</div>
+                <div class="special-role">Лучший друг и будильник</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
 
-  // Блок "Особые люди" (священник, подруги и т.п.) — без меток поколений
-  if (closePeople.length > 0) {
-    html += '<div class="close-section">';
-    html += '<div class="close-divider"><div class="line"></div><span class="label">Особые люди</span><div class="line"></div></div>';
-    html += '<div class="close-grid">';
-    for (var k = 0; k < closePeople.length; k++) {
-      html += renderGroup(closePeople[k], "special", false);
-    }
-    html += '</div></div>';
-  }
-
-  document.getElementById("content").innerHTML = html;
-}
-
-function loadFamily() {
-  var status = document.getElementById("status");
-  fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
-    .then(function(resp) {
-      if (!resp.ok) throw new Error("HTTP " + resp.status);
-      return resp.text();
-    })
-    .then(function(text) {
-      var data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error("Ошибка JSON: " + e.message);
-      }
-      if (text !== lastJSON) {
-        render(data);
-        lastJSON = text;
-        status.innerHTML = '<span class="dot"></span>Обновлено: ' + new Date().toLocaleTimeString("ru-RU");
-      } else {
-        status.innerHTML = '<span class="dot"></span>Проверено: ' + new Date().toLocaleTimeString("ru-RU");
-      }
-    })
-    .catch(function(err) {
-      status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
-      if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
-      }
-      console.error(err);
-    });
-}
-
-loadFamily();
-setInterval(loadFamily, REFRESH_MS);
-</script>
+    <!-- Final Quote -->
+    <blockquote class="final-quote">
+      «Семья — это не только кровь. Это те, кто остаётся рядом, когда всё рушится, и радуется вместе, когда всё получается. ❤️»
+    </blockquote>
+  </div>
 </body>
 </html>
