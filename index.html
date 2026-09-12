@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Семейное древо 💜</title>
+<title>Семейное древо</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128156;</text></svg>">
 <style>
 :root{
-  --bg1:#0d0a1a; --bg2:#1a1230;
+  --bg1:#0d0a1a;--bg2:#1a1230;
   --card:rgba(28,21,49,.82);
-  --text:#f5f0ff; --muted:#a895c4; --muted2:#8a7ba8;
-  --accent:#b07cff; --accent2:#ff79c6; --accent3:#5eead4;
-  --border:rgba(188,124,255,.18); --border-bright:rgba(188,124,255,.4);
-  --green:#6ee7b7; --pink:#f9a8d4; --blue:#93c5fd; --gold:#fcd34d;
+  --text:#f5f0ff;--muted:#a895c4;--muted2:#8a7ba8;
+  --accent:#b07cff;--accent2:#ff79c6;--accent3:#5eead4;
+  --border:rgba(188,124,255,.18);--border-bright:rgba(188,124,255,.4);
+  --green:#6ee7b7;--pink:#f9a8d4;--blue:#93c5fd;--gold:#fcd34d;
   --line:rgba(188,124,255,.3);
   --shadow:0 12px 40px rgba(0,0,0,.28);
 }
@@ -27,8 +28,6 @@ body{
   background-attachment:fixed;
 }
 .page{max-width:1400px;margin:0 auto;padding:40px 20px 60px}
-
-/* Шапка */
 .hero{text-align:center;margin-bottom:40px}
 .eyebrow{
   display:inline-block;padding:7px 16px;
@@ -53,11 +52,7 @@ h1{
   background:var(--green);margin-right:6px;animation:pulse 2s infinite;
 }
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Дерево */
 .tree{display:flex;flex-direction:column;align-items:center}
-
-/* Уровень */
 .level-row{
   display:flex;flex-wrap:wrap;justify-content:center;gap:20px;
   width:100%;position:relative;
@@ -67,8 +62,6 @@ h1{
   font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
   color:var(--muted2);
 }
-
-/* Коннектор между уровнями */
 .connector{
   display:flex;flex-direction:column;align-items:center;
   width:100%;padding:10px 0;position:relative;
@@ -78,11 +71,8 @@ h1{
   background:linear-gradient(to bottom,transparent,var(--line),transparent);
 }
 .connector .parent-note{
-  font-size:10px;color:var(--muted2);margin-top:4px;
-  letter-spacing:.05em;
+  font-size:10px;color:var(--muted2);margin-top:4px;letter-spacing:.05em;
 }
-
-/* Центральная карточка */
 .center-card{
   min-width:min(320px,100%);text-align:center;
   padding:24px 28px;border-radius:22px;
@@ -102,19 +92,13 @@ h1{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .center-card .role{display:block;color:#cfbce7;margin-top:4px;font-size:13px;font-style:italic}
-
-/* Группы-карточки */
 .group{
   flex:1 1 320px;max-width:380px;
   border:1px solid var(--border);border-radius:20px;
   background:var(--card);backdrop-filter:blur(14px);
   overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .2s;
 }
-.group:hover{
-  border-color:var(--border-bright);
-  transform:translateY(-3px);
-  box-shadow:var(--shadow);
-}
+.group:hover{border-color:var(--border-bright);transform:translateY(-3px);box-shadow:var(--shadow)}
 .group-head{padding:14px 18px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
 .group-head h2{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .group-head .sub{margin-top:4px;color:var(--muted2);font-size:12px;line-height:1.4}
@@ -126,24 +110,19 @@ h1{
   border:1px solid rgba(176,124,255,.2);
   margin-left:auto;white-space:nowrap;
 }
-.parent-badge::before{content:'↳';font-size:12px}
-
+.parent-badge::before{content:'\21B3';font-size:12px}
 .group-tag{
   display:inline-block;padding:2px 8px;border-radius:6px;
   font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
   white-space:nowrap;
 }
-
 .people{display:flex;flex-direction:column;gap:8px;padding:12px}
 .person{
   display:flex;align-items:center;gap:12px;padding:10px 12px;
   border:1px solid rgba(255,255,255,.04);border-radius:14px;
   background:rgba(255,255,255,.025);transition:all .18s;
 }
-.person:hover{
-  background:rgba(176,124,255,.06);
-  border-color:rgba(176,124,255,.15);
-}
+.person:hover{background:rgba(176,124,255,.06);border-color:rgba(176,124,255,.15)}
 .avatar{
   flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;
   border-radius:12px;font-size:18px;
@@ -153,36 +132,24 @@ h1{
 .person-info{min-width:0;flex:1}
 .person-name{font-weight:700;font-size:14px;overflow-wrap:anywhere;line-height:1.3}
 .person-role{margin-top:2px;color:var(--muted2);font-size:11px;line-height:1.3}
-
-/* Секция близких людей */
 .close-section{margin-top:60px}
-.close-divider{
-  display:flex;align-items:center;gap:16px;margin:0 auto 30px;max-width:600px;
-}
+.close-divider{display:flex;align-items:center;gap:16px;margin:0 auto 30px;max-width:600px}
 .close-divider .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--border-bright),transparent)}
 .close-divider .label{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .close-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:20px}
-
-/* Подвал */
 .footer{
   text-align:center;margin-top:50px;padding:24px;
   color:#8a7ba8;font-size:13px;line-height:1.7;
   border-top:1px solid rgba(255,255,255,.05);
 }
 .footer .heart{color:var(--accent2)}
-
-/* Ошибка */
 .error-box{
   max-width:600px;margin:30px auto;padding:20px;
   border:1px solid #75405b;border-radius:16px;background:#281421;
   color:#f0a0b8;text-align:center;font-size:14px;line-height:1.6;
 }
-
-/* Анимация */
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .group,.center-card{animation:fadeIn .4s ease-out}
-
-/* Адаптив */
 @media(max-width:1000px){.group,.center-card{flex:1 1 280px;max-width:340px}}
 @media(max-width:680px){
   .page{padding:28px 12px 40px}
@@ -204,197 +171,185 @@ h1{
   <section id="content"></section>
   <footer class="footer" id="footer"></footer>
 </main>
-
 <script>
-// Путь к файлу
-const JSON_FILE = '/family.json';
-const REFRESH_MS = 30000;
-let lastJSON = '';
+var JSON_FILE = "./family.json";
+var REFRESH_MS = 30000;
+var lastJSON = "";
 
-// Функция экранирования HTML (чтобы XSS не сломали верстку)
-function esc(v = ''){
-  return String(v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+function esc(v) {
+  v = v || "";
+  v = String(v);
+  return v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-function levelLabelText(level){
-  const labels = {
-    0: 'Старшее поколение',
-    1: 'Родители',
-    2: 'Наше поколение',
-    3: 'Дети и племянники'
+function levelLabelText(level) {
+  var labels = {
+    0: "Старшее поколение",
+    1: "Родители",
+    2: "Наше поколение",
+    3: "Дети и племянники"
   };
-  return labels[level] || `Уровень \${level}`;
+  return labels[level] || ("Уровень " + level);
 }
 
-function parentLabel(parent){
-  if(!parent) return null;
-  if(parent === 'center') return 'от shamanVkedax';
-  // Удаляем эмодзи для чистого текста в бейдже
-  return 'от ' + parent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
+function parentLabel(parent) {
+  if (!parent) return null;
+  if (parent === "center") return "от shamanVkedax";
+  var clean = parent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").trim();
+  return "от " + clean;
 }
 
-function renderGroup(group, tagClass, tagText){
-  const pLabel = parentLabel(group.parent);
-  // ИСПРАВЛЕНО: используем \${...} без обратного слэша
-  return `
-    <article class="group">
-      <div class="group-head">
-        <h2>
-          \${esc(group.title)}
-          <span class="group-tag tag-${tagClass}">${esc(tagText)}</span>
-          ${pLabel ? `<span class="parent-badge">${esc(pLabel)}</span>` : ''}
-        </h2>
-        <div class="sub">\${esc(group.subtitle || '')}</div>
-      </div>
-      <div class="people">
-        \${(group.people || []).map(person => `
-          <div class="person">
-            <div class="avatar">\${esc(person.icon || '💜')}</div>
-            <div class="person-info">
-              <div class="person-name">\${esc(person.name)}</div>
-              <div class="person-role">\${esc(person.role || '')}</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </article>
-  `;
+function renderGroup(group, tagClass, tagText) {
+  var pLabel = parentLabel(group.parent);
+  var h = "";
+  h += '<article class="group">';
+  h += '<div class="group-head">';
+  h += '<h2>';
+  h += esc(group.title);
+  h += ' <span class="group-tag tag-' + tagClass + '">' + esc(tagText) + '</span>';
+  if (pLabel) {
+    h += ' <span class="parent-badge">' + esc(pLabel) + '</span>';
+  }
+  h += '</h2>';
+  h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
+  h += '</div>';
+  h += '<div class="people">';
+  var ppl = group.people || [];
+  for (var i = 0; i < ppl.length; i++) {
+    var person = ppl[i];
+    h += '<div class="person">';
+    h += '<div class="avatar">' + esc(person.icon || "\uD83D\uDC9C") + '</div>';
+    h += '<div class="person-info">';
+    h += '<div class="person-name">' + esc(person.name) + '</div>';
+    h += '<div class="person-role">' + esc(person.role || "") + '</div>';
+    h += '</div>';
+    h += '</div>';
+  }
+  h += '</div>';
+  h += '</article>';
+  return h;
 }
 
-function renderCenter(center){
-  return `
-    <div class="center-card">
-      <div class="icon">\${esc(center.icon || '💜')}</div>
-      <span class="name">\${esc(center.name || 'Я')}</span>
-      <span class="role">\${esc(center.role || '')}</span>
-    </div>
-  `;
+function renderCenter(center) {
+  var h = "";
+  h += '<div class="center-card">';
+  h += '<div class="icon">' + esc(center.icon || "\uD83D\uDC9C") + '</div>';
+  h += '<span class="name">' + esc(center.name || "Я") + '</span>';
+  h += '<span class="role">' + esc(center.role || "") + '</span>';
+  h += '</div>';
+  return h;
 }
 
-function render(data){
-  document.title = data.title || 'Семейное древо';
-  document.getElementById('eyebrow').textContent = data.eyebrow || '';
-  document.getElementById('title').textContent = data.title || 'Семейное древо';
-  document.getElementById('subtitle').textContent = data.subtitle || '';
-  document.getElementById('footer').innerHTML = (data.footer || '').replace(/💜/g,'<span class="heart">💜</span>');
+function render(data) {
+  document.title = data.title || "Семейное древо";
+  document.getElementById("eyebrow").textContent = data.eyebrow || "";
+  document.getElementById("title").textContent = data.title || "Семейное древо";
+  document.getElementById("subtitle").textContent = data.subtitle || "";
+  var footerText = (data.footer || "").replace(/\uD83D\uDC9C/g, '<span class="heart">\uD83D\uDC9C</span>');
+  document.getElementById("footer").innerHTML = footerText;
 
-  const center = data.center || {};
-  const centerLevel = center.level !== undefined ? center.level : 2;
-  const groups = Array.isArray(data.groups) ? data.groups : [];
-  const closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
+  var center = data.center || {};
+  var centerLevel = (center.level !== undefined) ? center.level : 2;
+  var groups = Array.isArray(data.groups) ? data.groups : [];
+  var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
 
-  // Группируем по уровням
-  const levels = {};
-  groups.forEach(g => {
-    const lv = g.level !== undefined ? g.level : 0;
-    if(!levels[lv]) levels[lv] = [];
+  var levels = {};
+  for (var i = 0; i < groups.length; i++) {
+    var g = groups[i];
+    var lv = (g.level !== undefined) ? g.level : 0;
+    if (!levels[lv]) levels[lv] = [];
     levels[lv].push(g);
-  });
+  }
 
-  // Центр добавляем на свой уровень
-  if(!levels[centerLevel]) levels[centerLevel] = [];
+  if (!levels[centerLevel]) levels[centerLevel] = [];
   levels[centerLevel]._hasCenter = true;
 
-  const sortedLevels = Object.keys(levels).sort((a,b)=>Number(a)-Number(b));
+  var sortedLevels = Object.keys(levels).sort(function(a, b) { return Number(a) - Number(b); });
 
-  let html = '<div class="tree">';
+  var html = '<div class="tree">';
 
-  sortedLevels.forEach((lv, idx) => {
-    const levelNum = Number(lv);
+  for (var idx = 0; idx < sortedLevels.length; idx++) {
+    var lv = sortedLevels[idx];
+    var levelNum = Number(lv);
 
-    // Коннектор перед уровнем (кроме первого)
-    if(idx > 0){
-      const prevLevel = Number(sortedLevels[idx-1]);
-      let note = '';
-      if(levelNum === 1) note = '↓ дети дедушки и бабушки';
-      else if(levelNum === 2) note = '↓ дети родителей';
-      else if(levelNum === 3) note = '↓ следующее поколение';
+    if (idx > 0) {
+      var note = "";
+      if (levelNum === 1) note = "дети дедушки и бабушки";
+      else if (levelNum === 2) note = "дети родителей";
+      else if (levelNum === 3) note = "следующее поколение";
       
-      html += `
-        <div class="connector">
-          <div class="vline"></div>
-          ${note ? `<div class="parent-note">${esc(note)}</div>` : ''}
-        </div>
-      `;
+      html += '<div class="connector">';
+      html += '<div class="vline"></div>';
+      if (note) html += '<div class="parent-note">' + esc(note) + '</div>';
+      html += '</div>';
     }
 
-    // Метка уровня
-    html += `<div class="level-row">`;
-    html += `<div class="level-label">\${esc(levelLabelText(levelNum))}</div>`;
+    html += '<div class="level-row">';
+    html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
 
-    // Если на этом уровне есть центр — вставляем его первым
-    if(levels[lv]._hasCenter){
+    if (levels[lv]._hasCenter) {
       html += renderCenter(center);
     }
 
-    // Группы этого уровня
-    levels[lv].forEach(group => {
-      const tag = String(levelNum);
-      const tagText = levelLabelText(levelNum);
-      html += renderGroup(group, tag, tagText);
-    });
+    var lvGroups = levels[lv];
+    for (var j = 0; j < lvGroups.length; j++) {
+      var tag = String(levelNum);
+      var tagText = levelLabelText(levelNum);
+      html += renderGroup(lvGroups[j], tag, tagText);
+    }
 
     html += '</div>';
-  });
+  }
 
   html += '</div>';
 
-  // Секция близких людей
-  if(closePeople.length > 0){
-    html += `
-      <div class="close-section">
-        <div class="close-divider">
-          <div class="line"></div>
-          <span class="label">Близкие люди</span>
-          <div class="line"></div>
-        </div>
-        <div class="close-grid">
-    `;
-    closePeople.forEach(group => {
-      html += renderGroup(group, 'special', 'Родные по духу');
-    });
-    html += '</div></div>';
+  if (closePeople.length > 0) {
+    html += '<div class="close-section">';
+    html += '<div class="close-divider">';
+    html += '<div class="line"></div>';
+    html += '<span class="label">Близкие люди</span>';
+    html += '<div class="line"></div>';
+    html += '</div>';
+    html += '<div class="close-grid">';
+    for (var k = 0; k < closePeople.length; k++) {
+      html += renderGroup(closePeople[k], "special", "Родные по духу");
+    }
+    html += '</div>';
+    html += '</div>';
   }
 
-  document.getElementById('content').innerHTML = html;
+  document.getElementById("content").innerHTML = html;
 }
 
-async function loadFamily(){
-  const status = document.getElementById('status');
-  try{
-    const response = await fetch(JSON_FILE, {cache:'no-store'});
-    if(!response.ok) throw new Error(`HTTP \${response.status}`);
-    const text = await response.text();
-    
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      throw new Error('Неверный JSON. Ошибка парсинга: ' + e.message);
-    }
-
-    if(text !== lastJSON){
-      render(data);
-      lastJSON = text;
-      status.innerHTML = `<span class="dot"></span>Обновлено: \${new Date().toLocaleTimeString('ru-RU')}`;
-    } else {
-      status.innerHTML = `<span class="dot"></span>Проверено: \${new Date().toLocaleTimeString('ru-RU')}`;
-    }
-  } catch(err){
-    status.innerHTML = `<span class="dot" style="background:#f87171"></span>Ошибка: \${err.message}`;
-    if(!lastJSON){
-      document.getElementById('content').innerHTML = `
-        <div class="error-box">
-          ⚠️ Ошибка загрузки <b>family.json</b>.<br>
-          Проверь:<br>
-          1. Файл <b>family.json</b> лежит в корне репозитория.<br>
-          2. В JSON нет ошибок синтаксиса (лишние запятые, кавычки).<br>
-          3. Открой консоль (F12) для детальной ошибки.
-        </div>
-      `;
-    }
-    console.error(err);
-  }
+function loadFamily() {
+  var status = document.getElementById("status");
+  fetch(JSON_FILE + "?v=" + Date.now(), { cache: "no-store" })
+    .then(function(resp) {
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      return resp.text();
+    })
+    .then(function(text) {
+      var data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error("Ошибка JSON: " + e.message);
+      }
+      if (text !== lastJSON) {
+        render(data);
+        lastJSON = text;
+        status.innerHTML = '<span class="dot"></span>Обновлено: ' + new Date().toLocaleTimeString("ru-RU");
+      } else {
+        status.innerHTML = '<span class="dot"></span>Проверено: ' + new Date().toLocaleTimeString("ru-RU");
+      }
+    })
+    .catch(function(err) {
+      status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
+      if (!lastJSON) {
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки <b>family.json</b>.<br>1. Файл <b>family.json</b> лежит в корне репозитория.<br>2. В JSON нет синтаксических ошибок.<br>3. Открой консоль (F12).</div>';
+      }
+      console.error(err);
+    });
 }
 
 loadFamily();
