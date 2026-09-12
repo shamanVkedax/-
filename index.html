@@ -86,10 +86,15 @@ function renderGroup(group, tagClass, showGenTag) {
   h += '<article class="group">';
   h += '<div class="group-head">';
   h += '<h2>' + esc(group.title);
-  // Показываем метку поколения ТОЛЬКО если это уровень центра (наше поколение)
+  
+  // БЫЛО: эта строка рисовала надпись "ДЕТИ СВОИХ РОДИТЕЛЕЙ"
+  // ОСТАВЛЯЕМ ЕЁ ЗАКОММЕНТИРОВАННОЙ, чтобы надпись не появлялась нигде
+  /*
   if (showGenTag) {
     h += ' <span class="group-tag tag-' + tagClass + '" style="font-size:13px;color:var(--muted2);margin-left:10px;text-transform:uppercase;letter-spacing:.05em;">' + esc(levelLabelText(group.level)) + '</span>';
   }
+  */
+  
   h += '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
   h += '</div>';
