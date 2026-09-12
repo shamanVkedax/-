@@ -1,345 +1,309 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Семейное древо 💜</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    /* --- Основной стиль --- */
-    body {
-      background: linear-gradient(135deg, #f8faff 0%, #b7e3f6 100%);
-      font-family: 'Segoe UI', Arial, sans-serif;
-      color: #222;
-      margin: 0;
-      min-height: 100vh;
-      padding: 0 2vw;
-    }
-    header {
-      background: linear-gradient(90deg, #f0b7ff 0%, #a6eaff 100%);
-      padding: 2rem 1rem 1rem 1rem;
-      text-align: center;
-      border-radius: 1rem;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-    }
-    .title {
-      font-size: 2.2rem;
-      font-weight: bold;
-      color: #4e7aff;
-      margin-bottom: 0.25em;
-      letter-spacing: 1px;
-      text-shadow: 0 1px 2px #fff7;
-    }
-    .eyebrow {
-      color: #d7ffe0;
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.3em;
-      font-weight: 600;
-    }
-    .subtitle {
-      font-size: 1rem;
-      color: #7a99cc;
-      margin-bottom: 1.5rem;
-      font-style: italic;
-    }
-    .center-box {
-      margin: 2rem auto 2rem;
-      max-width: 380px;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 2px 16px rgba(70,123,255,0.13);
-      padding: 1.5rem;
-      text-align: center;
-    }
-    .center-box .icon {
-      font-size: 2.4rem;
-      color: #4e7aff;
-      margin-bottom: 0.2em;
-    }
-    .center-box .name {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #267cff;
-      display: block;
-    }
-    .center-box .role {
-      color: #7a99cc;
-      font-size: 0.98rem;
-      margin-top: 0.5em;
-      font-style: italic;
-    }
-    .tree-container {
-      margin: 2rem auto 4rem auto;
-      max-width: 700px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .mermaid-container {
-      width: 100%;
-      height: 600px;
-      border: 2px solid #d3eaff;
-      border-radius: 10px;
-      background: #fff;
-      margin: 0 auto;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.04);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .mermaid svg {
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-    }
-    .tooltip {
-      background: #fff9e0;
-      border: 1px solid #ffe9d1;
-      border-radius: 6px;
-      padding: 0.5em 1em;
-      position: absolute;
-      z-index: 1000;
-      pointer-events: none;
-      white-space: nowrap;
-      max-width: 200px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      font-size: 0.9rem;
-      display: none;
-      transform: translate(10px, 10px);
-    }
-    .tooltip.show { display: block; }
-    
-    .error-message {
-      color: #b71c1c;
-      background: #ffebee;
-      border: 1px solid #ef9a9a;
-      padding: 1.5rem;
-      border-radius: 8px;
-      text-align: center;
-      max-width: 600px;
-      margin-top: 1rem;
-      font-weight: 500;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Семейное древо 💜</title>
+<style>
+:root{
+  --bg1:#0d0a1a; --bg2:#1a1230;
+  --card:rgba(28,21,49,.82);
+  --text:#f5f0ff; --muted:#a895c4; --muted2:#8a7ba8;
+  --accent:#b07cff; --accent2:#ff79c6; --accent3:#5eead4;
+  --border:rgba(188,124,255,.18); --border-bright:rgba(188,124,255,.4);
+  --green:#6ee7b7; --pink:#f9a8d4; --blue:#93c5fd; --gold:#fcd34d;
+  --shadow:0 12px 40px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;color:var(--text);
+  font-family:'Segoe UI','Inter',system-ui,sans-serif;
+  background:
+    radial-gradient(ellipse at 15% 8%,rgba(176,124,255,.15),transparent 35%),
+    radial-gradient(ellipse at 85% 25%,rgba(255,121,198,.1),transparent 30%),
+    radial-gradient(ellipse at 50% 90%,rgba(94,234,212,.06),transparent 40%),
+    linear-gradient(160deg,var(--bg1),var(--bg2));
+  background-attachment:fixed;
+}
+.page{max-width:1400px;margin:0 auto;padding:40px 20px 60px}
 
-    .footer {
-      text-align: center;
-      padding: 2rem 1rem 1.5rem 1rem;
-      color: #6c9cff;
-      font-size: 1rem;
-      background: rgba(255,255,255,0.08);
-      border-radius: 10px;
-      margin-top: 2rem;
-    }
+/* Шапка */
+.hero{text-align:center;margin-bottom:36px}
+.eyebrow{
+  display:inline-block;padding:7px 16px;
+  border:1px solid rgba(220,185,255,.22);border-radius:999px;
+  color:#dac4ee;background:rgba(255,255,255,.04);
+  font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+}
+h1{
+  margin:16px 0 8px;font-size:clamp(32px,6vw,64px);line-height:1.05;
+  letter-spacing:-.04em;font-weight:800;
+  background:linear-gradient(100deg,#fff,#d8b8ff,#ffacd9);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.subtitle{max-width:680px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.6}
+.status{
+  margin:14px auto 0;width:fit-content;padding:6px 14px;border-radius:999px;
+  color:#a298b4;background:rgba(255,255,255,.04);font-size:11px;
+  border:1px solid rgba(255,255,255,.05);
+}
+.status .dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--green);margin-right:6px;animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-    @media (max-width: 700px) {
-      .tree-container { margin: 1rem auto 1rem auto; max-width: 97vw; }
-      .mermaid-container { height: 480px; }
-      .center-box { max-width: 90vw; padding: 1rem; }
-    }
-  </style>
-  <!-- Подключаем библиотеку Mermaid -->
-  <script src="https://unpkg.com/mermaid@11.0.0/dist/mermaid.min.js"></script>
-  <script>
-    // Конфигурация Mermaid
-    mermaid.initialize({ 
-      startOnLoad: false,
-      theme: 'default',
-      flowchart: { 
-        useMaxWidth: true,
-        htmlLabels: true,
-        nodeSpacing: 40,
-        rankSep: 50
-      }
-    });
+/* Центральная карточка */
+.center-wrap{display:flex;justify-content:center;margin-bottom:40px}
+.center{
+  min-width:min(420px,100%);text-align:center;
+  padding:28px 36px;border-radius:24px;
+  border:1px solid var(--border-bright);
+  background:linear-gradient(135deg,rgba(176,124,255,.18),rgba(255,121,198,.08)),rgba(20,15,37,.95);
+  box-shadow:0 16px 50px rgba(176,124,255,.15);
+  position:relative;
+}
+.center::before{
+  content:'';position:absolute;inset:-2px;border-radius:24px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
+  z-index:-1;opacity:.3;filter:blur(12px);
+}
+.center .icon{font-size:36px;line-height:1}
+.center .name{display:block;font-size:28px;font-weight:800;margin-top:8px;
+  background:linear-gradient(100deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.center .role{display:block;color:#cfbce7;margin-top:6px;font-size:14px;font-style:italic}
 
-    // 1. ИСПРАВЛЕНИЕ ПУТИ: Динамическое определение пути для GitHub Pages
-    const baseUrl = window.location.pathname.split('/').slice(0, -1).join('/') || '/';
-    const jsonPath = baseUrl + '/family.json';
+/* Дерево — уровни */
+.tree{display:flex;flex-direction:column;align-items:center;gap:0}
+.level{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;width:100%;position:relative}
+.level + .level{margin-top:44px}
+.level + .level::before{
+  content:'';position:absolute;top:-44px;left:50%;
+  width:2px;height:44px;
+  background:linear-gradient(to bottom,transparent,var(--border-bright));
+}
 
-    console.log(`Попытка загрузки JSON из: \${jsonPath}`);
+/* Группы-карточки */
+.group{
+  flex:1 1 320px;max-width:380px;
+  border:1px solid var(--border);border-radius:20px;
+  background:var(--card);backdrop-filter:blur(14px);
+  overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .2s;
+}
+.group:hover{
+  border-color:var(--border-bright);
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+.group-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.group-head h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+.group-head .sub{margin-top:4px;color:var(--muted2);font-size:12px;line-height:1.4}
+.group-tag{
+  display:inline-block;padding:2px 8px;border-radius:6px;
+  font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  margin-left:auto;white-space:nowrap;
+}
+.tag-0{background:rgba(110,231,183,.12);color:var(--green);border:1px solid rgba(110,231,183,.2)}
+.tag-1{background:rgba(147,197,253,.12);color:var(--blue);border:1px solid rgba(147,197,253,.2)}
+.tag-2{background:rgba(249,168,212,.12);color:var(--pink);border:1px solid rgba(249,168,212,.2)}
+.tag-special{background:rgba(252,211,77,.12);color:var(--gold);border:1px solid rgba(252,211,77,.2)}
 
-    fetch(jsonPath)
-      .then(resp => {
-        if (!resp.ok) throw new Error(`HTTP ошибка: \${resp.status}. Проверьте, лежит ли family.json в корне репозитория.`);
-        return resp.json();
-      })
-      .then(data => {
-        renderPage(data);
-      })
-      .catch(err => {
-        console.error("Критическая ошибка загрузки family.json:", err);
-        showError(`Не удалось загрузить данные: \${err.message}. Проверьте консоль (F12).`);
-      });
+.people{display:flex;flex-direction:column;gap:8px;padding:12px}
+.person{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;
+  border:1px solid rgba(255,255,255,.04);border-radius:14px;
+  background:rgba(255,255,255,.025);transition:all .18s;
+}
+.person:hover{
+  background:rgba(176,124,255,.06);
+  border-color:rgba(176,124,255,.15);
+}
+.avatar{
+  flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;
+  border-radius:12px;font-size:18px;
+  background:linear-gradient(135deg,rgba(176,124,255,.2),rgba(255,121,198,.1));
+  border:1px solid rgba(255,255,255,.05);
+}
+.person-info{min-width:0;flex:1}
+.person-name{font-weight:700;font-size:14px;overflow-wrap:anywhere;line-height:1.3}
+.person-role{margin-top:2px;color:var(--muted2);font-size:11px;line-height:1.3}
 
-    function renderPage(data) {
-      // Заполняем шапку
-      document.querySelector('.title').textContent = data.title || "Семейное древо";
-      document.querySelector('.eyebrow').textContent = data.eyebrow || "✦ Наш хаос ✦";
-      document.querySelector('.subtitle').textContent = data.subtitle || "Где-то тут и есть место для тебя.";
-      
-      const centerBox = document.querySelector('.center-box');
-      if (data.center) {
-        centerBox.querySelector('.icon').textContent = data.center.icon || "💜";
-        centerBox.querySelector('.name').textContent = data.center.name || "Центр";
-        centerBox.querySelector('.role').textContent = data.center.role || "";
-      }
+/* Соединительные линии между уровнями */
+.connectors{
+  display:flex;justify-content:center;gap:20px;width:100%;
+  height:40px;position:relative;
+}
+.connector-line{
+  flex:1 1 320px;max-width:380px;display:flex;justify-content:center;
+}
+.connector-line svg{width:100%;height:40px}
 
-      // 2. ГЕНЕРАЦИЯ MERMAID
-      let mermaidText = `graph TD\n`;
-      
-      // Корневой узел
-      const safeTitle = data.title.replace(/"/g, '\\"');
-      mermaidText += `  ROOT["<b>${safeTitle}</b><br><small>${data.eyebrow}</small>"] style ROOT fill:#4e7aff,color:#fff\n`;
+/* Подвал */
+.footer{
+  text-align:center;margin-top:50px;padding:24px;
+  color:#8a7ba8;font-size:13px;line-height:1.7;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.footer .heart{color:var(--accent2)}
 
-      // Узел Центра
-      let centerNodeId = "CENTER";
-      if (data.center) {
-        const cName = data.center.name.replace(/"/g, '\\"');
-        const cRole = data.center.role.replace(/"/g, '\\"');
-        mermaidText += `  ${centerNodeId}["<b>${cName}</b><br><span style='color:#7a99cc'>${cRole}</span>"] style ${centerNodeId} fill:#d7ffe0,stroke:#4e7aff,stroke-width:2px\n`;
-        mermaidText += `  ROOT --> \${centerNodeId}\n`;
-      }
+/* Ошибка */
+.error-box{
+  max-width:600px;margin:30px auto;padding:20px;
+  border:1px solid #75405b;border-radius:16px;background:#281421;
+  color:#f0a0b8;text-align:center;font-size:14px;line-height:1.6;
+}
 
-      // Карта узлов: ключ = уникальное имя, значение = ID в Mermaid
-      const nodesMap = {}; 
-      
-      // Сначала создаем все узлы (без связей)
-      data.groups.forEach((group, gIndex) => {
-        group.people.forEach((person, pIndex) => {
-          // Создаем безопасный ID (только буквы и цифры)
-          let safeName = person.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-          let id = `P_${safeName}_${gIndex}_\${pIndex}`;
-          
-          // Сохраняем связь
-          nodesMap[`${group.title}-${person.name}`] = id;
+/* Анимация появления */
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.group{animation:fadeIn .4s ease-out}
+.group:nth-child(1){animation-delay:.05s}
+.group:nth-child(2){animation-delay:.1s}
+.group:nth-child(3){animation-delay:.15s}
+.group:nth-child(4){animation-delay:.2s}
+.group:nth-child(5){animation-delay:.25s}
+.group:nth-child(6){animation-delay:.3s}
 
-          const pName = person.name.replace(/"/g, '\\"');
-          const pRole = person.role.replace(/"/g, '\\"');
-          const pIcon = person.icon || "";
-          
-          // Формируем текст внутри узла
-          let label = `${pIcon} ${pName}<br><small style='color:#7a99cc'>\${pRole}</small>`;
-          
-          // Стили
-          let style = "fill:#fff,stroke:#4e7aff";
-          if (["дед", "бабушка", "любимый дед", "любимая бабушка"].includes(person.role.toLowerCase())) style = "fill:#e0ffe4,stroke:#2ecc71";
-          if (person.role.toLowerCase().includes("брат") || person.role.toLowerCase().includes("сестра")) style = "fill:#fff,stroke:#ff6b6b";
-          if (person.role.toLowerCase().includes("дочь") || person.role.toLowerCase().includes("сын")) style = "fill:#fff,stroke:#4ecdc4";
-
-          mermaidText += `  ${id}["${label}"] style ${id} ${style}\n`;
-        });
-      });
-
-      // Теперь рисуем связи (СТРЕЛОЧКИ)
-      data.groups.forEach((group, gIndex) => {
-        group.people.forEach((person, pIndex) => {
-          let currentId = nodesMap[`${group.title}-${person.name}`];
-          let parentId = null;
-
-          if (data.center) {
-            // Логика 1: Группы уровня 0 и 1 идут от Центра
-            if (group.level === 0 || group.level === 1) {
-              parentId = "CENTER";
-            } 
-            // Логика 2: Группы уровня 2 (дети, племянники) идут от ГРУППЫ уровня 1
-            else if (group.level === 2) {
-              // Ищем ЛЮБУЮ группу с уровнем 1, чтобы прицепить к ней детей.
-              // В твоем JSON у тебя есть группа "Батя" (level 1) и "Мама" (level 1).
-              // Мы берем первого человека из первой попавшейся группы уровня 1 как "якорь".
-              const parentGroup = data.groups.find(g => g.level === 1);
-              if (parentGroup && parentGroup.people.length > 0) {
-                 // Берем первого человека из группы-родителя
-                 const firstParent = parentGroup.people;
-                 parentId = nodesMap[`${parentGroup.title}-${firstParent.name}`];
-              }
-            }
-          }
-
-          if (parentId) {
-            mermaidText += `  ${parentId} --> ${currentId}\n`;
-          }
-        });
-      });
-
-      // Рендер
-      const container = document.getElementById('mermaid-svg');
-      try {
-        mermaid.render('mermaid-svg', mermaidText, (svgCode) => {
-          container.innerHTML = svgCode;
-          setupTooltips();
-        });
-      } catch (e) {
-        console.error("Ошибка генерации Mermaid:", e);
-        showError("Ошибка в структуре данных для построения графа.");
-      }
-    }
-
-    function showError(message) {
-      const container = document.querySelector('.tree-container');
-      container.innerHTML += `
-        <div class="error-message">
-          <strong>⚠️ Ошибка</strong><br>
-          \${message}
-        </div>
-      `;
-    }
-
-    function setupTooltips() {
-      const svg = document.querySelector('#mermaid-svg svg');
-      if (!svg) return;
-
-      const tooltipContainer = document.getElementById('tooltips-container');
-      
-      // Находим все узлы. В Mermaid 11+ узлы часто имеют класс .node
-      const nodes = svg.querySelectorAll('.node');
-      
-      nodes.forEach(node => {
-        node.addEventListener('mousemove', (e) => {
-          const textContent = node.textContent.trim();
-          if (textContent) {
-            tooltipContainer.style.display = 'block';
-            tooltipContainer.style.left = (e.clientX + 15) + 'px';
-            tooltipContainer.style.top = (e.clientY + 15) + 'px';
-            tooltipContainer.innerHTML = `<div class="tooltip show">\${textContent}</div>`;
-          }
-        });
-        
-        node.addEventListener('mouseout', () => {
-          tooltipContainer.style.display = 'none';
-        });
-      });
-    }
-  </script>
+/* Адаптив */
+@media(max-width:1000px){.group{flex:1 1 280px;max-width:340px}}
+@media(max-width:680px){
+  .page{padding:28px 12px 40px}
+  .group{flex:1 1 100%;max-width:none}
+  .center{padding:22px 20px}
+  .center .name{font-size:24px}
+}
+</style>
 </head>
 <body>
-  <header>
-    <div class="title">Загрузка...</div>
-    <div class="eyebrow"></div>
-    <div class="subtitle"></div>
+<main class="page">
+  <header class="hero">
+    <div class="eyebrow" id="eyebrow">Загрузка...</div>
+    <h1 id="title">Семейное древо</h1>
+    <p class="subtitle" id="subtitle"></p>
+    <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
   </header>
-  
-  <div class="center-box">
-    <span class="icon">💜</span>
-    <span class="name">Загрузка...</span>
-    <span class="role"></span>
-  </div>
+  <section id="content"></section>
+  <footer class="footer" id="footer"></footer>
+</main>
 
-  <div class="tree-container">
-    <div class="mermaid-container">
-      <div id="mermaid-svg">
-        <p style="text-align:center; color:#999; margin-top:20px;">Загрузка семейного древа...</p>
+<script>
+const JSON_FILE = './family.json';
+const REFRESH_MS = 30000;
+let lastJSON = '';
+
+function esc(v=''){
+  return String(v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+}
+
+function levelTag(level, title){
+  if(title.includes('Священник')||title.includes('Подруг')||title.includes('Особые')) return 'special';
+  if(level===0) return '0';
+  if(level===1) return '1';
+  return '2';
+}
+
+function levelLabel(level, title){
+  if(title.includes('Священник')) return 'Духовная опора';
+  if(title.includes('Подруг')) return 'Близкие по духу';
+  if(title.includes('Особые')) return 'Особые люди';
+  if(level===0) return 'Старшее поколение';
+  if(level===1) return 'Родная ветвь';
+  return 'Младшее поколение';
+}
+
+function render(data){
+  document.title = data.title || 'Семейное древо';
+  document.getElementById('eyebrow').textContent = data.eyebrow || '';
+  document.getElementById('title').textContent = data.title || 'Семейное древо';
+  document.getElementById('subtitle').textContent = data.subtitle || '';
+  document.getElementById('footer').innerHTML = (data.footer || '').replace(/💜/g,'<span class="heart">💜</span>');
+
+  const center = data.center || {};
+  const groups = Array.isArray(data.groups) ? data.groups : [];
+
+  // Группируем по уровням (level)
+  const levels = {};
+  groups.forEach(g => {
+    const lv = g.level || 0;
+    if(!levels[lv]) levels[lv] = [];
+    levels[lv].push(g);
+  });
+  const sortedLevels = Object.keys(levels).sort((a,b)=>Number(a)-Number(b));
+
+  let html = `
+    <div class="center-wrap">
+      <div class="center">
+        <div class="icon">${esc(center.icon || '💜')}</div>
+        <span class="name">${esc(center.name || 'Я')}</span>
+        <span class="role">${esc(center.role || '')}</span>
       </div>
     </div>
-  </div>
+    <div class="tree">
+  `;
 
-  <div class="footer">
-    Эти страницы — наши семейные хроники.<br>
-    Не про великие события, а про тех, кто делает нашу жизнь светлее.<br>
-    💜
-  </div>
+  sortedLevels.forEach((lv, idx) => {
+    // Пунктирная линия-разделитель между уровнями
+    if(idx > 0){
+      html += '<div class="connectors"><div class="connector-line"><svg viewBox="0 0 100 40" preserveAspectRatio="none"><line x1="50" y1="0" x2="50" y2="40" stroke="rgba(188,124,255,.25)" stroke-width="1.5" stroke-dasharray="4,4"/></svg></div></div>';
+    }
 
-  <div id="tooltips-container" style="position:fixed; z-index:1000; pointer-events:none;"></div>
+    html += '<div class="level">';
+    levels[lv].forEach(group => {
+      const tag = levelTag(Number(lv), group.title);
+      const tagText = levelLabel(Number(lv), group.title);
+      html += `
+        <article class="group">
+          <div class="group-head">
+            <h2>${esc(group.title)} <span class="group-tag tag-${tag}">${esc(tagText)}</span></h2>
+            <div class="sub">${esc(group.subtitle || '')}</div>
+          </div>
+          <div class="people">
+            ${(group.people || []).map(person => `
+              <div class="person">
+                <div class="avatar">${esc(person.icon || '💜')}</div>
+                <div class="person-info">
+                  <div class="person-name">${esc(person.name)}</div>
+                  <div class="person-role">${esc(person.role || '')}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </article>
+      `;
+    });
+    html += '</div>';
+  });
+
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+async function loadFamily(){
+  const status = document.getElementById('status');
+  try{
+    const response = await fetch(`${JSON_FILE}?v=${Date.now()}`, {cache:'no-store'});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const text = await response.text();
+    if(text !== lastJSON){
+      const data = JSON.parse(text);
+      render(data);
+      lastJSON = text;
+      status.innerHTML = `<span class="dot"></span>Обновлено: ${new Date().toLocaleTimeString('ru-RU')}`;
+    } else {
+      status.innerHTML = `<span class="dot"></span>Проверено: ${new Date().toLocaleTimeString('ru-RU')}`;
+    }
+  } catch(err){
+    status.innerHTML = '<span class="dot" style="background:#f87171"></span>Не удалось загрузить family.json';
+    if(!lastJSON){
+      document.getElementById('content').innerHTML = '<div class="error-box">⚠️ Ошибка загрузки <b>family.json</b>.<br>Проверь, что файл лежит рядом с <b>index.html</b> и содержит корректный JSON.</div>';
+    }
+    console.error(err);
+  }
+}
+
+loadFamily();
+setInterval(loadFamily, REFRESH_MS);
+</script>
 </body>
 </html>
