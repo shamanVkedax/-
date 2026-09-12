@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Семейное древо 💜</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* --- Основной стиль --- */
+    body {
+      background: linear-gradient(135deg, #f8faff 0%, #b7e3f6 100%);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      margin: 0;
+      min-height: 100vh;
+      padding: 0 2vw;
+    }
+    header {
+      background: linear-gradient(90deg, #f0b7ff 0%, #a6eaff 100%);
+      padding: 2rem 1rem 1rem 1rem;
+      text-align: center;
+      border-radius: 1rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+    .title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #4e7aff;
+      margin-bottom: 0.25em;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 2px #fff7;
+    }
+    .eyebrow {
+      color: #d7ffe0;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.3em;
+      font-weight: 600;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: #7a99cc;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+    .center-box {
+      margin: 2rem auto 2rem;
+      max-width: 380px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(70,123,255,0.13);
+      padding: 1.5rem;
+    }
+    .center-box .icon {
+      font-size: 2.4rem;
+      color: #4e7aff;
+      margin-bottom: 0.2em;
+      margin-left: 0.6em;
+    }
+    .center-box .name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #267cff;
+      margin-left: 0.3em;
+    }
+    .center-box .role {
+      color: #7a99cc;
+      font-size: 0.98rem;
+      margin-top: 0.5em;
+      font-style: italic;
+    }
+    .tree-container {
+      margin: 2rem auto 4rem auto;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .mermaid-container {
+      width: 100%;
+      height: 600px;
+      border: 2px solid #d3eaff;
+      border-radius: 10px;
+      background: #fff;
+      margin: 0 auto;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.04);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mermaid {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .mermaid svg {
+      width: 100%;
+      height: 100%;
+    }
+    /* Кастомные иконки для Mermaid-узлов */
+    .mermaid-node {
+      font-size: 15px;
+      line-height: 1.3;
+      padding: 2px 4px;
+      border-radius: 3px;
+      fill: #fff;
+      stroke: #4e7aff;
+      stroke-width: 1.2px;
+      transition: fill 0.12s, stroke 0.12s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      user-select: none;
+      position: relative;
+    }
+    .mermaid-node::before {
+      content: "";
+      font-size: 17px;
+      margin-right: 4px;
+      transition: color 0.2s;
+    }
+    .mermaid-node:hover::before {
+      color: #267cff;
+    }
+    /* Кастомные иконки для ролей */
+    .mermaid-node[data-role="дед"]::before { content: "🎅"; }
+    .mermaid-node[data-role="бабушка"]::before { content: "👵"; }
+    .mermaid-node[data-role="батя"]::before { content: "💪"; }
+    .mermaid-node[data-role="мама"]::before { content: "🕊️"; }
+    .mermaid-node[data-role="сын"]::before { content: "🎯"; }
+    .mermaid-node[data-role="дочка"]::before { content: "🌸"; }
+    .mermaid-node[data-role="брат"]::before { content: "⚔️"; }
+    .mermaid-node[data-role="сестра"]::before { content: "🍦"; }
+    .mermaid-node[data-role="племянник"]::before { content: "🧩"; }
+    .mermaid-node[data-role="племянница"]::before { content: "🎀"; }
+    .mermaid-node[data-role="центр"]::before { content: "💜"; }
+    .mermaid-node[data-role="психотерапевт"]::before { content: "🩺"; }
+    .mermaid-node[data-role="музыкант"]::before { content: "🎤"; }
+    .mermaid-node[data-role="лучшая подруга"]::before { content: "🌟"; }
+    .mermaid-node[data-role="подруга"]::before { content: "🦊"; }
+    .tooltip {
+      background: #fff9e0;
+      border: 1px solid #ffe9d1;
+      border-radius: 6px;
+      padding: 0.3em 1em;
+      position: absolute;
+      z-index: 100;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: 180px;
+      box-shadow: 0 2px 10px rgba(70,123,255,0.08);
+      font-size: 0.98em;
+      display: none;
+      transition: all 0.18s;
+    }
+    .tooltip.show {
+      display: block;
+      transform: translateX(0%);
+      opacity: 1;
+      transition: all 0.18s;
+    }
+    .tooltip.show:hover-from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem 1.5rem 1rem;
+      color: #6c9cff;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+    /* Адаптивность */
+    @media (max-width: 700px) {
+      .tree-container {
+        margin: 1rem auto 1rem auto;
+        max-width: 97vw;
+      }
+      .mermaid-container {
+        height: 480px;
+      }
+      .center-box {
+        max-width: 90vw;
+        padding: 1rem;
+      }
+    }
+  </style>
+  <script src="https://unpkg.com/mermaid@11.0.0/dist/mermaid.min.js"></script>
+  <script>
+    // Загрузка family.json и построение дерева
+    fetch('family.json')
+      .then(resp => resp.json())
+      .then(data => {
+        // --- Генерация Mermaid-кода ---
+        let mermaidText = `graph TD
+          %%center%%[style="fill:#4e7aff;color:#fff"; shape=record, label="<b>${data.title}</b><br>${data.eyebrow}<br>${data.subtitle}<br>"] %%center%%
+`;
+
+        // Центр
+        if (data.center) {
+          let centerNode = data.center;
+          mermaidText += `  CEN[style="fill:#d7ffe0"; label="💜 ${centerNode.name} (${centerNode.role})"]\n`;
+          mermaidText += `  %%center%% --> CEN\n`;
+        }
+
+        // Группы (уровни)
+        let nodes = [];
+        let edges = [];
+        // Для отслеживания уровней и связей
+        let parentMap = {};
+
+        // Проходим по группам и людям
+        data.groups.forEach((group, groupIndex) => {
+          let level = group.level || 0;
+          group.people.forEach(person => {
+            let id = `${group.title}-${person.name}`.toLowerCase().replace(/ /g, '_').replace(/[^\w_]/g, '');
+            let nodeLabel = `(${person.icon} ${person.name}) ${person.role}`;
+            let nodeStyle = '';
+            if (person.role === "дед") nodeStyle = 'style="fill:#e0ffe4;"';
+            else if (person.role === "бабушка") nodeStyle = 'style="fill:#e0ffe4;"';
+            else if (person.role === "батя" || person.role === "сын" || person.role === "дочка" || person.role === "брат" || person.role === "сестра" || person.role === "племянник" || person.role === "племянница" || person.role === "психотерапевт" || person.role === "музыкант" || person.role === "лучшая подруга" || person.role === "подруга")
+              nodeStyle = 'style="fill:#fff; stroke:#4e7aff;"';
+
+            // Сохраняем узел
+            nodes.push(`  ${id}[${nodeStyle} label="${nodeLabel}", shape=record, data-role="${person.role}"]`);
+            // Если есть центр, соединяем
+            if (data.center) {
+              edges.push(`  CEN --> ${id}`);
+            }
+            // Если не центр — ищем родителя по уровню
+            else if (level > 0) {
+              // Находим родителя: предыдущий уровень, та же группа или ближайший родитель
+              // Простая логика: ищем предыдущую группу с level-1, с тем же "родом" (например, батя → дед/бабушка)
+              let parentGroup = data.groups.find(g => g.level === level - 1);
+              if (parentGroup) {
+                // Перебираем родителей в parentGroup.people
+                for (let p of parentGroup.people) {
+                  // Если родитель по имени или роли (например, батя → дед/бабушка)
+                  if (
+                    (p.name.toLowerCase() === group.title.toLowerCase() || 
+                     (group.title === "батя" && (p.role === "дед" || p.role === "бабушка")) ||
+                     (group.title === "мама" && (p.role === "дед" || p.role === "бабушка")) ||
+                     (group.title === "дочка" || group.title === "сын") && p.role === "батя" ||
+                     (group.title === "дочка" || group.title === "сын") && p.role === "мама")) {
+                    let parentId = `${parentGroup.title}-${p.name}`.toLowerCase().replace(/ /g, '_').replace(/[^\w_]/g, '');
+                    edges.push(`${parentId} --> ${id}`);
+                    break;
+                  }
+                }
+              }
+              // Если не нашли, просто сверху (визуально)
+              else {
+                // Попробуем найти ближайшего предка по группам
+                let parentGroupAny = data.groups.find(g => g.level === level - 1 && g.title.toLowerCase() === (group.title === "сыновя" ? "батя" : group.title === "дочери" ? "мама" : group.title));
+                if (parentGroupAny) {
+                  // Берем первого из людей в родителях
+                  let parentId = `${parentGroupAny.title}-first`.toLowerCase().replace(/ /g, '_').replace(/[^\w_]/g, '');
+                  edges.push(`${parentId} --> ${id}`);
+                }
+              }
+            }
+          });
+        });
+
+        // Добавляем связи между группами (опционально, если хочется показать группы)
+        // Но для читаемости лучше оставить только между реальными членами
+
+        // Финальная склеиваемая строка
+        mermaidText += edges.join('\n') + nodes.join('\n');
+
+        // --- Рендерим Mermaid ---
+        let myGraph = mermaid.generate(mermaidText, {
+          flowchart: { nodeShape: 'record' },
+          theme: 'default'
+        });
+        mermaid.render('mermaid-svg', myGraph);
+      })
+      .catch(err => {
+        console.error("Не удалось загрузить family.json", err);
+        document.body.innerHTML = `<h1 style="color:red">Ошибка загрузки family.json</h1>`;
+      });
+  </script>
+</head>
+<body>
+  <header>
+    <div class="title">${data?.title ?? "Семейное древо"}</div>
+    <div class="eyebrow">${data?.eyebrow ?? "✦ Наш хаос ✦"}</div>
+    <div class="subtitle">${data?.subtitle ?? "Где-то тут и есть и место для тебя."}</div>
+  </header>
+  <div class="center-box">
+    <span class="icon" title="${data?.center?.name}">${data?.center?.icon || "💜"}</span>
+    <span class="name">${data?.center?.name}</span>
+    <span class="role">${data?.center?.role || ""}</span>
+  </div>
+  <div class="tree-container">
+    <div class="mermaid-container">
+      <div id="mermaid-svg"></div>
+    </div>
+  </div>
+  <div class="footer">
+    Эти страницы — наши семейные хроники.<br>
+    Не про великие события, а про тех, кто делает нашу жизнь светлее.<br>
+    💜
+  </div>
+  <!-- Тултипы (опционально) -->
+  <div id="tooltips-container" style="position:fixed;z-index:110;background:rgba(255,255,255,0.04);display:none;"></div>
+  <script>
+    // --- Тултипы для Mermaid-узлов ---
+    const tooltipContainer = document.getElementById('tooltips-container');
+    const svg = document.getElementById('mermaid-svg');
+    if (svg) {
+      svg.addEventListener('mousemove', function(e) {
+        const pt = svg.createSVGPoint().projectUserToElement(e);
+        const node = svg.querySelector(`[x="${Math.round(pt.x)}"][y="${Math.round(pt.y)}"]`);
+        if (node && node.getAttribute('data-role')) {
+          const tooltip = document.createElement('div');
+          tooltip.className = 'tooltip show';
+          tooltip.style.left = (e.clientX + 15) + 'px';
+          tooltip.style.top = (e.clientY + 30) + 'px';
+          tooltip.innerHTML = `${node.getAttribute('data-role')}<br>${node.textContent.replace(/<.*?>/g, '').trim()}`;
+          tooltipContainer.style.display = 'block';
+          tooltipContainer.style.left = (e.clientX + 10) + 'px';
+          tooltipContainer.style.top = (e.clientY + 20) + 'px';
+          tooltipContainer.appendChild(tooltip);
+        } else {
+          tooltipContainer.style.display = 'none';
+        }
+      });
+      svg.addEventListener('mouseout', () => tooltipContainer.style.display = 'none');
+      // Добавляем data-role на узлы
+      svg.querySelectorAll('text').forEach(text => {
+        const parent = text.parentNode;
+        if (parent && parent.getAttribute('data-role')) {
+          text.setAttribute('data-role', parent.getAttribute('data-role'));
+        }
+      });
+    }
+  </script>
+</body>
+</html>
