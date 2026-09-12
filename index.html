@@ -77,10 +77,6 @@ h1{
   width:2px;height:36px;
   background:linear-gradient(to bottom,transparent,var(--line),transparent);
 }
-.connector .vline::after{
-  content:'▼';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
-  font-size:10px;color:var(--line);
-}
 .connector .parent-note{
   font-size:10px;color:var(--muted2);margin-top:4px;
   letter-spacing:.05em;
@@ -107,27 +103,6 @@ h1{
 }
 .center-card .role{display:block;color:#cfbce7;margin-top:4px;font-size:13px;font-style:italic}
 
-/* Карточка жены (как пара) */
-.partner-card{
-  min-width:min(320px,100%);text-align:center;
-  padding:24px 28px;border-radius:22px;
-  border:1px solid var(--border-bright);
-  background:linear-gradient(135deg,rgba(255,121,198,.18),rgba(176,124,255,.08)),rgba(20,15,37,.95);
-  box-shadow:0 16px 50px rgba(255,121,198,.15);
-  position:relative;flex:1 1 320px;max-width:380px;
-}
-.partner-card::before{
-  content:'';position:absolute;inset:-2px;border-radius:22px;
-  background:linear-gradient(135deg,var(--accent2),var(--accent),var(--accent3));
-  z-index:-1;opacity:.25;filter:blur(10px);
-}
-.partner-card .icon{font-size:32px;line-height:1}
-.partner-card .name{display:block;font-size:24px;font-weight:800;margin-top:6px;
-  background:linear-gradient(100deg,var(--accent2),var(--accent));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.partner-card .role{display:block;color:#cfbce7;margin-top:4px;font-size:13px;font-style:italic}
-
 /* Группы-карточки */
 .group{
   flex:1 1 320px;max-width:380px;
@@ -152,12 +127,6 @@ h1{
   margin-left:auto;white-space:nowrap;
 }
 .parent-badge::before{content:'↳';font-size:12px}
-
-.tag-0{background:rgba(110,231,183,.12);color:var(--green);border:1px solid rgba(110,231,183,.2)}
-.tag-1{background:rgba(147,197,253,.12);color:var(--blue);border:1px solid rgba(147,197,253,.2)}
-.tag-2{background:rgba(249,168,212,.12);color:var(--pink);border:1px solid rgba(249,168,212,.2)}
-.tag-3{background:rgba(252,211,77,.12);color:var(--gold);border:1px solid rgba(252,211,77,.2)}
-.tag-special{background:rgba(252,211,77,.12);color:var(--gold);border:1px solid rgba(252,211,77,.2)}
 
 .group-tag{
   display:inline-block;padding:2px 8px;border-radius:6px;
@@ -211,14 +180,15 @@ h1{
 
 /* Анимация */
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.group,.center-card,.partner-card{animation:fadeIn .4s ease-out}
+.group,.center-card{animation:fadeIn .4s ease-out}
 
 /* Адаптив */
-@media(max-width:1000px){.group,.center-card,.partner-card{flex:1 1 280px;max-width:340px}}
+@media(max-width:1000px){.group,.center-card{flex:1 1 280px;max-width:340px}}
 @media(max-width:680px){
   .page{padding:28px 12px 40px}
-  .group,.center-card,.partner-card{flex:1 1 100%;max-width:none}
-  .center-card .name,.partner-card .name{font-size:22px}
+  .group,.center-card{flex:1 1 100%;max-width:none}
+  .center-card{padding:20px 16px}
+  .center-card .name{font-size:22px}
   .parent-badge{margin-left:0;margin-top:4px}
 }
 </style>
@@ -248,8 +218,8 @@ function levelLabelText(level){
   const labels = {
     0: 'Старшее поколение',
     1: 'Родители',
-    2: 'Мы — дети и братья',
-    3: 'Наши дети'
+    2: 'Наше поколение',
+    3: 'Дети и племянники'
   };
   return labels[level] || `Уровень \${level}`;
 }
@@ -257,7 +227,6 @@ function levelLabelText(level){
 function parentLabel(parent){
   if(!parent) return null;
   if(parent === 'center') return 'от shamanVkedax';
-  // Убираем эмодзи из названия для краткости
   return 'от ' + parent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
 }
 
@@ -298,16 +267,6 @@ function renderCenter(center){
   `;
 }
 
-function renderPartner(partner){
-  return `
-    <div class="partner-card">
-      <div class="icon">\${esc(partner.icon || '💍')}</div>
-      <span class="name">\${esc(partner.name || 'Жена')}</span>
-      <span class="role">\${esc(partner.role || '')}</span>
-    </div>
-  `;
-}
-
 function render(data){
   document.title = data.title || 'Семейное древо';
   document.getElementById('eyebrow').textContent = data.eyebrow || '';
@@ -318,7 +277,6 @@ function render(data){
   const center = data.center || {};
   const centerLevel = center.level !== undefined ? center.level : 2;
   const groups = Array.isArray(data.groups) ? data.groups : [];
-  const extendedGroups = Array.isArray(data.extendedGroups) ? data.extendedGroups : [];
   const closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
 
   // Группируем по уровням
@@ -345,7 +303,7 @@ function render(data){
       const prevLevel = Number(sortedLevels[idx-1]);
       let note = '';
       if(levelNum === 1) note = '↓ дети дедушки и бабушки';
-      else if(levelNum === 2) note = '↓ дети бати и мамы';
+      else if(levelNum === 2) note = '↓ дети родителей';
       else if(levelNum === 3) note = '↓ следующее поколение';
       
       html += `
@@ -363,21 +321,10 @@ function render(data){
     // Если на этом уровне есть центр — вставляем его первым
     if(levels[lv]._hasCenter){
       html += renderCenter(center);
-      
-      // ВАЖНО: Сразу после центра (на уровне 2) рисуем жену как отдельную карточку-пару
-      if(levelNum === 2){
-        const wifeGroup = groups.find(g => g.title === '💍 Любимая Жена');
-        if(wifeGroup && wifeGroup.people.length > 0){
-          html += renderPartner(wifeGroup.people);
-        }
-      }
     }
 
     // Группы этого уровня
     levels[lv].forEach(group => {
-      // Пропускаем группу жены, так как мы её уже отрисовали отдельно как пару
-      if(levelNum === 2 && group.title === '💍 Любимая Жена') return;
-      
       const tag = String(levelNum);
       const tagText = levelLabelText(levelNum);
       html += renderGroup(group, tag, tagText);
@@ -386,31 +333,6 @@ function render(data){
     html += '</div>';
   });
 
-  // --- ОТДЕЛЬНЫЙ БЛОК ДЛЯ ПЛЕМЯШЕК (extendedGroups) ---
-  if(extendedGroups.length > 0){
-    // Находим максимальный уровень основных групп, чтобы поставить племяшек ниже
-    const maxMainLevel = sortedLevels.length > 0 ? Number(sortedLevels[sortedLevels.length-1]) : 0;
-    const extendedLevel = maxMainLevel + 1;
-    
-    // Рисуем коннектор к этому отдельному блоку
-    html += `
-      <div class="connector">
-        <div class="vline"></div>
-        <div class="parent-note">↓ дети братьев и сестёр (племянники)</div>
-      </div>
-      <div class="level-row">
-        <div class="level-label">${esc(`Племянники и племянницы (Уровень ${extendedLevel})`)}</div>
-    `;
-    
-    extendedGroups.forEach(group => {
-      const tag = String(extendedLevel);
-      const tagText = 'Племянники';
-      html += renderGroup(group, tag, tagText);
-    });
-    
-    html += '</div>';
-  }
-  
   html += '</div>';
 
   // Секция близких людей
@@ -448,7 +370,7 @@ async function loadFamily(){
       status.innerHTML = `<span class="dot"></span>Проверено: \${new Date().toLocaleTimeString('ru-RU')}`;
     }
   } catch(err){
-    status.innerHTML = '<span class="dot" style="background:#f87171"></span>Не удалось загрузить family.json';
+    status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка загрузки family.json';
     if(!lastJSON){
       document.getElementById('content').innerHTML = '<div class="error-box">⚠️ Ошибка загрузки <b>family.json</b>.<br>Проверь, что файл лежит рядом с <b>index.html</b> и содержит корректный JSON.</div>';
     }
