@@ -21,6 +21,8 @@
   --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
 }
 
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -33,15 +35,106 @@ body {
   overflow-x: hidden;
 }
 
-.page {
-  max-width: 1360px;
+/* --- ГЛАВНАЯ СЕТКА (ИЗМЕНЕНИЕ) --- */
+.layout-grid {
+  display: grid;
+  /* Левая колонка фиксированной ширины, правая - на всё оставшееся место */
+  grid-template-columns: 340px 1fr; 
+  min-height: 100vh;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 40px 16px;
+}
+
+/* --- ЛЕВАЯ КОЛОНКА (ОСОБЫЕ ЛЮДИ) --- */
+.sidebar {
+  padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.section-title {
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-2);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+}
+
+.section-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-card {
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.sidebar-card:hover {
+  transform: translateX(4px);
+  border-color: var(--accent-1);
+  box-shadow: var(--glow);
+}
+
+.avatar-small {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.info-small h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.info-small p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* --- ПРАВАЯ КОЛОНКА (ДЕРЕВО) --- */
+.main-content {
+  padding: 40px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero {
   text-align: center;
   margin-bottom: 48px;
+  width: 100%;
 }
 
 .eyebrow {
@@ -107,6 +200,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .level-row {
@@ -304,46 +398,104 @@ h1 {
   line-height: 1.3;
 }
 
-.close-section {
-  margin-top: 64px;
-}
-
-.close-divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 0 auto 32px;
+/* Футер с цитатой */
+.final-quote {
+  margin-top: 60px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.6;
   max-width: 600px;
-}
-
-.close-divider .line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.16), transparent);
-}
-
-.close-divider .label {
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  text-shadow: 0 0 10px rgba(236, 72, 153, 0.36);
-  white-space: nowrap;
 }
 </style>
 </head>
 <body>
-<main class="page">
-  <header class="hero">
-    <div class="eyebrow" id="eyebrow">Загрузка...</div>
-    <h1 id="title">Семейное древо</h1>
-    <p class="subtitle" id="subtitle"></p>
-    <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
-  </header>
-  <section id="content"></section>
-  <footer class="footer" id="footer"></footer>
+<main class="layout-grid">
+  
+  <!-- ЛЕВАЯ КОЛОНКА: ОСОБЫЕ ЛЮДИ -->
+  <aside class="sidebar">
+    <!-- Секция 1: Священник -->
+    <div class="section-block">
+      <div class="section-title">✦ Священник</div>
+      <p class="section-desc">Духовная опора семьи</p>
+      <div class="card-list">
+        <div class="sidebar-card">
+          <div class="avatar-small">🧙</div>
+          <div class="info-small">
+            <h4>YamíMidarí</h4>
+            <p>священник</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Секция 2: Лучшие подруги -->
+    <div class="section-block">
+      <div class="section-title">❤️ Лучшие подруги</div>
+      <p class="section-desc">Близкие по духу</p>
+      <div class="card-list">
+        <div class="sidebar-card">
+          <div class="avatar-small">⭐</div>
+          <div class="info-small">
+            <h4>Velens 5b31</h4>
+            <p>лучшая подруга</p>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <div class="avatar-small">🦊</div>
+          <div class="info-small">
+            <h4>Foxyk_Lishton</h4>
+            <p>лучшая подруга</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Секция 3: Особые люди -->
+    <div class="section-block">
+      <div class="section-title">✨ Особые люди</div>
+      <p class="section-desc">Те, кто делает жизнь ярче</p>
+      <div class="card-list">
+        <div class="sidebar-card">
+          <div class="avatar-small">🧠</div>
+          <div class="info-small">
+            <h4>Nócta</h4>
+            <p>психотерапевт</p>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <div class="avatar-small">🎤</div>
+          <div class="info-small">
+            <h4>MrNiles57</h4>
+            <p>музыкант</p>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <div class="avatar-small">🤓</div>
+          <div class="info-small">
+            <h4>Furry_foxy7</h4>
+            <p>всезнающий душнила</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ПРАВАЯ КОЛОНКА: ДЕРЕВО -->
+  <div class="main-content">
+    <header class="hero">
+      <div class="eyebrow" id="eyebrow">Загрузка...</div>
+      <h1 id="title">Семейное древо</h1>
+      <p class="subtitle" id="subtitle"></p>
+      <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
+    </header>
+    
+    <section id="content"></section>
+    
+    <footer class="final-quote" id="footer"></footer>
+  </div>
 </main>
+
 <script>
 var JSON_FILE = "./family.json";
 var REFRESH_MS = 30000;
@@ -356,7 +508,7 @@ function esc(v) {
 }
 
 function levelLabelText(level) {
-  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники",4:"Мои Дети"};
+  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники и племянницы",4:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
@@ -366,13 +518,9 @@ function renderGroup(group, tagClass, showGenTag) {
   h += '<div class="group-head">';
   h += '<h2>' + esc(group.title);
   
-  // БЫЛО: эта строка рисовала надпись "ДЕТИ СВОИХ РОДИТЕЛЕЙ"
-  // ОСТАВЛЯЕМ ЕЁ ЗАКОММЕНТИРОВАННОЙ, чтобы надпись не появлялась нигде
-  /*
   if (showGenTag) {
     h += ' <span class="group-tag tag-' + tagClass + '" style="font-size:13px;color:var(--muted2);margin-left:10px;text-transform:uppercase;letter-spacing:.05em;">' + esc(levelLabelText(group.level)) + '</span>';
   }
-  */
   
   h += '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
@@ -442,7 +590,6 @@ function render(data) {
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
       var g = lvGroups[j];
-      // Метка поколения показывается ТОЛЬКО на уровне центра (2)
       var showGenTag = (g.level === centerLevel);
       html += renderGroup(g, String(levelNum), showGenTag);
     }
@@ -450,17 +597,9 @@ function render(data) {
   }
   html += '</div>';
 
-  // Блок "Особые люди" (священник, подруги и т.п.) — без меток поколений
-  if (closePeople.length > 0) {
-    html += '<div class="close-section">';
-    html += '<div class="close-divider"><div class="line"></div><span class="label">Особые люди</span><div class="line"></div></div>';
-    html += '<div class="close-grid">';
-    for (var k = 0; k < closePeople.length; k++) {
-      html += renderGroup(closePeople[k], "special", false);
-    }
-    html += '</div></div>';
-  }
-
+  // Блок "Особые люди" внизу дерева больше не нужен, так как мы вынесли его в сайдбар вручную
+  // Но если в JSON есть данные для него, можно оставить пустым или удалить логику рендера здесь
+  
   document.getElementById("content").innerHTML = html;
 }
 
