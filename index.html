@@ -518,9 +518,12 @@ function renderGroup(group, tagClass, showGenTag) {
   h += '<div class="group-head">';
   h += '<h2>' + esc(group.title);
   
+  // ЭТА СТРОКА ОТВЕЧАЕТ ЗА НАДПИСЬ «ДЕТИ СВОИХ РОДИТЕЛЕЙ» — ОНА ТЕПЕРЬ НЕ ОТРИСУЕТСЯ
+  /*
   if (showGenTag) {
     h += ' <span class="group-tag tag-' + tagClass + '" style="font-size:13px;color:var(--muted2);margin-left:10px;text-transform:uppercase;letter-spacing:.05em;">' + esc(levelLabelText(group.level)) + '</span>';
   }
+  */
   
   h += '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
