@@ -12,6 +12,7 @@
   --accent:#b07cff; --accent2:#ff79c6; --accent3:#5eead4;
   --border:rgba(188,124,255,.18); --border-bright:rgba(188,124,255,.4);
   --green:#6ee7b7; --pink:#f9a8d4; --blue:#93c5fd; --gold:#fcd34d;
+  --line:rgba(188,124,255,.3);
   --shadow:0 12px 40px rgba(0,0,0,.28);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -28,7 +29,7 @@ body{
 .page{max-width:1400px;margin:0 auto;padding:40px 20px 60px}
 
 /* Шапка */
-.hero{text-align:center;margin-bottom:36px}
+.hero{text-align:center;margin-bottom:40px}
 .eyebrow{
   display:inline-block;padding:7px 16px;
   border:1px solid rgba(220,185,255,.22);border-radius:999px;
@@ -53,37 +54,58 @@ h1{
 }
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* Центральная карточка */
-.center-wrap{display:flex;justify-content:center;margin-bottom:40px}
-.center{
-  min-width:min(420px,100%);text-align:center;
-  padding:28px 36px;border-radius:24px;
+/* Дерево */
+.tree{display:flex;flex-direction:column;align-items:center}
+
+/* Уровень */
+.level-row{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:20px;
+  width:100%;position:relative;
+}
+.level-label{
+  width:100%;text-align:center;margin-bottom:10px;
+  font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted2);
+}
+
+/* Коннектор между уровнями */
+.connector{
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;padding:10px 0;position:relative;
+}
+.connector .vline{
+  width:2px;height:36px;
+  background:linear-gradient(to bottom,transparent,var(--line),transparent);
+}
+.connector .vline::after{
+  content:'▼';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+  font-size:10px;color:var(--line);
+}
+.connector .parent-note{
+  font-size:10px;color:var(--muted2);margin-top:4px;
+  letter-spacing:.05em;
+}
+
+/* Центральная карточка (внутри уровня) */
+.center-card{
+  min-width:min(320px,100%);text-align:center;
+  padding:24px 28px;border-radius:22px;
   border:1px solid var(--border-bright);
   background:linear-gradient(135deg,rgba(176,124,255,.18),rgba(255,121,198,.08)),rgba(20,15,37,.95);
   box-shadow:0 16px 50px rgba(176,124,255,.15);
-  position:relative;
+  position:relative;flex:1 1 320px;max-width:380px;
 }
-.center::before{
-  content:'';position:absolute;inset:-2px;border-radius:24px;
+.center-card::before{
+  content:'';position:absolute;inset:-2px;border-radius:22px;
   background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
-  z-index:-1;opacity:.3;filter:blur(12px);
+  z-index:-1;opacity:.25;filter:blur(10px);
 }
-.center .icon{font-size:36px;line-height:1}
-.center .name{display:block;font-size:28px;font-weight:800;margin-top:8px;
+.center-card .icon{font-size:32px;line-height:1}
+.center-card .name{display:block;font-size:24px;font-weight:800;margin-top:6px;
   background:linear-gradient(100deg,var(--accent),var(--accent2));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.center .role{display:block;color:#cfbce7;margin-top:6px;font-size:14px;font-style:italic}
-
-/* Дерево — уровни */
-.tree{display:flex;flex-direction:column;align-items:center;gap:0}
-.level{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;width:100%;position:relative}
-.level + .level{margin-top:44px}
-.level + .level::before{
-  content:'';position:absolute;top:-44px;left:50%;
-  width:2px;height:44px;
-  background:linear-gradient(to bottom,transparent,var(--border-bright));
-}
+.center-card .role{display:block;color:#cfbce7;margin-top:4px;font-size:13px;font-style:italic}
 
 /* Группы-карточки */
 .group{
@@ -97,18 +119,30 @@ h1{
   transform:translateY(-3px);
   box-shadow:var(--shadow);
 }
-.group-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
-.group-head h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+.group-head{padding:14px 18px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
+.group-head h2{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .group-head .sub{margin-top:4px;color:var(--muted2);font-size:12px;line-height:1.4}
-.group-tag{
-  display:inline-block;padding:2px 8px;border-radius:6px;
-  font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+.parent-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:8px;
+  font-size:10px;font-weight:600;letter-spacing:.04em;
+  background:rgba(176,124,255,.1);color:var(--accent);
+  border:1px solid rgba(176,124,255,.2);
   margin-left:auto;white-space:nowrap;
 }
+.parent-badge::before{content:'↳';font-size:12px}
+
 .tag-0{background:rgba(110,231,183,.12);color:var(--green);border:1px solid rgba(110,231,183,.2)}
 .tag-1{background:rgba(147,197,253,.12);color:var(--blue);border:1px solid rgba(147,197,253,.2)}
 .tag-2{background:rgba(249,168,212,.12);color:var(--pink);border:1px solid rgba(249,168,212,.2)}
+.tag-3{background:rgba(252,211,77,.12);color:var(--gold);border:1px solid rgba(252,211,77,.2)}
 .tag-special{background:rgba(252,211,77,.12);color:var(--gold);border:1px solid rgba(252,211,77,.2)}
+
+.group-tag{
+  display:inline-block;padding:2px 8px;border-radius:6px;
+  font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  white-space:nowrap;
+}
 
 .people{display:flex;flex-direction:column;gap:8px;padding:12px}
 .person{
@@ -130,15 +164,14 @@ h1{
 .person-name{font-weight:700;font-size:14px;overflow-wrap:anywhere;line-height:1.3}
 .person-role{margin-top:2px;color:var(--muted2);font-size:11px;line-height:1.3}
 
-/* Соединительные линии между уровнями */
-.connectors{
-  display:flex;justify-content:center;gap:20px;width:100%;
-  height:40px;position:relative;
+/* Секция близких людей */
+.close-section{margin-top:60px}
+.close-divider{
+  display:flex;align-items:center;gap:16px;margin:0 auto 30px;max-width:600px;
 }
-.connector-line{
-  flex:1 1 320px;max-width:380px;display:flex;justify-content:center;
-}
-.connector-line svg{width:100%;height:40px}
+.close-divider .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--border-bright),transparent)}
+.close-divider .label{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.close-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:20px}
 
 /* Подвал */
 .footer{
@@ -155,23 +188,18 @@ h1{
   color:#f0a0b8;text-align:center;font-size:14px;line-height:1.6;
 }
 
-/* Анимация появления */
+/* Анимация */
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.group{animation:fadeIn .4s ease-out}
-.group:nth-child(1){animation-delay:.05s}
-.group:nth-child(2){animation-delay:.1s}
-.group:nth-child(3){animation-delay:.15s}
-.group:nth-child(4){animation-delay:.2s}
-.group:nth-child(5){animation-delay:.25s}
-.group:nth-child(6){animation-delay:.3s}
+.group,.center-card{animation:fadeIn .4s ease-out}
 
 /* Адаптив */
-@media(max-width:1000px){.group{flex:1 1 280px;max-width:340px}}
+@media(max-width:1000px){.group,.center-card{flex:1 1 280px;max-width:340px}}
 @media(max-width:680px){
   .page{padding:28px 12px 40px}
-  .group{flex:1 1 100%;max-width:none}
-  .center{padding:22px 20px}
-  .center .name{font-size:24px}
+  .group,.center-card{flex:1 1 100%;max-width:none}
+  .center-card{padding:20px 16px}
+  .center-card .name{font-size:22px}
+  .parent-badge{margin-left:0;margin-top:4px}
 }
 </style>
 </head>
@@ -196,20 +224,58 @@ function esc(v=''){
   return String(v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
 }
 
-function levelTag(level, title){
-  if(title.includes('Священник')||title.includes('Подруг')||title.includes('Особые')) return 'special';
-  if(level===0) return '0';
-  if(level===1) return '1';
-  return '2';
+function levelLabelText(level){
+  const labels = {
+    0: 'Старшее поколение',
+    1: 'Родители',
+    2: 'Мы — дети и братья',
+    3: 'Наши дети'
+  };
+  return labels[level] || `Уровень ${level}`;
 }
 
-function levelLabel(level, title){
-  if(title.includes('Священник')) return 'Духовная опора';
-  if(title.includes('Подруг')) return 'Близкие по духу';
-  if(title.includes('Особые')) return 'Особые люди';
-  if(level===0) return 'Старшее поколение';
-  if(level===1) return 'Родная ветвь';
-  return 'Младшее поколение';
+function parentLabel(parent){
+  if(!parent) return null;
+  if(parent === 'center') return 'от shamanVkedax';
+  // Убираем эмодзи из названия для краткости
+  return 'от ' + parent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
+}
+
+function renderGroup(group, tagClass, tagText){
+  const pLabel = parentLabel(group.parent);
+  return `
+    <article class="group">
+      <div class="group-head">
+        <h2>
+          ${esc(group.title)}
+          <span class="group-tag tag-${tagClass}">${esc(tagText)}</span>
+          ${pLabel ? `<span class="parent-badge">${esc(pLabel)}</span>` : ''}
+        </h2>
+        <div class="sub">${esc(group.subtitle || '')}</div>
+      </div>
+      <div class="people">
+        ${(group.people || []).map(person => `
+          <div class="person">
+            <div class="avatar">${esc(person.icon || '💜')}</div>
+            <div class="person-info">
+              <div class="person-name">${esc(person.name)}</div>
+              <div class="person-role">${esc(person.role || '')}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </article>
+  `;
+}
+
+function renderCenter(center){
+  return `
+    <div class="center-card">
+      <div class="icon">${esc(center.icon || '💜')}</div>
+      <span class="name">${esc(center.name || 'Я')}</span>
+      <span class="role">${esc(center.role || '')}</span>
+    </div>
+  `;
 }
 
 function render(data){
@@ -220,62 +286,84 @@ function render(data){
   document.getElementById('footer').innerHTML = (data.footer || '').replace(/💜/g,'<span class="heart">💜</span>');
 
   const center = data.center || {};
+  const centerLevel = center.level !== undefined ? center.level : 2;
   const groups = Array.isArray(data.groups) ? data.groups : [];
+  const closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
 
-  // Группируем по уровням (level)
+  // Группируем по уровням
   const levels = {};
   groups.forEach(g => {
-    const lv = g.level || 0;
+    const lv = g.level !== undefined ? g.level : 0;
     if(!levels[lv]) levels[lv] = [];
     levels[lv].push(g);
   });
+
+  // Центр добавляем на свой уровень
+  if(!levels[centerLevel]) levels[centerLevel] = [];
+  levels[centerLevel]._hasCenter = true;
+
   const sortedLevels = Object.keys(levels).sort((a,b)=>Number(a)-Number(b));
 
-  let html = `
-    <div class="center-wrap">
-      <div class="center">
-        <div class="icon">${esc(center.icon || '💜')}</div>
-        <span class="name">${esc(center.name || 'Я')}</span>
-        <span class="role">${esc(center.role || '')}</span>
-      </div>
-    </div>
-    <div class="tree">
-  `;
+  let html = '<div class="tree">';
 
   sortedLevels.forEach((lv, idx) => {
-    // Пунктирная линия-разделитель между уровнями
+    const levelNum = Number(lv);
+
+    // Коннектор перед уровнем (кроме первого)
     if(idx > 0){
-      html += '<div class="connectors"><div class="connector-line"><svg viewBox="0 0 100 40" preserveAspectRatio="none"><line x1="50" y1="0" x2="50" y2="40" stroke="rgba(188,124,255,.25)" stroke-width="1.5" stroke-dasharray="4,4"/></svg></div></div>';
+      const prevLevel = Number(sortedLevels[idx-1]);
+      let note = '';
+      // Определяем, от кого идёт связь
+      if(levelNum === 1) note = '↓ дети дедушки и бабушки';
+      else if(levelNum === 2) note = '↓ дети бати и мамы';
+      else if(levelNum === 3) note = '↓ следующее поколение';
+      
+      html += `
+        <div class="connector">
+          <div class="vline"></div>
+          ${note ? `<div class="parent-note">${esc(note)}</div>` : ''}
+        </div>
+      `;
     }
 
-    html += '<div class="level">';
+    // Метка уровня
+    html += `<div class="level-row">`;
+    html += `<div class="level-label">${esc(levelLabelText(levelNum))}</div>`;
+
+    // Если на этом уровне есть центр — вставляем его первым
+    if(levels[lv]._hasCenter){
+      html += renderCenter(center);
+    }
+
+    // Группы этого уровня
     levels[lv].forEach(group => {
-      const tag = levelTag(Number(lv), group.title);
-      const tagText = levelLabel(Number(lv), group.title);
-      html += `
-        <article class="group">
-          <div class="group-head">
-            <h2>${esc(group.title)} <span class="group-tag tag-${tag}">${esc(tagText)}</span></h2>
-            <div class="sub">${esc(group.subtitle || '')}</div>
-          </div>
-          <div class="people">
-            ${(group.people || []).map(person => `
-              <div class="person">
-                <div class="avatar">${esc(person.icon || '💜')}</div>
-                <div class="person-info">
-                  <div class="person-name">${esc(person.name)}</div>
-                  <div class="person-role">${esc(person.role || '')}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </article>
-      `;
+      const tag = String(levelNum);
+      const tagText = levelLabelText(levelNum);
+      html += renderGroup(group, tag, tagText);
     });
+
     html += '</div>';
   });
 
   html += '</div>';
+
+  // Секция близких людей
+  if(closePeople.length > 0){
+    html += `
+      <div class="close-section">
+        <div class="close-divider">
+          <div class="line"></div>
+          <span class="label">Близкие люди</span>
+          <div class="line"></div>
+        </div>
+        <div class="close-grid">
+    `;
+    closePeople.forEach(group => {
+      html += renderGroup(group, 'special', 'Родные по духу');
+    });
+    html += '</div></div>';
+  }
+
   document.getElementById('content').innerHTML = html;
 }
 
