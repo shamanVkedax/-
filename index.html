@@ -94,40 +94,6 @@
       height: 100%;
       max-width: 100%;
     }
-    /* Стили для узлов Mermaid (кастомные иконки через CSS) */
-    .mermaid-node {
-      font-size: 14px;
-      padding: 4px 8px;
-      border-radius: 4px;
-      fill: #fff;
-      stroke: #4e7aff;
-      stroke-width: 1.5px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      user-select: none;
-      position: relative;
-    }
-    .mermaid-node::before {
-      content: "";
-      font-size: 18px;
-      margin-right: 6px;
-      transition: color 0.2s;
-    }
-    .mermaid-node:hover::before { color: #267cff; }
-    
-    /* Иконки ролей */
-    .mermaid-node[data-role="дед"]::before { content: "🎅"; }
-    .mermaid-node[data-role="бабушка"]::before { content: "👵"; }
-    .mermaid-node[data-role="батя"]::before { content: "💪"; }
-    .mermaid-node[data-role="мама"]::before { content: "🕊️"; }
-    .mermaid-node[data-role="сын"]::before { content: "🎯"; }
-    .mermaid-node[data-role="дочка"]::before { content: "🌸"; }
-    .mermaid-node[data-role="брат"]::before { content: "⚔️"; }
-    .mermaid-node[data-role="сестра"]::before { content: "🍦"; }
-    .mermaid-node[data-role="центр"]::before { content: "💜"; }
-    
     .tooltip {
       background: #fff9e0;
       border: 1px solid #ffe9d1;
@@ -188,10 +154,15 @@
       }
     });
 
-    // Загрузка family.json
-    fetch('family.json')
+    // 1. ИСПРАВЛЕНИЕ ПУТИ: Динамическое определение пути для GitHub Pages
+    const baseUrl = window.location.pathname.split('/').slice(0, -1).join('/') || '/';
+    const jsonPath = baseUrl + '/family.json';
+
+    console.log(`Попытка загрузки JSON из: \${jsonPath}`);
+
+    fetch(jsonPath)
       .then(resp => {
-        if (!resp.ok) throw new Error(`HTTP ошибка: \${resp.status}`);
+        if (!resp.ok) throw new Error(`HTTP ошибка: \${resp.status}. Проверьте, лежит ли family.json в корне репозитория.`);
         return resp.json();
       })
       .then(data => {
@@ -199,11 +170,11 @@
       })
       .catch(err => {
         console.error("Критическая ошибка загрузки family.json:", err);
-        showError(`Не удалось загрузить данные: \${err.message}. Проверьте консоль (F12) и наличие файла family.json.`);
+        showError(`Не удалось загрузить данные: \${err.message}. Проверьте консоль (F12).`);
       });
 
     function renderPage(data) {
-      // 1. Заполняем статические блоки данными из JSON
+      // Заполняем шапку
       document.querySelector('.title').textContent = data.title || "Семейное древо";
       document.querySelector('.eyebrow').textContent = data.eyebrow || "✦ Наш хаос ✦";
       document.querySelector('.subtitle').textContent = data.subtitle || "Где-то тут и есть место для тебя.";
@@ -213,18 +184,16 @@
         centerBox.querySelector('.icon').textContent = data.center.icon || "💜";
         centerBox.querySelector('.name').textContent = data.center.name || "Центр";
         centerBox.querySelector('.role').textContent = data.center.role || "";
-      } else {
-        centerBox.querySelector('.name').textContent = "Нет данных о центре";
       }
 
-      // 2. Генерируем код для Mermaid
+      // 2. ГЕНЕРАЦИЯ MERMAID
       let mermaidText = `graph TD\n`;
       
-      // Создаем корневой узел (заголовок)
+      // Корневой узел
       const safeTitle = data.title.replace(/"/g, '\\"');
       mermaidText += `  ROOT["<b>${safeTitle}</b><br><small>${data.eyebrow}</small>"] style ROOT fill:#4e7aff,color:#fff\n`;
 
-      // Создаем узел Центра
+      // Узел Центра
       let centerNodeId = "CENTER";
       if (data.center) {
         const cName = data.center.name.replace(/"/g, '\\"');
@@ -233,75 +202,68 @@
         mermaidText += `  ROOT --> \${centerNodeId}\n`;
       }
 
-      // Проходим по группам и людям
-      const nodesMap = {}; // Храним ID узлов для связей
-
+      // Карта узлов: ключ = уникальное имя, значение = ID в Mermaid
+      const nodesMap = {}; 
+      
+      // Сначала создаем все узлы (без связей)
       data.groups.forEach((group, gIndex) => {
         group.people.forEach((person, pIndex) => {
-          // Генерируем уникальный ID для узла (безопасный для Mermaid)
-          let id = `P${gIndex}_${pIndex}`;
-          // Пытаемся сделать читаемый ID, если имена простые
+          // Создаем безопасный ID (только буквы и цифры)
           let safeName = person.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-          if(safeName) id = `P_\${safeName}`;
+          let id = `P_${safeName}_${gIndex}_\${pIndex}`;
           
+          // Сохраняем связь
           nodesMap[`${group.title}-${person.name}`] = id;
 
           const pName = person.name.replace(/"/g, '\\"');
           const pRole = person.role.replace(/"/g, '\\"');
           const pIcon = person.icon || "";
           
-          // Формируем лейбл узла
+          // Формируем текст внутри узла
           let label = `${pIcon} ${pName}<br><small style='color:#7a99cc'>\${pRole}</small>`;
           
-          // Стили в зависимости от роли
+          // Стили
           let style = "fill:#fff,stroke:#4e7aff";
-          if (["дед", "бабушка"].includes(person.role)) style = "fill:#e0ffe4,stroke:#2ecc71";
-          if (person.role === "центр") style = "fill:#d7ffe0,stroke:#4e7aff";
+          if (["дед", "бабушка", "любимый дед", "любимая бабушка"].includes(person.role.toLowerCase())) style = "fill:#e0ffe4,stroke:#2ecc71";
+          if (person.role.toLowerCase().includes("брат") || person.role.toLowerCase().includes("сестра")) style = "fill:#fff,stroke:#ff6b6b";
+          if (person.role.toLowerCase().includes("дочь") || person.role.toLowerCase().includes("сын")) style = "fill:#fff,stroke:#4ecdc4";
 
           mermaidText += `  ${id}["${label}"] style ${id} ${style}\n`;
+        });
+      });
 
-          // Логика связей
+      // Теперь рисуем связи (СТРЕЛОЧКИ)
+      data.groups.forEach((group, gIndex) => {
+        group.people.forEach((person, pIndex) => {
+          let currentId = nodesMap[`${group.title}-${person.name}`];
+          let parentId = null;
+
           if (data.center) {
-            // Если есть центр, все первые уровни могут идти от центра (упрощенная логика)
-            // Или можно усложнить логику поиска родителей, как было раньше.
-            // Здесь делаем связь от Центра ко всем, если уровень 1, иначе ищем родителя.
-            if (group.level === 1) {
-              mermaidText += `  ${centerNodeId} --> ${id}\n`;
-            } else if (group.level > 1) {
-              // Ищем родителя в предыдущей группе
-              // Это упрощенная эвристика: ищем человека в группе с level-1, чье имя совпадает с заголовком текущей группы
-              // Или просто берем первого человека из группы level-1, если точное совпадение не найдено
-              const parentGroup = data.groups.find(g => g.level === group.level - 1);
-              if (parentGroup) {
-                 // Ищем конкретного родителя по имени (если заголовок группы совпадает с именем родителя)
-                 // Или берем первого попавшегося в группе-родителе
-                 const potentialParent = parentGroup.people.find(p => p.name === group.title);
-                 
-                 if (potentialParent) {
-                   let parentId = nodesMap[`${parentGroup.title}-${potentialParent.name}`];
-                   if(parentId) mermaidText += `  ${parentId} --> ${id}\n`;
-                 } else {
-                   // Фоллбэк: связываем с первым человеком в группе-родителе
-                   const firstParent = parentGroup.people;
-                   let parentId = nodesMap[`${parentGroup.title}-${firstParent.name}`];
-                   if(parentId) mermaidText += `  ${parentId} --> ${id}\n`;
-                 }
+            // Логика 1: Группы уровня 0 и 1 идут от Центра
+            if (group.level === 0 || group.level === 1) {
+              parentId = "CENTER";
+            } 
+            // Логика 2: Группы уровня 2 (дети, племянники) идут от ГРУППЫ уровня 1
+            else if (group.level === 2) {
+              // Ищем ЛЮБУЮ группу с уровнем 1, чтобы прицепить к ней детей.
+              // В твоем JSON у тебя есть группа "Батя" (level 1) и "Мама" (level 1).
+              // Мы берем первого человека из первой попавшейся группы уровня 1 как "якорь".
+              const parentGroup = data.groups.find(g => g.level === 1);
+              if (parentGroup && parentGroup.people.length > 0) {
+                 // Берем первого человека из группы-родителя
+                 const firstParent = parentGroup.people;
+                 parentId = nodesMap[`${parentGroup.title}-${firstParent.name}`];
               }
             }
-          } else {
-            // Если центра нет, строим дерево от первого элемента первой группы
-            if (gIndex === 0 && pIndex === 0) {
-               // Это корень дерева, если нет явного центра
-               mermaidText += `  ROOT --> \${id}\n`;
-            } else {
-               // Логика связей без центра (упрощенно)
-               // ... (можно добавить аналогичную логику выше)
-            }
+          }
+
+          if (parentId) {
+            mermaidText += `  ${parentId} --> ${currentId}\n`;
           }
         });
       });
 
-      // Рендерим график
+      // Рендер
       const container = document.getElementById('mermaid-svg');
       try {
         mermaid.render('mermaid-svg', mermaidText, (svgCode) => {
@@ -310,7 +272,7 @@
         });
       } catch (e) {
         console.error("Ошибка генерации Mermaid:", e);
-        showError("Ошибка в структуре данных для построения графа. Проверьте family.json.");
+        showError("Ошибка в структуре данных для построения графа.");
       }
     }
 
@@ -318,7 +280,7 @@
       const container = document.querySelector('.tree-container');
       container.innerHTML += `
         <div class="error-message">
-          <strong>⚠️ Ошибка загрузки данных</strong><br>
+          <strong>⚠️ Ошибка</strong><br>
           \${message}
         </div>
       `;
@@ -330,20 +292,17 @@
 
       const tooltipContainer = document.getElementById('tooltips-container');
       
-      // Находим все узлы (rect или g с классом mermaid-node)
-      // В новых версиях Mermaid структура может отличаться, ищем по data-role или тексту
-      const nodes = svg.querySelectorAll('[data-role], .mermaid-node');
+      // Находим все узлы. В Mermaid 11+ узлы часто имеют класс .node
+      const nodes = svg.querySelectorAll('.node');
       
       nodes.forEach(node => {
         node.addEventListener('mousemove', (e) => {
-          const role = node.getAttribute('data-role') || node.querySelector('[data-role]')?.getAttribute('data-role');
           const textContent = node.textContent.trim();
-          
-          if (role && textContent) {
+          if (textContent) {
             tooltipContainer.style.display = 'block';
             tooltipContainer.style.left = (e.clientX + 15) + 'px';
             tooltipContainer.style.top = (e.clientY + 15) + 'px';
-            tooltipContainer.innerHTML = `<div class="tooltip show">${role}: ${textContent}</div>`;
+            tooltipContainer.innerHTML = `<div class="tooltip show">\${textContent}</div>`;
           }
         });
         
