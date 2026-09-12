@@ -206,12 +206,13 @@ h1{
 </main>
 
 <script>
-// ИСПРАВЛЕНО: абсолютный путь к файлу
+// Путь к файлу
 const JSON_FILE = '/family.json';
 const REFRESH_MS = 30000;
 let lastJSON = '';
 
-function esc(v=''){
+// Функция экранирования HTML (чтобы XSS не сломали верстку)
+function esc(v = ''){
   return String(v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
 }
 
@@ -228,11 +229,13 @@ function levelLabelText(level){
 function parentLabel(parent){
   if(!parent) return null;
   if(parent === 'center') return 'от shamanVkedax';
+  // Удаляем эмодзи для чистого текста в бейдже
   return 'от ' + parent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
 }
 
 function renderGroup(group, tagClass, tagText){
   const pLabel = parentLabel(group.parent);
+  // ИСПРАВЛЕНО: используем \${...} без обратного слэша
   return `
     <article class="group">
       <div class="group-head">
@@ -359,12 +362,10 @@ function render(data){
 async function loadFamily(){
   const status = document.getElementById('status');
   try{
-    // ИСПРАВЛЕНО: используем абсолютный путь и отключаем кэш
     const response = await fetch(JSON_FILE, {cache:'no-store'});
     if(!response.ok) throw new Error(`HTTP \${response.status}`);
     const text = await response.text();
     
-    // Пытаемся распарсить JSON и сразу ловим ошибку
     let data;
     try {
       data = JSON.parse(text);
