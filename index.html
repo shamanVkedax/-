@@ -9,9 +9,9 @@
 :root {
   --bg-dark: #0f0a1a;
   --bg-panel: rgba(22, 18, 36, 0.88);
-  --accent-1: #7c3aed;       /* глубокий фиолетовый */
-  --accent-2: #ec4899;      /* малиновый */
-  --accent-3: #10b981;      /* мятный */
+  --accent-1: #7c3aed;
+  --accent-2: #ec4899;
+  --accent-3: #10b981;
   --text-main: #ffffff;
   --text-muted: #a18cb4;
   --border-inner: rgba(124, 58, 237, 0.6);
@@ -35,17 +35,13 @@ body {
   overflow-x: hidden;
 }
 
-/* --- ГЛАВНАЯ СЕТКА (ИЗМЕНЕНИЕ) --- */
 .layout-grid {
   display: grid;
-  /* Левая колонка фиксированной ширины, правая - на всё оставшееся место */
-  grid-template-columns: 340px 1fr; 
+  grid-template-columns: 340px 1fr;
   min-height: 100vh;
   max-width: 1600px;
   margin: 0 auto;
 }
-
-/* --- ЛЕВАЯ КОЛОНКА (ОСОБЫЕ ЛЮДИ) --- */
 .sidebar {
   padding: 40px 20px;
   background: rgba(0, 0, 0, 0.4);
@@ -123,7 +119,6 @@ body {
   color: var(--text-muted);
 }
 
-/* --- ПРАВАЯ КОЛОНКА (ДЕРЕВО) --- */
 .main-content {
   padding: 40px 60px;
   display: flex;
@@ -195,7 +190,6 @@ h1 {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
-
 .tree {
   display: flex;
   flex-direction: column;
@@ -238,13 +232,6 @@ h1 {
   width: 2px;
   height: 36px;
   background: var(--line-grad);
-}
-
-.connector .parent-note {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  letter-spacing: 0.04em;
 }
 
 .center-card {
@@ -398,7 +385,6 @@ h1 {
   line-height: 1.3;
 }
 
-/* Футер с цитатой */
 .final-quote {
   margin-top: 60px;
   text-align: center;
@@ -411,75 +397,9 @@ h1 {
 </head>
 <body>
 <main class="layout-grid">
-  
-  <!-- ЛЕВАЯ КОЛОНКА: ОСОБЫЕ ЛЮДИ -->
-  <aside class="sidebar">
-    <!-- Секция 1: Священник -->
-    <div class="section-block">
-      <div class="section-title">✦ Священник</div>
-      <p class="section-desc">Духовная опора семьи</p>
-      <div class="card-list">
-        <div class="sidebar-card">
-          <div class="avatar-small">🧙</div>
-          <div class="info-small">
-            <h4>YamíMidarí</h4>
-            <p>священник</p>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Секция 2: Лучшие подруги -->
-    <div class="section-block">
-      <div class="section-title">❤️ Лучшие подруги</div>
-      <p class="section-desc">Близкие по духу</p>
-      <div class="card-list">
-        <div class="sidebar-card">
-          <div class="avatar-small">⭐</div>
-          <div class="info-small">
-            <h4>Velens 5b31</h4>
-            <p>лучшая подруга</p>
-          </div>
-        </div>
-        <div class="sidebar-card">
-          <div class="avatar-small">🦊</div>
-          <div class="info-small">
-            <h4>Foxyk_Lishton</h4>
-            <p>лучшая подруга</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Секция 3: Особые люди -->
-    <div class="section-block">
-      <div class="section-title">✨ Особые люди</div>
-      <p class="section-desc">Те, кто делает жизнь ярче</p>
-      <div class="card-list">
-        <div class="sidebar-card">
-          <div class="avatar-small">🧠</div>
-          <div class="info-small">
-            <h4>Nócta</h4>
-            <p>психотерапевт</p>
-          </div>
-        </div>
-        <div class="sidebar-card">
-          <div class="avatar-small">🎤</div>
-          <div class="info-small">
-            <h4>MrNiles57</h4>
-            <p>музыкант</p>
-          </div>
-        </div>
-        <div class="sidebar-card">
-          <div class="avatar-small">🤓</div>
-          <div class="info-small">
-            <h4>Furry_foxy7</h4>
-            <p>всезнающий душнила</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </aside>
+  <!-- ЛЕВАЯ КОЛОНКА: ОСОБЫЕ ЛЮДИ (рендерится из JSON) -->
+  <aside class="sidebar" id="sidebar"></aside>
 
   <!-- ПРАВАЯ КОЛОНКА: ДЕРЕВО -->
   <div class="main-content">
@@ -489,13 +409,12 @@ h1 {
       <p class="subtitle" id="subtitle"></p>
       <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
     </header>
-    
+
     <section id="content"></section>
-    
+
     <footer class="final-quote" id="footer"></footer>
   </div>
 </main>
-
 <script>
 var JSON_FILE = "./family.json";
 var REFRESH_MS = 30000;
@@ -517,14 +436,6 @@ function renderGroup(group, tagClass, showGenTag) {
   h += '<article class="group">';
   h += '<div class="group-head">';
   h += '<h2>' + esc(group.title);
-  
-  // ЭТА СТРОКА ОТВЕЧАЕТ ЗА НАДПИСЬ «ДЕТИ СВОИХ РОДИТЕЛЕЙ» — ОНА ТЕПЕРЬ НЕ ОТРИСУЕТСЯ
-  /*
-  if (showGenTag) {
-    h += ' <span class="group-tag tag-' + tagClass + '" style="font-size:13px;color:var(--muted2);margin-left:10px;text-transform:uppercase;letter-spacing:.05em;">' + esc(levelLabelText(group.level)) + '</span>';
-  }
-  */
-  
   h += '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
   h += '</div>';
@@ -554,6 +465,30 @@ function renderCenter(center) {
   return h;
 }
 
+function renderSidebar(closePeople) {
+  var h = "";
+  for (var i = 0; i < closePeople.length; i++) {
+    var section = closePeople[i];
+    h += '<div class="section-block">';
+    h += '<div class="section-title">' + esc(section.title || "") + '</div>';
+    h += '<p class="section-desc">' + esc(section.subtitle || "") + '</p>';
+    h += '<div class="card-list">';
+    var ppl = section.people || [];
+    for (var j = 0; j < ppl.length; j++) {
+      var p = ppl[j];
+      h += '<div class="sidebar-card">';
+      h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
+      h += '<div class="info-small">';
+      h += '<h4>' + esc(p.name) + '</h4>';
+      h += '<p>' + esc(p.role || "") + '</p>';
+      h += '</div>';
+      h += '</div>';
+    }
+    h += '</div>';
+    h += '</div>';
+  }
+  document.getElementById("sidebar").innerHTML = h;
+}
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -565,6 +500,9 @@ function render(data) {
   var centerLevel = (center.level !== undefined) ? center.level : 2;
   var groups = Array.isArray(data.groups) ? data.groups : [];
   var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
+
+  // Рендер сайдбара из closePeople
+  renderSidebar(closePeople);
 
   var levels = {};
   for (var i = 0; i < groups.length; i++) {
@@ -600,9 +538,6 @@ function render(data) {
   }
   html += '</div>';
 
-  // Блок "Особые люди" внизу дерева больше не нужен, так как мы вынесли его в сайдбар вручную
-  // Но если в JSON есть данные для него, можно оставить пустым или удалить логику рендера здесь
-  
   document.getElementById("content").innerHTML = html;
 }
 
