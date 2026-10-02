@@ -36,6 +36,11 @@ body {
   perspective: 1000px;
 }
 
+/* Отключение анимации фона в эко-режиме */
+body.eco-mode {
+  background: #090514 !important;
+}
+
 #tree-canvas {
   position: absolute;
   top: 0;
@@ -44,6 +49,37 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Стильная кнопка в углу */
+.perf-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: rgba(22, 18, 36, 0.8);
+  border: 1px solid var(--border-inner);
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--glow);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.perf-toggle:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-2);
+  box-shadow: var(--glow-couple);
+}
+.perf-toggle.active {
+  border-color: var(--accent-3);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
 }
 
 .layout-grid {
@@ -484,6 +520,9 @@ h1 {
 <body>
 <canvas id="tree-canvas"></canvas>
 
+<!-- Кнопка оптимизации в правом верхнем углу -->
+<button class="perf-toggle" id="perf-btn" onclick="toggleEcoMode()">⚡ Эко-режим: Выкл</button>
+
 <main class="layout-grid" id="main-grid">
   <aside class="sidebar">
     <div class="search-container">
@@ -511,6 +550,7 @@ h1 {
 var JSON_FILE = "./family.json";
 var REFRESH_MS = 30000;
 var lastJSON = "";
+var ecoMode = false; // Состояние режима производительности
 
 function esc(v) {
   v = v || "";
@@ -591,10 +631,33 @@ function populateSidebar(elementId, dataArray) {
 
 function toggleCollapse(element) {
   element.classList.toggle('collapsed');
-  setTimeout(drawLasers, 100);
+  if (!ecoMode) setTimeout(drawLasers, 100);
 }
+// Переключатель Эко-режима (Оптимизация)
+function toggleEcoMode() {
+  ecoMode = !ecoMode;
+  var btn = document.getElementById('perf-btn');
+  var canvas = document.getElementById('tree-canvas');
+  
+  if (ecoMode) {
+    document.body.classList.add('eco-mode');
+    btn.classList.add('active');
+    btn.textContent = '⚡ Эко-режим: Вкл';
+    if (canvas) {
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  } else {
+    document.body.classList.remove('eco-mode');
+    btn.classList.remove('active');
+    btn.textContent = '⚡ Эко-режим: Выкл';
+    drawLasers();
+  }
+}
+
 function initAnimatedBg() {
   document.addEventListener('mousemove', function(e) {
+    if (ecoMode) return;
     var x = (e.clientX / window.innerWidth) * 100;
     var y = (e.clientY / window.innerHeight) * 100;
     document.body.style.setProperty('--bg-x1', (15 + (x - 50) * 0.1) + '%');
@@ -608,6 +671,7 @@ function init3DTilt() {
   var cards = document.querySelectorAll('.person, .sidebar-card, .center-card');
   cards.forEach(function(card) {
     card.addEventListener('mousemove', function(e) {
+      if (ecoMode) return;
       var rect = this.getBoundingClientRect();
       var x = e.clientX - rect.left;
       var y = e.clientY - rect.top;
@@ -639,6 +703,11 @@ function drawLasers() {
   var canvas = document.getElementById('tree-canvas');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
+  
+  if (ecoMode) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
   
   canvas.width = document.documentElement.scrollWidth;
   canvas.height = document.documentElement.scrollHeight;
@@ -687,10 +756,10 @@ function initCoupleHighlights() {
       var nameEl = this.querySelector('.person-name, h4');
       if (!nameEl) return;
       
-      var hoveredName = nameEl.textContent.toLowerCase();
+      // Очищаем строку от лишних символов и точек для железобетонного поиска пары
+      var hoveredName = nameEl.textContent.toLowerCase().replace(/[^a-z0-9а-яё_]/g, '');
       var selfId = this.id ? this.id.replace('node-', '') : '';
 
-      // Собираем ID связанных по линиям родственников
       var connectedIds = [];
       if (selfId) {
         connectedIds.push(selfId);
@@ -700,10 +769,7 @@ function initCoupleHighlights() {
         });
       }
 
-      // Проверяем, навели ли мы на Diamonita Grand или EKSOD_GRAND
-      var isCoupleTarget = hoveredName.includes('diamonita grand') || hoveredName.includes('eksod_grand');
-      
-      // Включаем затемнение остальных
+      var isCoupleTarget = hoveredName.includes('diamonitagrand') || hoveredName.includes('eksod_grand');
       grid.classList.add('tree-dimmed');
       
       peopleCards.forEach(function(otherCard) {
@@ -712,36 +778,30 @@ function initCoupleHighlights() {
         
         var shouldHighlight = false;
         
-        // 1. Логика для пары (по именам)
         if (isCoupleTarget && otherNameEl) {
-          var otherName = otherNameEl.textContent.toLowerCase();
-          if (otherName.includes('diamonita grand') || otherName.includes('eksod_grand')) {
+          var otherName = otherNameEl.textContent.toLowerCase().replace(/[^a-z0-9а-яё_]/g, '');
+          if (otherName.includes('diamonitagrand') || otherName.includes('eksod_grand')) {
             shouldHighlight = true;
           }
         }
         
-        // 2. Логика для кровных лазерных связей (по ID)
         if (selfId && otherId && connectedIds.indexOf(otherId) !== -1) {
           shouldHighlight = true;
         }
 
-        // Подсвечиваем карточку, если сработало любое из условий
         if (shouldHighlight) {
           otherCard.classList.add('couple-highlight');
-        } else {
-          otherCard.classList.remove('couple-highlight');
         }
       });
-      drawLasers();
+      if (!ecoMode) drawLasers();
     });
 
     card.addEventListener('mouseleave', function() {
-      // Выключаем все эффекты фокуса при уходе мышки
       grid.classList.remove('tree-dimmed');
       peopleCards.forEach(function(otherCard) {
         otherCard.classList.remove('couple-highlight');
       });
-      drawLasers();
+      if (!ecoMode) drawLasers();
     });
   });
 }
@@ -760,7 +820,7 @@ function initSearch() {
       people.forEach(function(p) { p.classList.remove('is-hidden'); });
       groups.forEach(function(g) { g.classList.remove('is-hidden'); });
       levels.forEach(function(l) { l.classList.remove('is-hidden'); });
-      setTimeout(drawLasers, 50);
+      if (!ecoMode) setTimeout(drawLasers, 50);
       return;
     }
 
@@ -792,7 +852,7 @@ function initSearch() {
       }
     });
     
-    setTimeout(drawLasers, 50);
+    if (!ecoMode) setTimeout(drawLasers, 50);
   });
 }
 
@@ -856,7 +916,7 @@ function render(data) {
   init3DTilt();
   initCoupleHighlights();
   
-  setTimeout(drawLasers, 300);
+  if (!ecoMode) setTimeout(drawLasers, 300);
 }
 
 function loadFamily() {
@@ -891,8 +951,8 @@ function loadFamily() {
     });
 }
 
-window.addEventListener('resize', drawLasers);
-window.addEventListener('scroll', drawLasers);
+window.addEventListener('resize', function() { if (!ecoMode) drawLasers(); });
+window.addEventListener('scroll', function() { if (!ecoMode) drawLasers(); });
 
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
