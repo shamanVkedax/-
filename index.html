@@ -28,16 +28,14 @@ body {
   margin: 0;
   color: var(--text-main);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  /* Анимированный дышащий фон */
   background: radial-gradient(circle at var(--bg-x1, 15%) var(--bg-y1, 20%), rgba(124, 58, 237, 0.15) 0%, transparent 40%),
               radial-gradient(circle at var(--bg-x2, 85%) var(--bg-y2, 15%), rgba(236, 72, 153, 0.12) 0%, transparent 35%),
               linear-gradient(160deg, var(--bg-dark), #0e0822);
   background-attachment: fixed;
   overflow-x: hidden;
-  perspective: 1000px; /* Для 3D эффектов */
+  perspective: 1000px;
 }
 
-/* Контейнер для лазерных линий */
 #tree-canvas {
   position: absolute;
   top: 0;
@@ -129,7 +127,6 @@ body {
   gap: 12px;
 }
 
-/* Стеклянный эффект для карточек боковой панели */
 .sidebar-card {
   background: var(--bg-panel);
   border: 1px solid var(--border-outer);
@@ -144,7 +141,6 @@ body {
 }
 
 .sidebar-card:hover {
-  transform: translateX(6px) translateZ(10px);
   border-color: rgba(124, 58, 237, 0.6);
   box-shadow: var(--glow);
   background: rgba(22, 14, 42, 0.7);
@@ -174,29 +170,24 @@ body {
   color: var(--text-muted);
   margin-top: 1px;
 }
-/* Классы для интерактивного скрытия, подсветки и затухания */
 .is-hidden {
   display: none !important;
 }
 
-/* Эффект затухания для всей семьи, когда выделен конкретный родственник */
+/* Эффект затухания для всей семьи при фокусе на паре */
 .tree-dimmed .person,
 .tree-dimmed .sidebar-card,
 .tree-dimmed .center-card {
   opacity: 0.24;
   filter: blur(1px);
-  transform: scale(0.98);
 }
 
-/* Возвращаем полную яркость для активной ветки */
+/* Возвращаем яркость подсвеченной паре */
 .tree-dimmed .person.couple-highlight,
 .tree-dimmed .sidebar-card.couple-highlight,
 .tree-dimmed .center-card.couple-highlight {
   opacity: 1 !important;
   filter: none !important;
-  transform: scale(1.03) translateZ(15px);
-  border-color: var(--accent-2) !important;
-  box-shadow: var(--glow-couple) !important;
 }
 
 .group-head {
@@ -329,7 +320,6 @@ h1 {
   opacity: 0.7;
 }
 
-/* Старые CSS-коннекторы делаем прозрачными, так как теперь будут лазеры */
 .connector {
   display: flex;
   flex-direction: column;
@@ -345,7 +335,6 @@ h1 {
   background: var(--line-grad);
 }
 
-/* Эффект матового стекла премиум уровня для карточки Шамана */
 .center-card {
   min-width: min(320px, 100%);
   text-align: center;
@@ -359,7 +348,7 @@ h1 {
   max-width: 400px;
   backdrop-filter: blur(25px);
   transform-style: preserve-3d;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .center-card .icon {
@@ -391,7 +380,6 @@ h1 {
   line-height: 1.4;
 }
 
-/* Премиальный дизайн плашек в дереве */
 .group {
   flex: 1 1 320px;
   max-width: 620px; 
@@ -401,12 +389,10 @@ h1 {
   backdrop-filter: blur(20px);
   overflow: hidden;
   transform-style: preserve-3d;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
 }
 
 .group:hover {
-  border-color: rgba(124, 58, 237, 0.4);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4), var(--glow);
   background: rgba(22, 14, 42, 0.6);
 }
 
@@ -442,13 +428,11 @@ h1 {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.01);
   transform-style: preserve-3d;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.25s, border-color 0.25s;
 }
 
 .person:hover {
   background: rgba(124, 58, 237, 0.08);
-  border-color: rgba(124, 58, 237, 0.3);
-  transform: translateZ(10px) scale(1.02);
 }
 
 .avatar {
@@ -498,7 +482,6 @@ h1 {
 </style>
 </head>
 <body>
-<!-- Слой Canvas для рисования светящихся неоновых лазеров -->
 <canvas id="tree-canvas"></canvas>
 
 <main class="layout-grid" id="main-grid">
@@ -539,8 +522,8 @@ function levelLabelText(level) {
     0: "Старшее поколение",
     1: "Родители",
     2: "Дети своих родителей",
-    3: "Мои Дети",               // Исправлено: теперь уровень 3 — это Любимые Дочки и Сыновья
-    4: "Племянники и племянницы" // Исправлено: теперь уровень 4 — это Племянники
+    3: "Мои Дети",
+    4: "Племянники и племянницы"
   };
   return labels[level] || ("Уровень " + level);
 }
@@ -610,7 +593,6 @@ function toggleCollapse(element) {
   element.classList.toggle('collapsed');
   setTimeout(drawLasers, 100);
 }
-// 🟢 Магия 1: Анимированный дышащий неоновый фон
 function initAnimatedBg() {
   document.addEventListener('mousemove', function(e) {
     var x = (e.clientX / window.innerWidth) * 100;
@@ -622,7 +604,6 @@ function initAnimatedBg() {
   });
 }
 
-// 🔵 Магия 2: Интерактивный 3D-Tilt эффект для карточек
 function init3DTilt() {
   var cards = document.querySelectorAll('.person, .sidebar-card, .center-card');
   cards.forEach(function(card) {
@@ -634,16 +615,25 @@ function init3DTilt() {
       var yc = rect.height / 2;
       var angleX = (yc - y) / 10;
       var angleY = (x - xc) / 10;
-      this.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(10px)";
+      
+      var isHighlighted = this.classList.contains('couple-highlight');
+      var borderGlow = isHighlighted ? "var(--glow-couple)" : "var(--glow)";
+      var borderColor = isHighlighted ? "var(--accent-2)" : "rgba(124, 58, 237, 0.4)";
+      
+      this.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
+      this.style.borderColor = borderColor;
+      this.style.boxShadow = "0 20px 40px rgba(0,0,0,0.5), " + borderGlow;
     });
+    
     card.addEventListener('mouseleave', function() {
       this.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+      this.style.borderColor = "";
+      this.style.boxShadow = "";
     });
   });
 }
 
-// 🟣 Магия 3: Статичные лазеры и динамическая неоновая паутина отношений + затухание
-var activeConnections = []; // Хранит связи из JSON
+var activeConnections = [];
 
 function drawLasers() {
   var canvas = document.getElementById('tree-canvas');
@@ -694,21 +684,42 @@ function initCoupleHighlights() {
   
   peopleCards.forEach(function(card) {
     card.addEventListener('mouseenter', function() {
-      var selfId = this.id ? this.id.replace('node-', '') : '';
-      if (!selfId) return;
-
-      var connectedIds = [selfId];
+      var nameEl = this.querySelector('.person-name, h4');
+      if (!nameEl) return;
       
-      activeConnections.forEach(function(conn) {
-        if (conn.from === selfId) connectedIds.push(conn.to);
-        if (conn.to === selfId) connectedIds.push(conn.from);
-      });
+      var hoveredName = nameEl.textContent.toLowerCase();
+      var selfId = this.id ? this.id.replace('node-', '') : '';
 
+      var connectedIds = [];
+      if (selfId) {
+        connectedIds.push(selfId);
+        activeConnections.forEach(function(conn) {
+          if (conn.from === selfId) connectedIds.push(conn.to);
+          if (conn.to === selfId) connectedIds.push(conn.from);
+        });
+      }
+
+      var isCoupleTarget = hoveredName.includes('diamonita grand') || hoveredName.includes('eksod_grand');
       grid.classList.add('tree-dimmed');
       
       peopleCards.forEach(function(otherCard) {
+        var otherNameEl = otherCard.querySelector('.person-name, h4');
         var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
-        if (connectedIds.indexOf(otherId) !== -1) {
+        
+        var shouldHighlight = false;
+        
+        if (isCoupleTarget && otherNameEl) {
+          var otherName = otherNameEl.textContent.toLowerCase();
+          if (otherName.includes('diamonita grand') || otherName.includes('eksod_grand')) {
+            shouldHighlight = true;
+          }
+        }
+        
+        if (selfId && otherId && connectedIds.indexOf(otherId) !== -1) {
+          shouldHighlight = true;
+        }
+
+        if (shouldHighlight) {
           otherCard.classList.add('couple-highlight');
         }
       });
