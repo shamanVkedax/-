@@ -780,11 +780,10 @@ function drawLasers() {
     }
   });
 }
-// ЖЕЛЕЗОБЕТОННАЯ ПОДСВЕТКА ЧЕРЕЗ СИСТЕМУ ДЕЛЕГИРОВАНИЯ СОБЫТИЙ
+
 function initCoupleHighlights() {
   var grid = document.querySelector('.layout-grid');
   
-  // Ловим наведение мышки на уровне всего документа — работает мгновенно и без сбоев памяти
   document.body.addEventListener('mouseover', function(e) {
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
@@ -792,14 +791,12 @@ function initCoupleHighlights() {
     var selfId = card.id ? card.id.replace('node-', '') : '';
     if (!selfId) return;
 
-    // Собираем лазерные связи из JSON
     var connectedIds = [selfId];
     activeConnections.forEach(function(conn) {
       if (conn.from === selfId) connectedIds.push(conn.to);
       if (conn.to === selfId) connectedIds.push(conn.from);
     });
 
-    // Связываем doch1 (Diamonita) и zyat1 (EKSOD) жестко по ID
     var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
     if (isCoupleTarget) {
       if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
@@ -820,7 +817,6 @@ function initCoupleHighlights() {
     if (!ecoMode) drawLasers();
   });
 
-  // Ловим уход мышки с карточки родственника
   document.body.addEventListener('mouseout', function(e) {
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
@@ -836,7 +832,6 @@ function initCoupleHighlights() {
     if (!ecoMode) drawLasers();
   });
 }
-
 function initSearch() {
   var searchInput = document.getElementById('family-search');
   if (!searchInput) return;
