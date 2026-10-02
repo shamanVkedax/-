@@ -36,7 +36,6 @@ body {
   perspective: 1000px;
 }
 
-/* Отключение анимации фона в эко-режиме */
 body.eco-mode {
   background: #090514 !important;
 }
@@ -51,7 +50,6 @@ body.eco-mode {
   z-index: 1;
 }
 
-/* Стильная кнопка в углу */
 .perf-toggle {
   position: fixed;
   top: 20px;
@@ -113,7 +111,6 @@ body.eco-mode {
   background: rgba(124, 58, 237, 0.08);
   box-shadow: var(--glow);
 }
-
 .sidebar, .sidebar-secondary {
   padding: 40px 20px;
   overflow-y: auto;
@@ -206,11 +203,11 @@ body.eco-mode {
   color: var(--text-muted);
   margin-top: 1px;
 }
+
 .is-hidden {
   display: none !important;
 }
 
-/* Эффект затухания для всей семьи при фокусе на паре */
 .tree-dimmed .person,
 .tree-dimmed .sidebar-card,
 .tree-dimmed .center-card {
@@ -218,7 +215,6 @@ body.eco-mode {
   filter: blur(1px);
 }
 
-/* Возвращаем яркость подсвеченной паре */
 .tree-dimmed .person.couple-highlight,
 .tree-dimmed .sidebar-card.couple-highlight,
 .tree-dimmed .center-card.couple-highlight {
@@ -515,15 +511,35 @@ h1 {
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   }
 }
+
+#node-batya:hover, #node-batya.couple-highlight {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 25px rgba(96, 165, 250, 0.85) !important;
+}
+#node-shmel:hover, #node-shmel.couple-highlight {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.85) !important;
+}
+#node-priest:hover, #node-priest.couple-highlight {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.85) !important;
+}
+#node-femboy:hover, #node-femboy.couple-highlight {
+  border-color: #f472b6 !important;
+  box-shadow: 0 0 25px rgba(244, 114, 182, 0.85) !important;
+}
+#node-police:hover, #node-police.couple-highlight {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 25px rgba(37, 99, 235, 0.85) !important;
+}
 </style>
 </head>
 <body>
 <canvas id="tree-canvas"></canvas>
 
-<!-- Кнопка оптимизации в правом верхнем углу -->
 <button class="perf-toggle" id="perf-btn" onclick="toggleEcoMode()">⚡ Эко-режим: Выкл</button>
 
-<main class="layout-grid" id="main-grid">
+<main class="layout-grid">
   <aside class="sidebar">
     <div class="search-container">
       <input type="text" id="family-search" class="search-input" placeholder="🔍 Найти человека...">
@@ -550,7 +566,7 @@ h1 {
 var JSON_FILE = "./family.json";
 var REFRESH_MS = 30000;
 var lastJSON = "";
-var ecoMode = false; // Состояние режима производительности
+var ecoMode = false;
 
 function esc(v) {
   v = v || "";
@@ -633,7 +649,7 @@ function toggleCollapse(element) {
   element.classList.toggle('collapsed');
   if (!ecoMode) setTimeout(drawLasers, 100);
 }
-// Переключатель Эко-режима (Оптимизация)
+
 function toggleEcoMode() {
   ecoMode = !ecoMode;
   var btn = document.getElementById('perf-btn');
@@ -680,16 +696,12 @@ function init3DTilt() {
       var angleX = (yc - y) / 10;
       var angleY = (x - xc) / 10;
       
-      // Наклоняем карточку в 3D
       this.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
       
-      // УМНАЯ ПРОВЕРКА: Если у карточки есть свой кастомный цвет в CSS (например, у Бати или Шмеля),
-      // мы НЕ перезаписываем его стандартным фиолетовым цветом, а оставляем уникальное свечение!
       if (this.id === 'node-batya' || this.id === 'node-shmel' || this.id === 'node-priest' || this.id === 'node-femboy' || this.id === 'node-police') {
         return; 
       }
       
-      // Для всех остальных обычных карточек оставляем стандартную логику фиолетового/розового неона
       var isHighlighted = this.classList.contains('couple-highlight');
       var borderGlow = isHighlighted ? "var(--glow-couple)" : "var(--glow)";
       var borderColor = isHighlighted ? "var(--accent-2)" : "rgba(124, 58, 237, 0.4)";
@@ -699,13 +711,13 @@ function init3DTilt() {
     });
     
     card.addEventListener('mouseleave', function() {
-      // Плавный сброс в исходное состояние
       this.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
       this.style.borderColor = "";
       this.style.boxShadow = "";
     });
   });
 }
+
 var activeConnections = [];
 
 function drawLasers() {
@@ -742,13 +754,17 @@ function drawLasers() {
       ctx.lineTo(x2, y2);
       
       var isHighlighted = fromEl.classList.contains('couple-highlight') && toEl.classList.contains('couple-highlight');
-      ctx.strokeStyle = conn.color ? conn.color : (isHighlighted ? '#ec4899' : 'rgba(124, 58, 237, 0.25)');
-      ctx.lineWidth = isHighlighted ? 3 : 1.5;
       
       if (isHighlighted) {
+        if (fromEl.id === 'node-batya' || toEl.id === 'node-batya') ctx.strokeStyle = '#60a5fa';
+        else if (fromEl.id === 'node-shmel' || toEl.id === 'node-shmel') ctx.strokeStyle = '#fbbf24';
+        else ctx.strokeStyle = '#ec4899';
+        ctx.lineWidth = 3;
         ctx.shadowBlur = 15;
         ctx.shadowColor = ctx.strokeStyle;
       } else {
+        ctx.strokeStyle = conn.color ? conn.color : 'rgba(124, 58, 237, 0.25)';
+        ctx.lineWidth = 1.5;
         ctx.shadowBlur = 0;
       }
       
@@ -757,81 +773,72 @@ function drawLasers() {
   });
 }
 function initCoupleHighlights() {
-  // Исправлено: теперь находим главный контейнер по его реальному CSS-классу
   var grid = document.querySelector('.layout-grid');
-  
-  // Отслеживаем наведение на уровне всего документа, чтобы динамические карточки никогда не терялись
-  document.body.addEventListener('mouseover', function(e) {
-    var card = e.target.closest('.person, .sidebar-card, .center-card');
-    if (!card) return;
-
-    var nameEl = card.querySelector('.person-name, h4');
-    if (!nameEl) return;
+  var observer = new MutationObserver(function() {
+    var peopleCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
     
-    var hoveredName = nameEl.textContent.toLowerCase();
-    var selfId = card.id ? card.id.replace('node-', '') : '';
+    peopleCards.forEach(function(card) {
+      if (card.getAttribute('data-has-highlights')) return;
+      card.setAttribute('data-has-highlights', 'true');
 
-    var connectedIds = [];
-    if (selfId) {
-      connectedIds.push(selfId);
-      activeConnections.forEach(function(conn) {
-        if (conn.from === selfId) connectedIds.push(conn.to);
-        if (conn.to === selfId) connectedIds.push(conn.from);
-      });
-    }
+      card.addEventListener('mouseenter', function() {
+        var nameEl = this.querySelector('.person-name, h4');
+        if (!nameEl) return;
+        
+        var hoveredName = nameEl.textContent.toLowerCase();
+        var selfId = this.id ? this.id.replace('node-', '') : '';
 
-    // Всеядная проверка пары: ищем корни имён без привязки к регистрам, пробелам или подчёркиваниям
-    var isCoupleTarget = hoveredName.indexOf('diamonita') !== -1 || hoveredName.indexOf('eksod') !== -1;
-    
-    // Включаем режим фокуса (приглушаем остальной сайт), только если контейнер успешно найден
-    if (grid) grid.classList.add('tree-dimmed');
-    
-    // Перебираем вообще все карточки, которые существуют на странице в секунду наведения
-    var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
-    allCards.forEach(function(otherCard) {
-      var otherNameEl = otherCard.querySelector('.person-name, h4');
-      var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
-      var shouldHighlight = false;
-      
-      // 1. Связь влюбленных: если навели на одного, зажигаем обоих
-      if (isCoupleTarget && otherNameEl) {
-        var otherName = otherNameEl.textContent.toLowerCase();
-        if (otherName.indexOf('diamonita') !== -1 || otherName.indexOf('eksod') !== -1) {
-          shouldHighlight = true;
+        var connectedIds = [];
+        if (selfId) {
+          connectedIds.push(selfId);
+          activeConnections.forEach(function(conn) {
+            if (conn.from === selfId) connectedIds.push(conn.to);
+            if (conn.to === selfId) connectedIds.push(conn.from);
+          });
         }
-      }
-      
-      // 2. Родственные связи: зажигаем прямые линии лазеров
-      if (selfId && otherId && connectedIds.indexOf(otherId) !== -1) {
-        shouldHighlight = true;
-      }
 
-      if (shouldHighlight) {
-        otherCard.classList.add('couple-highlight');
-      } else {
-        otherCard.classList.remove('couple-highlight');
-      }
+        var isCoupleTarget = hoveredName.indexOf('diamonita') !== -1 || hoveredName.indexOf('eksod') !== -1;
+        
+        if (grid) grid.classList.add('tree-dimmed');
+        
+        var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+        allCards.forEach(function(otherCard) {
+          var otherNameEl = otherCard.querySelector('.person-name, h4');
+          var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
+          var shouldHighlight = false;
+          
+          if (isCoupleTarget && otherNameEl) {
+            var otherName = otherNameEl.textContent.toLowerCase();
+            if (otherName.indexOf('diamonita') !== -1 || otherName.indexOf('eksod') !== -1) {
+              shouldHighlight = true;
+            }
+          }
+          
+          if (selfId && otherId && connectedIds.indexOf(otherId) !== -1) {
+            shouldHighlight = true;
+          }
+
+          if (shouldHighlight) {
+            otherCard.classList.add('couple-highlight');
+          } else {
+            otherCard.classList.remove('couple-highlight');
+          }
+        });
+        if (!ecoMode) drawLasers();
+      });
+
+      card.addEventListener('mouseleave', function() {
+        if (grid) grid.classList.remove('tree-dimmed');
+        var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+        allCards.forEach(function(otherCard) {
+          otherCard.classList.remove('couple-highlight');
+        });
+        if (!ecoMode) drawLasers();
+      });
     });
-    
-    if (!ecoMode) drawLasers();
   });
 
-  // Убираем подсветку, когда мышка уходит со структуры карточки
-  document.body.addEventListener('mouseout', function(e) {
-    var card = e.target.closest('.person, .sidebar-card, .center-card');
-    if (!card) return;
-    
-    var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
-    if (related === card) return;
-
-    if (grid) grid.classList.remove('tree-dimmed');
-    var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
-    allCards.forEach(function(otherCard) {
-      otherCard.classList.remove('couple-highlight');
-    });
-    
-    if (!ecoMode) drawLasers();
-  });
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 function initSearch() {
