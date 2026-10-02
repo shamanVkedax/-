@@ -155,7 +155,7 @@
       ]
     }
   ],
-  "connections": [
+    "connections": [
     {"from": "ded", "to": "batya"},
     {"from": "baba", "to": "batya"},
     {"from": "batya", "to": "shaman"},
@@ -177,9 +177,7 @@
     {"from": "shaman", "to": "syn1"},
     {"from": "shaman", "to": "syn2"},
     {"from": "shaman", "to": "syn3"},
-    {"from": "doch1", "to": "zyat1", "color": "#ec4899"},
-    {"from": "bro1", "to": "plem1"},
-    {"from": "bro2", "to": "plem2"}
+    {"from": "doch1", "to": "zyat1", "color": "#ec4899"}
   ],
   "footer": "Эти страницы — наши семейные хроники. Не про великие события, а про самое главное: про тех, кто делал нашу жизнь светлее. Пусть эти строки хранят тепло наших сердц. 💜"
 }
