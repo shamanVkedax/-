@@ -111,7 +111,6 @@ body.eco-mode {
   background: rgba(124, 58, 237, 0.08);
   box-shadow: var(--glow);
 }
-
 .sidebar, .sidebar-secondary {
   padding: 40px 20px;
   overflow-y: auto;
@@ -223,28 +222,6 @@ body.eco-mode {
   filter: none !important;
 }
 
-#node-batya:hover, #node-batya.couple-highlight {
-  border-color: #60a5fa !important;
-  box-shadow: 0 0 25px rgba(96, 165, 250, 0.85) !important;
-}
-#node-shmel:hover, #node-shmel.couple-highlight {
-  border-color: #fbbf24 !important;
-  box-shadow: 0 0 25px rgba(251, 191, 36, 0.85) !important;
-}
-#node-priest:hover, #node-priest.couple-highlight {
-  border-color: #f59e0b !important;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.85) !important;
-}
-#node-femboy:hover, #node-femboy.couple-highlight {
-  border-color: #f472b6 !important;
-  box-shadow: 0 0 25px rgba(244, 114, 182, 0.85) !important;
-}
-#node-police:hover, #node-police.couple-highlight {
-  border-color: #2563eb !important;
-  box-shadow: 0 0 25px rgba(37, 99, 235, 0.85) !important;
-}
-</style>
-<style>
 .group-head {
   padding: 16px 20px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -534,6 +511,27 @@ h1 {
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   }
 }
+
+#node-batya:hover, #node-batya.couple-highlight {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 25px rgba(96, 165, 250, 0.85) !important;
+}
+#node-shmel:hover, #node-shmel.couple-highlight {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.85) !important;
+}
+#node-priest:hover, #node-priest.couple-highlight {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.85) !important;
+}
+#node-femboy:hover, #node-femboy.couple-highlight {
+  border-color: #f472b6 !important;
+  box-shadow: 0 0 25px rgba(244, 114, 182, 0.85) !important;
+}
+#node-police:hover, #node-police.couple-highlight {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 25px rgba(37, 99, 235, 0.85) !important;
+}
 </style>
 </head>
 <body>
@@ -597,6 +595,7 @@ function renderGroup(group, tagClass, showGenTag) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
+    // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР КАРТОЧКИ В ДЕРЕВЕ
     var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
     h += '<div class="person"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -632,6 +631,7 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
+      // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР БОКОВОЙ КАРТОЧКИ
       var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
       h += '<div class="sidebar-card"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -651,7 +651,6 @@ function toggleCollapse(element) {
   element.classList.toggle('collapsed');
   if (!ecoMode) setTimeout(drawLasers, 100);
 }
-
 function toggleEcoMode() {
   ecoMode = !ecoMode;
   var btn = document.getElementById('perf-btn');
@@ -684,8 +683,9 @@ function initAnimatedBg() {
     document.body.style.setProperty('--bg-y2', (15 + (y - 50) * 0.08) + '%');
   });
 }
+
 function init3DTilt() {
-  // Обрабатываем 3D наклон для всех карточек через один общий обработчик мыши
+  // Вешаем один глобальный обработчик для 3D наклона — это полностью убирает фризы памяти
   document.body.addEventListener('mousemove', function(e) {
     if (ecoMode) return;
     var card = e.target.closest('.person, .sidebar-card, .center-card');
@@ -701,7 +701,6 @@ function init3DTilt() {
     
     card.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
     
-    // Защита: не перебиваем кастомные неоновые цвета у особых ролей стандартным фиолетовым цветом
     if (card.id === 'node-batya' || card.id === 'node-shmel' || card.id === 'node-priest' || card.id === 'node-femboy' || card.id === 'node-police') {
       return; 
     }
@@ -887,6 +886,7 @@ function initSearch() {
     if (!ecoMode) setTimeout(drawLasers, 50);
   });
 }
+
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
