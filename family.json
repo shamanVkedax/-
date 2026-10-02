@@ -118,7 +118,7 @@
       "subtitle": "Наши пушистые и любимые хвостики",
       "people": [
         {"id": "pet1", "icon": "🐱", "name": "Un_own", "role": "Семейный котик"},
-        {"id": "pet2", "icon": "🐶", "name": "Buyback", "role": "Семейный пёсель"}
+        {"id": "pet2", "icon": "🐱", "name": "Buyback", "role": "Семейный котик"}
       ]
     }
   ],
