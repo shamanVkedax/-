@@ -782,43 +782,31 @@ function initCoupleHighlights() {
       card.setAttribute('data-has-highlights', 'true');
 
       card.addEventListener('mouseenter', function() {
-        var nameEl = this.querySelector('.person-name, h4');
-        if (!nameEl) return;
-        
-        var hoveredName = nameEl.textContent.toLowerCase();
         var selfId = this.id ? this.id.replace('node-', '') : '';
+        if (!selfId) return;
 
-        var connectedIds = [];
-        if (selfId) {
-          connectedIds.push(selfId);
-          activeConnections.forEach(function(conn) {
-            if (conn.from === selfId) connectedIds.push(conn.to);
-            if (conn.to === selfId) connectedIds.push(conn.from);
-          });
+        // Собираем лазерные связи родственников из JSON
+        var connectedIds = [selfId];
+        activeConnections.forEach(function(conn) {
+          if (conn.from === selfId) connectedIds.push(conn.to);
+          if (conn.to === selfId) connectedIds.push(conn.from);
+        });
+
+        // ЖЕЛЕЗОБЕТОННАЯ СВЯЗЬ ПАРЫ ПО ID ИЗ JSON (doch1 + zyat1)
+        var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
+        if (isCoupleTarget) {
+          if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
+          if (connectedIds.indexOf('zyat1') === -1) connectedIds.push('zyat1');
         }
 
-        var isCoupleTarget = hoveredName.indexOf('diamonita') !== -1 || hoveredName.indexOf('eksod') !== -1;
-        
+        // Включаем режим фокуса (приглушаем весь сайт)
         if (grid) grid.classList.add('tree-dimmed');
         
         var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
         allCards.forEach(function(otherCard) {
-          var otherNameEl = otherCard.querySelector('.person-name, h4');
           var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
-          var shouldHighlight = false;
           
-          if (isCoupleTarget && otherNameEl) {
-            var otherName = otherNameEl.textContent.toLowerCase();
-            if (otherName.indexOf('diamonita') !== -1 || otherName.indexOf('eksod') !== -1) {
-              shouldHighlight = true;
-            }
-          }
-          
-          if (selfId && otherId && connectedIds.indexOf(otherId) !== -1) {
-            shouldHighlight = true;
-          }
-
-          if (shouldHighlight) {
+          if (otherId && connectedIds.indexOf(otherId) !== -1) {
             otherCard.classList.add('couple-highlight');
           } else {
             otherCard.classList.remove('couple-highlight');
