@@ -450,7 +450,7 @@ function esc(v) {
   return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
 function levelLabelText(level) {
-  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники и племянницы",4:"Мои Дети"};
+  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
