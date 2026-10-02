@@ -554,9 +554,13 @@ function render(data) {
     }
     html += '<div class="level-row">';
     html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
+    
+    // Если на этом уровне находится ШАМАН (центр), рендерим его карточку по центру
     if (levels[lv]._hasCenter) {
       html += renderCenter(center);
     }
+    
+    // Рендерим КАЖДУЮ группу отдельно, чтобы у Сыновей и Зятьев вернулись свои заголовки
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
       var g = lvGroups[j];
