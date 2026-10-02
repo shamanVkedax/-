@@ -750,9 +750,8 @@ function drawLasers() {
 function initCoupleHighlights() {
   var grid = document.getElementById('main-grid');
   
-  // Отслеживаем наведение мыши на уровне всего документа, чтобы не терять динамические карточки
+  // Отслеживаем наведение на уровне всего документа, чтобы не терять динамические карточки
   document.body.addEventListener('mouseover', function(e) {
-    // Находим саму карточку, на которую навели курсор
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
 
@@ -762,7 +761,6 @@ function initCoupleHighlights() {
     var hoveredName = nameEl.textContent.toLowerCase();
     var selfId = card.id ? card.id.replace('node-', '') : '';
 
-    // Собираем лазерные связи родственников из JSON
     var connectedIds = [];
     if (selfId) {
       connectedIds.push(selfId);
@@ -772,13 +770,11 @@ function initCoupleHighlights() {
       });
     }
 
-    // Проверяем, навели ли мы на дочку или зятя
-    var isCoupleTarget = hoveredName.includes('diamonita') || hoveredName.includes('eksod');
+    // Всеядная проверка: ищем корни имён без привязки к пробелам или подчёркиваниям
+    var isCoupleTarget = hoveredName.indexOf('diamonita') !== -1 || hoveredName.indexOf('eksod') !== -1;
     
-    // Включаем режим фокуса (приглушаем весь сайт)
     grid.classList.add('tree-dimmed');
     
-    // Ищем абсолютно все карточки, которые существуют на странице ПРЯМО СЕЙЧАС
     var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
     allCards.forEach(function(otherCard) {
       var otherNameEl = otherCard.querySelector('.person-name, h4');
@@ -788,7 +784,7 @@ function initCoupleHighlights() {
       // 1. Связь влюбленных: если навели на одного, зажигаем обоих
       if (isCoupleTarget && otherNameEl) {
         var otherName = otherNameEl.textContent.toLowerCase();
-        if (otherName.includes('diamonita') || otherName.includes('eksod')) {
+        if (otherName.indexOf('diamonita') !== -1 || otherName.indexOf('eksod') !== -1) {
           shouldHighlight = true;
         }
       }
@@ -813,7 +809,6 @@ function initCoupleHighlights() {
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
     
-    // Защита от ложного срабатывания, если мышка просто перешла с фона карточки на аватарку или текст внутри неё
     var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
     if (related === card) return;
 
