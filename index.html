@@ -756,8 +756,7 @@ function initCoupleHighlights() {
       var nameEl = this.querySelector('.person-name, h4');
       if (!nameEl) return;
       
-      // Очищаем строку от лишних символов и точек для железобетонного поиска пары
-      var hoveredName = nameEl.textContent.toLowerCase().replace(/[^a-z0-9а-яё_]/g, '');
+      var hoveredName = nameEl.textContent.toLowerCase();
       var selfId = this.id ? this.id.replace('node-', '') : '';
 
       var connectedIds = [];
@@ -769,7 +768,8 @@ function initCoupleHighlights() {
         });
       }
 
-      var isCoupleTarget = hoveredName.includes('diamonitagrand') || hoveredName.includes('eksod_grand');
+      // Всеядная проверка: ищем корни имён без привязки к пробелам или подчёркиваниям
+      var isCoupleTarget = hoveredName.includes('diamonita') || hoveredName.includes('eksod');
       grid.classList.add('tree-dimmed');
       
       peopleCards.forEach(function(otherCard) {
@@ -779,8 +779,8 @@ function initCoupleHighlights() {
         var shouldHighlight = false;
         
         if (isCoupleTarget && otherNameEl) {
-          var otherName = otherNameEl.textContent.toLowerCase().replace(/[^a-z0-9а-яё_]/g, '');
-          if (otherName.includes('diamonitagrand') || otherName.includes('eksod_grand')) {
+          var otherName = otherNameEl.textContent.toLowerCase();
+          if (otherName.includes('diamonita') || otherName.includes('eksod')) {
             shouldHighlight = true;
           }
         }
