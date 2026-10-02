@@ -690,6 +690,7 @@ function initCoupleHighlights() {
       var hoveredName = nameEl.textContent.toLowerCase();
       var selfId = this.id ? this.id.replace('node-', '') : '';
 
+      // Собираем ID связанных по линиям родственников
       var connectedIds = [];
       if (selfId) {
         connectedIds.push(selfId);
@@ -699,7 +700,10 @@ function initCoupleHighlights() {
         });
       }
 
+      // Проверяем, навели ли мы на Diamonita Grand или EKSOD_GRAND
       var isCoupleTarget = hoveredName.includes('diamonita grand') || hoveredName.includes('eksod_grand');
+      
+      // Включаем затемнение остальных
       grid.classList.add('tree-dimmed');
       
       peopleCards.forEach(function(otherCard) {
@@ -708,6 +712,7 @@ function initCoupleHighlights() {
         
         var shouldHighlight = false;
         
+        // 1. Логика для пары (по именам)
         if (isCoupleTarget && otherNameEl) {
           var otherName = otherNameEl.textContent.toLowerCase();
           if (otherName.includes('diamonita grand') || otherName.includes('eksod_grand')) {
@@ -715,18 +720,23 @@ function initCoupleHighlights() {
           }
         }
         
+        // 2. Логика для кровных лазерных связей (по ID)
         if (selfId && otherId && connectedIds.indexOf(otherId) !== -1) {
           shouldHighlight = true;
         }
 
+        // Подсвечиваем карточку, если сработало любое из условий
         if (shouldHighlight) {
           otherCard.classList.add('couple-highlight');
+        } else {
+          otherCard.classList.remove('couple-highlight');
         }
       });
       drawLasers();
     });
 
     card.addEventListener('mouseleave', function() {
+      // Выключаем все эффекты фокуса при уходе мышки
       grid.classList.remove('tree-dimmed');
       peopleCards.forEach(function(otherCard) {
         otherCard.classList.remove('couple-highlight');
