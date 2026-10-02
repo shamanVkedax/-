@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Семейное древо</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128156;</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
 <style>
 :root {
   --bg-dark: #0f0a1a;
@@ -37,14 +37,28 @@ body {
 
 .layout-grid {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: 320px 320px 1fr;
   min-height: 100vh;
-  max-width: 1600px;
+  max-width: 1920px;
   margin: 0 auto;
 }
+
 .sidebar {
   padding: 40px 20px;
   background: rgba(0, 0, 0, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.sidebar-secondary {
+  padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   overflow-y: auto;
   position: sticky;
@@ -118,7 +132,6 @@ body {
   font-size: 12px;
   color: var(--text-muted);
 }
-
 .main-content {
   padding: 40px 60px;
   display: flex;
@@ -190,6 +203,7 @@ h1 {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+
 .tree {
   display: flex;
   flex-direction: column;
@@ -393,15 +407,25 @@ h1 {
   line-height: 1.6;
   max-width: 600px;
 }
+
+@media (max-width: 1200px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar, .sidebar-secondary {
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
 </style>
 </head>
 <body>
 <main class="layout-grid">
-
-  <!-- ЛЕВАЯ КОЛОНКА: ОСОБЫЕ ЛЮДИ (рендерится из JSON) -->
   <aside class="sidebar" id="sidebar"></aside>
+  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
-  <!-- ПРАВАЯ КОЛОНКА: ДЕРЕВО -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Загрузка...</div>
@@ -411,10 +435,10 @@ h1 {
     </header>
 
     <section id="content"></section>
-
     <footer class="final-quote" id="footer"></footer>
   </div>
 </main>
+
 <script>
 var JSON_FILE = "./family.json";
 var REFRESH_MS = 30000;
@@ -423,9 +447,8 @@ var lastJSON = "";
 function esc(v) {
   v = v || "";
   v = String(v);
-  return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+  return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
-
 function levelLabelText(level) {
   var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники и племянницы",4:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
@@ -465,10 +488,10 @@ function renderCenter(center) {
   return h;
 }
 
-function renderSidebar(closePeople) {
+function populateSidebar(elementId, dataArray) {
   var h = "";
-  for (var i = 0; i < closePeople.length; i++) {
-    var section = closePeople[i];
+  for (var i = 0; i < dataArray.length; i++) {
+    var section = dataArray[i];
     h += '<div class="section-block">';
     h += '<div class="section-title">' + esc(section.title || "") + '</div>';
     h += '<p class="section-desc">' + esc(section.subtitle || "") + '</p>';
@@ -487,8 +510,9 @@ function renderSidebar(closePeople) {
     h += '</div>';
     h += '</div>';
   }
-  document.getElementById("sidebar").innerHTML = h;
+  document.getElementById(elementId).innerHTML = h;
 }
+
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -499,10 +523,12 @@ function render(data) {
   var center = data.center || {};
   var centerLevel = (center.level !== undefined) ? center.level : 2;
   var groups = Array.isArray(data.groups) ? data.groups : [];
+  
   var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
+  var secondaryPeople = Array.isArray(data.secondaryPeople) ? data.secondaryPeople : [];
 
-  // Рендер сайдбара из closePeople
-  renderSidebar(closePeople);
+  populateSidebar("sidebar", closePeople);
+  populateSidebar("sidebar-secondary", secondaryPeople);
 
   var levels = {};
   for (var i = 0; i < groups.length; i++) {
