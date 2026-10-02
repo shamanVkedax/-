@@ -17,6 +17,7 @@
   --border-inner: rgba(124, 58, 237, 0.6);
   --border-outer: rgba(255, 255, 255, 0.08);
   --glow: 0 0 12px rgba(124, 58, 237, 0.36);
+  --glow-couple: 0 0 18px rgba(236, 72, 153, 0.7);
   --line-color: rgba(255, 255, 255, 0.18);
   --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
 }
@@ -41,6 +42,29 @@ body {
   min-height: 100vh;
   max-width: 1920px;
   margin: 0 auto;
+}
+
+/* Стили для поля поиска */
+.search-container {
+  padding: 0 4px;
+  margin-bottom: -8px;
+}
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-1);
+  background: rgba(124, 58, 237, 0.06);
+  box-shadow: var(--glow);
 }
 
 .sidebar {
@@ -132,6 +156,40 @@ body {
   font-size: 12px;
   color: var(--text-muted);
 }
+/* Классы для интерактивного скрытия и подсветки */
+.is-hidden {
+  display: none !important;
+}
+
+.group-head {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer; /* Делаем заголовки кликабельными */
+  user-select: none;
+}
+
+.section-block {
+  cursor: pointer; /* Для боковых панелей */
+}
+
+.section-title {
+  user-select: none;
+}
+
+/* Эффект сворачивания */
+.collapsed .people,
+.collapsed .card-list,
+.collapsed .section-desc {
+  display: none !important;
+}
+
+/* Красивая неоновая подсветка влюбленных пар/семейных связей */
+.couple-highlight {
+  border-color: var(--accent-2) !important;
+  box-shadow: var(--glow-couple) !important;
+  transform: scale(1.02);
+}
+
 .main-content {
   padding: 40px 60px;
   display: flex;
@@ -187,6 +245,12 @@ h1 {
   background: rgba(255, 255, 255, 0.03);
   font-size: 12px;
   border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer; /* Делаем плашку обновления кликабельной */
+  transition: background 0.2s;
+}
+
+.status:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .status .dot {
@@ -302,10 +366,8 @@ h1 {
   line-height: 1.4;
 }
 
-/* Обновленный контейнер карточки группы */
 .group {
   flex: 1 1 320px;
-  /* Если участников много (больше 4), плашка автоматически расширится */
   max-width: 600px; 
   border: 1px solid var(--border-outer);
   border-radius: 18px;
@@ -321,30 +383,6 @@ h1 {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36), var(--glow);
 }
 
-.group-head {
-  padding: 14px 18px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.group-head h2 {
-  font-size: 17px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: var(--text-main);
-  text-shadow: 0 0 8px rgba(124, 58, 237, 0.2);
-}
-
-.group-head .sub {
-  margin-top: 6px;
-  color: var(--text-muted);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-/* Умная двухколоночная сетка для людей внутри группы */
 .people {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -360,7 +398,7 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.02);
-  transition: all 0.16s ease;
+  transition: all 0.16s ease, border-color 0.2s, box-shadow 0.2s;
 }
 
 .person:hover {
@@ -426,7 +464,14 @@ h1 {
 </head>
 <body>
 <main class="layout-grid">
-  <aside class="sidebar" id="sidebar"></aside>
+  <!-- В левую колонку встроен контейнер для интерактивного поиска -->
+  <aside class="sidebar">
+    <div class="search-container">
+      <input type="text" id="family-search" class="search-input" placeholder="🔍 Найти человека...">
+    </div>
+    <div id="sidebar"></div>
+  </aside>
+  
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
   <div class="main-content">
@@ -434,7 +479,8 @@ h1 {
       <div class="eyebrow" id="eyebrow">Загрузка...</div>
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
-      <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
+      <!-- Нажатие на статус принудительно обновит JSON -->
+      <div class="status" id="status" onclick="loadFamily()"><span class="dot"></span>Загружаю family.json...</div>
     </header>
 
     <section id="content"></section>
@@ -453,23 +499,22 @@ function esc(v) {
   return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
 function levelLabelText(level) {
-  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
+  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники и племянницы",4:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
 function renderGroup(group, tagClass, showGenTag) {
   var h = "";
-  h += '<article class="group">';
-  h += '<div class="group-head">';
-  h += '<h2>' + esc(group.title);
-  h += '</h2>';
+  h += '<article class="group" data-group-title="' + esc(group.title) + '">';
+  h += '<div class="group-head" onclick="toggleCollapse(this.parentNode)">';
+  h += '<h2>' + esc(group.title) + '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
   h += '</div>';
   h += '<div class="people">';
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    h += '<div class="person">';
+    h += '<div class="person" data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
     h += '<div class="person-info">';
     h += '<div class="person-name">' + esc(p.name) + '</div>';
@@ -483,7 +528,7 @@ function renderGroup(group, tagClass, showGenTag) {
 }
 
 function renderCenter(center) {
-  var h = '<div class="center-card">';
+  var h = '<div class="center-card" data-name="' + esc(center.name || "").toLowerCase() + '">';
   h += '<div class="icon">' + esc(center.icon || "\uD83D\uDC9C") + '</div>';
   h += '<span class="name">' + esc(center.name || "Я") + '</span>';
   h += '<span class="role">' + esc(center.role || "") + '</span>';
@@ -495,14 +540,14 @@ function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) {
     var section = dataArray[i];
-    h += '<div class="section-block">';
-    h += '<div class="section-title">' + esc(section.title || "") + '</div>';
+    h += '<div class="section-block" data-section-title="' + esc(section.title) + '">';
+    h += '<div class="section-title" onclick="toggleCollapse(this.parentNode)">' + esc(section.title || "") + '</div>';
     h += '<p class="section-desc">' + esc(section.subtitle || "") + '</p>';
     h += '<div class="card-list">';
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      h += '<div class="sidebar-card">';
+      h += '<div class="sidebar-card" data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
       h += '<div class="info-small">';
       h += '<h4>' + esc(p.name) + '</h4>';
@@ -514,6 +559,94 @@ function populateSidebar(elementId, dataArray) {
     h += '</div>';
   }
   document.getElementById(elementId).innerHTML = h;
+}
+
+// Функция сворачивания/разворачивания блоков
+function toggleCollapse(element) {
+  element.classList.toggle('collapsed');
+}
+
+// Продвинутая система умной неоновой подсветки связей (Дочки + Зятья)
+function initCoupleHighlights() {
+  var peopleCards = document.querySelectorAll('.person, .sidebar-card');
+  
+  peopleCards.forEach(function(card) {
+    card.addEventListener('mouseenter', function() {
+      var nameEl = this.querySelector('.person-name, h4');
+      if (!nameEl) return;
+      var currentName = nameEl.textContent.trim().split(' ')[0].toLowerCase(); // Извлекаем основную фамилию/имя (например Grand)
+
+      // Если навели на Grand (Дочку или Зятя) — подсвечиваем всю пару
+      if (currentName.includes('grand')) {
+        peopleCards.forEach(function(otherCard) {
+          var otherNameEl = otherCard.querySelector('.person-name, h4');
+          if (otherNameEl && otherNameEl.textContent.toLowerCase().includes('grand')) {
+            otherCard.classList.add('couple-highlight');
+          }
+        });
+      }
+    });
+
+    card.addEventListener('mouseleave', function() {
+      peopleCards.forEach(function(otherCard) {
+        otherCard.classList.remove('couple-highlight');
+      });
+    });
+  });
+}
+
+// Живой поиск по всему семейному древу
+function initSearch() {
+  var searchInput = document.getElementById('family-search');
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', function() {
+    var query = this.value.toLowerCase().trim();
+    
+    // Элементы для фильтрации
+    var people = document.querySelectorAll('.person, .sidebar-card, .center-card');
+    var groups = document.querySelectorAll('.group, .section-block');
+    var levels = document.querySelectorAll('.level-row');
+
+    if (query === '') {
+      // Если поиск пустой, возвращаем всё как было
+      people.forEach(function(p) { p.classList.remove('is-hidden'); });
+      groups.forEach(function(g) { g.classList.remove('is-hidden'); });
+      levels.forEach(function(l) { l.classList.remove('is-hidden'); });
+      return;
+    }
+
+    // Скрываем/показываем людей на основе совпадения имени или роли
+    people.forEach(function(p) {
+      var name = p.getAttribute('data-name') || '';
+      var role = p.getAttribute('data-role') || '';
+      if (name.includes(query) || role.includes(query)) {
+        p.classList.remove('is-hidden');
+      } else {
+        p.classList.add('is-hidden');
+      }
+    });
+
+    // Прячем целые группы, если в них не осталось видимых людей
+    groups.forEach(function(g) {
+      var visiblePeople = g.querySelectorAll('.person:not(.is-hidden), .sidebar-card:not(.is-hidden)');
+      if (visiblePeople.length === 0) {
+        g.add('is-hidden');
+      } else {
+        g.classList.remove('is-hidden');
+      }
+    });
+
+    // Скрываем уровни дерева, если все группы внутри них пусты
+    levels.forEach(function(l) {
+      var visibleGroups = l.querySelectorAll('.group:not(.is-hidden), .center-card:not(.is-hidden)');
+      if (visibleGroups.length === 0) {
+        l.classList.add('is-hidden');
+      } else {
+        l.classList.remove('is-hidden');
+      }
+    });
+  });
 }
 
 function render(data) {
@@ -554,13 +687,9 @@ function render(data) {
     }
     html += '<div class="level-row">';
     html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
-    
-    // Если на этом уровне находится ШАМАН (центр), рендерим его карточку по центру
     if (levels[lv]._hasCenter) {
       html += renderCenter(center);
     }
-    
-    // Рендерим КАЖДУЮ группу отдельно, чтобы у Сыновей и Зятьев вернулись свои заголовки
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
       var g = lvGroups[j];
@@ -572,10 +701,15 @@ function render(data) {
   html += '</div>';
 
   document.getElementById("content").innerHTML = html;
+
+  // Инициализация фишек после рендеринга данных
+  initSearch();
+  initCoupleHighlights();
 }
 
 function loadFamily() {
   var status = document.getElementById("status");
+  status.innerHTML = '<span class="dot"></span>Загружаю...';
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
     .then(function(resp) {
       if (!resp.ok) throw new Error("HTTP " + resp.status);
@@ -599,7 +733,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) in JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
       }
       console.error(err);
     });
