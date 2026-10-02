@@ -597,7 +597,7 @@ function renderGroup(group, tagClass, showGenTag) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР
+    // Жестко фиксируем ID на корневом внешнем блоке карточки
     var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
     h += '<div class="person"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -633,7 +633,7 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР БОКОВОЙ КАРТОЧКИ
+      // Жестко фиксируем ID на корневом внешнем блоке сайдбара
       var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
       h += '<div class="sidebar-card"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -687,37 +687,44 @@ function initAnimatedBg() {
 }
 
 function init3DTilt() {
-  var cards = document.querySelectorAll('.person, .sidebar-card, .center-card');
-  cards.forEach(function(card) {
-    card.addEventListener('mousemove', function(e) {
-      if (ecoMode) return;
-      var rect = this.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      var xc = rect.width / 2;
-      var yc = rect.height / 2;
-      var angleX = (yc - y) / 10;
-      var angleY = (x - xc) / 10;
-      
-      this.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
-      
-      if (this.id === 'node-batya' || this.id === 'node-shmel' || this.id === 'node-priest' || this.id === 'node-femboy' || this.id === 'node-police') {
-        return; 
-      }
-      
-      var isHighlighted = this.classList.contains('couple-highlight');
-      var borderGlow = isHighlighted ? "var(--glow-couple)" : "var(--glow)";
-      var borderColor = isHighlighted ? "var(--accent-2)" : "rgba(124, 58, 237, 0.4)";
-      
-      this.style.borderColor = borderColor;
-      this.style.boxShadow = "0 20px 40px rgba(0,0,0,0.5), " + borderGlow;
-    });
+  // Вешаем один глобальный обработчик для 3D наклона — это полностью убирает фризы памяти
+  document.body.addEventListener('mousemove', function(e) {
+    if (ecoMode) return;
+    var card = e.target.closest('.person, .sidebar-card, .center-card');
+    if (!card) return;
+
+    var rect = card.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var xc = rect.width / 2;
+    var yc = rect.height / 2;
+    var angleX = (yc - y) / 10;
+    var angleY = (x - xc) / 10;
     
-    card.addEventListener('mouseleave', function() {
-      this.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
-      this.style.borderColor = "";
-      this.style.boxShadow = "";
-    });
+    card.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
+    
+    if (card.id === 'node-batya' || card.id === 'node-shmel' || card.id === 'node-priest' || card.id === 'node-femboy' || card.id === 'node-police') {
+      return; 
+    }
+    
+    var isHighlighted = card.classList.contains('couple-highlight');
+    var borderGlow = isHighlighted ? "var(--glow-couple)" : "var(--glow)";
+    var borderColor = isHighlighted ? "var(--accent-2)" : "rgba(124, 58, 237, 0.4)";
+    
+    card.style.borderColor = borderColor;
+    card.style.boxShadow = "0 20px 40px rgba(0,0,0,0.5), " + borderGlow;
+  });
+
+  document.body.addEventListener('mouseout', function(e) {
+    var card = e.target.closest('.person, .sidebar-card, .center-card');
+    if (!card) return;
+    
+    var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
+    if (related === card) return;
+
+    card.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+    card.style.borderColor = "";
+    card.style.boxShadow = "";
   });
 }
 
@@ -775,61 +782,61 @@ function drawLasers() {
     }
   });
 }
+// ЖЕЛЕЗОБЕТОННАЯ ПОДСВЕТКА ЧЕРЕЗ СИСТЕМУ ДЕЛЕГИРОВАНИЯ СОБЫТИЙ
 function initCoupleHighlights() {
   var grid = document.querySelector('.layout-grid');
-  var observer = new MutationObserver(function() {
-    // Находим абсолютно все отрендеренные элементы, у которых ID начинается на node-
-    var peopleCards = document.querySelectorAll('[id^="node-"]');
-    
-    peopleCards.forEach(function(card) {
-      if (card.getAttribute('data-has-highlights')) return;
-      card.setAttribute('data-has-highlights', 'true');
+  
+  // Ловим наведение мышки на уровне всего документа — работает мгновенно и без сбоев памяти
+  document.body.addEventListener('mouseover', function(e) {
+    var card = e.target.closest('.person, .sidebar-card, .center-card');
+    if (!card) return;
 
-      card.addEventListener('mouseenter', function() {
-        var selfId = this.id ? this.id.replace('node-', '') : '';
-        if (!selfId) return;
+    var selfId = card.id ? card.id.replace('node-', '') : '';
+    if (!selfId) return;
 
-        // Собираем базовые связи из карты коннекторов JSON
-        var connectedIds = [selfId];
-        activeConnections.forEach(function(conn) {
-          if (conn.from === selfId) connectedIds.push(conn.to);
-          if (conn.to === selfId) connectedIds.push(conn.from);
-        });
-
-        // БЕЗОТКАЗНЫЙ ФОКУС ПАРЫ ПО ИХ СИСТЕМНЫМ ID ИЗ JSON (doch1 + zyat1)
-        var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
-        if (isCoupleTarget) {
-          if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
-          if (connectedIds.indexOf('zyat1') === -1) connectedIds.push('zyat1');
-        }
-
-        if (grid) grid.classList.add('tree-dimmed');
-        
-        var allCards = document.querySelectorAll('[id^="node-"]');
-        allCards.forEach(function(otherCard) {
-          var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
-          
-          if (otherId && connectedIds.indexOf(otherId) !== -1) {
-            otherCard.classList.add('couple-highlight');
-          } else {
-            otherCard.classList.remove('couple-highlight');
-          }
-        });
-        if (!ecoMode) drawLasers();
-      });
-
-      card.addEventListener('mouseleave', function() {
-        if (grid) grid.classList.remove('tree-dimmed');
-        var allCards = document.querySelectorAll('[id^="node-"]');
-        allCards.forEach(function(otherCard) {
-          otherCard.classList.remove('couple-highlight');
-        });
-        if (!ecoMode) drawLasers();
-      });
+    // Собираем лазерные связи из JSON
+    var connectedIds = [selfId];
+    activeConnections.forEach(function(conn) {
+      if (conn.from === selfId) connectedIds.push(conn.to);
+      if (conn.to === selfId) connectedIds.push(conn.from);
     });
+
+    // Связываем doch1 (Diamonita) и zyat1 (EKSOD) жестко по ID
+    var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
+    if (isCoupleTarget) {
+      if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
+      if (connectedIds.indexOf('zyat1') === -1) connectedIds.push('zyat1');
+    }
+
+    if (grid) grid.classList.add('tree-dimmed');
+    
+    var allCards = document.querySelectorAll('[id^="node-"]');
+    allCards.forEach(function(otherCard) {
+      var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
+      if (otherId && connectedIds.indexOf(otherId) !== -1) {
+        otherCard.classList.add('couple-highlight');
+      } else {
+        otherCard.classList.remove('couple-highlight');
+      }
+    });
+    if (!ecoMode) drawLasers();
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  // Ловим уход мышки с карточки родственника
+  document.body.addEventListener('mouseout', function(e) {
+    var card = e.target.closest('.person, .sidebar-card, .center-card');
+    if (!card) return;
+    
+    var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
+    if (related === card) return;
+
+    if (grid) grid.classList.remove('tree-dimmed');
+    var allCards = document.querySelectorAll('[id^="node-"]');
+    allCards.forEach(function(otherCard) {
+      otherCard.classList.remove('couple-highlight');
+    });
+    if (!ecoMode) drawLasers();
+  });
 }
 
 function initSearch() {
