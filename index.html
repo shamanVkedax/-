@@ -111,6 +111,7 @@ body.eco-mode {
   background: rgba(124, 58, 237, 0.08);
   box-shadow: var(--glow);
 }
+
 .sidebar, .sidebar-secondary {
   padding: 40px 20px;
   overflow-y: auto;
@@ -222,6 +223,28 @@ body.eco-mode {
   filter: none !important;
 }
 
+#node-batya:hover, #node-batya.couple-highlight {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 25px rgba(96, 165, 250, 0.85) !important;
+}
+#node-shmel:hover, #node-shmel.couple-highlight {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.85) !important;
+}
+#node-priest:hover, #node-priest.couple-highlight {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.85) !important;
+}
+#node-femboy:hover, #node-femboy.couple-highlight {
+  border-color: #f472b6 !important;
+  box-shadow: 0 0 25px rgba(244, 114, 182, 0.85) !important;
+}
+#node-police:hover, #node-police.couple-highlight {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 25px rgba(37, 99, 235, 0.85) !important;
+}
+</style>
+<style>
 .group-head {
   padding: 16px 20px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -511,27 +534,6 @@ h1 {
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   }
 }
-
-#node-batya:hover, #node-batya.couple-highlight {
-  border-color: #60a5fa !important;
-  box-shadow: 0 0 25px rgba(96, 165, 250, 0.85) !important;
-}
-#node-shmel:hover, #node-shmel.couple-highlight {
-  border-color: #fbbf24 !important;
-  box-shadow: 0 0 25px rgba(251, 191, 36, 0.85) !important;
-}
-#node-priest:hover, #node-priest.couple-highlight {
-  border-color: #f59e0b !important;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.85) !important;
-}
-#node-femboy:hover, #node-femboy.couple-highlight {
-  border-color: #f472b6 !important;
-  box-shadow: 0 0 25px rgba(244, 114, 182, 0.85) !important;
-}
-#node-police:hover, #node-police.couple-highlight {
-  border-color: #2563eb !important;
-  box-shadow: 0 0 25px rgba(37, 99, 235, 0.85) !important;
-}
 </style>
 </head>
 <body>
@@ -595,6 +597,7 @@ function renderGroup(group, tagClass, showGenTag) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
+    // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР
     var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
     h += '<div class="person"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -630,6 +633,7 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
+      // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР БОКОВОЙ КАРТОЧКИ
       var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
       h += '<div class="sidebar-card"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -649,7 +653,6 @@ function toggleCollapse(element) {
   element.classList.toggle('collapsed');
   if (!ecoMode) setTimeout(drawLasers, 100);
 }
-
 function toggleEcoMode() {
   ecoMode = !ecoMode;
   var btn = document.getElementById('perf-btn');
@@ -775,42 +778,37 @@ function drawLasers() {
 function initCoupleHighlights() {
   var grid = document.querySelector('.layout-grid');
   var observer = new MutationObserver(function() {
-    // Собираем абсолютно ВСЕ карточки на странице, у которых есть ID (начинается с node-)
+    // Находим абсолютно все отрендеренные элементы, у которых ID начинается на node-
     var peopleCards = document.querySelectorAll('[id^="node-"]');
     
     peopleCards.forEach(function(card) {
       if (card.getAttribute('data-has-highlights')) return;
       card.setAttribute('data-has-highlights', 'true');
 
-      // 1. Мышка зашла на карточку любого родственника
       card.addEventListener('mouseenter', function() {
         var selfId = this.id ? this.id.replace('node-', '') : '';
         if (!selfId) return;
 
-        // Собираем стандартные лазерные связи из JSON
+        // Собираем базовые связи из карты коннекторов JSON
         var connectedIds = [selfId];
         activeConnections.forEach(function(conn) {
           if (conn.from === selfId) connectedIds.push(conn.to);
           if (conn.to === selfId) connectedIds.push(conn.from);
         });
 
-        // ЖЕЛЕЗОБЕТОННАЯ СВЯЗЬ НАШЕЙ ПАРЫ ПО ИХ ID В JSON
-        // Если навели на doch1 (Diamonita) или zyat1 (EKSOD), они ОБА железно подсвечиваются вместе
+        // БЕЗОТКАЗНЫЙ ФОКУС ПАРЫ ПО ИХ СИСТЕМНЫМ ID ИЗ JSON (doch1 + zyat1)
         var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
         if (isCoupleTarget) {
           if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
           if (connectedIds.indexOf('zyat1') === -1) connectedIds.push('zyat1');
         }
 
-        // Включаем затемнение остального фона сайта
         if (grid) grid.classList.add('tree-dimmed');
         
-        // Снова выбираем все элементы с ID, чтобы зажечь нужные
         var allCards = document.querySelectorAll('[id^="node-"]');
         allCards.forEach(function(otherCard) {
           var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
           
-          // Если ID карточки есть в списке разрешенных связей — зажигаем ярким неоном
           if (otherId && connectedIds.indexOf(otherId) !== -1) {
             otherCard.classList.add('couple-highlight');
           } else {
@@ -820,7 +818,6 @@ function initCoupleHighlights() {
         if (!ecoMode) drawLasers();
       });
 
-      // 2. Мышка ушла с карточки родственника — мгновенно тушим всё
       card.addEventListener('mouseleave', function() {
         if (grid) grid.classList.remove('tree-dimmed');
         var allCards = document.querySelectorAll('[id^="node-"]');
