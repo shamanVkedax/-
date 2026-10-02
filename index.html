@@ -680,23 +680,32 @@ function init3DTilt() {
       var angleX = (yc - y) / 10;
       var angleY = (x - xc) / 10;
       
+      // Наклоняем карточку в 3D
+      this.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
+      
+      // УМНАЯ ПРОВЕРКА: Если у карточки есть свой кастомный цвет в CSS (например, у Бати или Шмеля),
+      // мы НЕ перезаписываем его стандартным фиолетовым цветом, а оставляем уникальное свечение!
+      if (this.id === 'node-batya' || this.id === 'node-shmel' || this.id === 'node-priest' || this.id === 'node-femboy' || this.id === 'node-police') {
+        return; 
+      }
+      
+      // Для всех остальных обычных карточек оставляем стандартную логику фиолетового/розового неона
       var isHighlighted = this.classList.contains('couple-highlight');
       var borderGlow = isHighlighted ? "var(--glow-couple)" : "var(--glow)";
       var borderColor = isHighlighted ? "var(--accent-2)" : "rgba(124, 58, 237, 0.4)";
       
-      this.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
       this.style.borderColor = borderColor;
       this.style.boxShadow = "0 20px 40px rgba(0,0,0,0.5), " + borderGlow;
     });
     
     card.addEventListener('mouseleave', function() {
+      // Плавный сброс в исходное состояние
       this.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
       this.style.borderColor = "";
       this.style.boxShadow = "";
     });
   });
 }
-
 var activeConnections = [];
 
 function drawLasers() {
