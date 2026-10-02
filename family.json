@@ -62,7 +62,7 @@
     {
       "title": "Племянники и племянницы",
       "subtitle": "Дети моих братьев и сестёр — родные, но не мои дети",
-      "level": 3,
+      "level": 4,
       "people": [
         {"name": "X0RI23", "role": "Племянница", "icon": "🎀"},
         {"name": "qp_Zero_qp", "role": "Племянник", "icon": "🎮"}
@@ -71,7 +71,7 @@
     {
       "title": "👧 Любимые дочки",
       "subtitle": "Восемь прекрасных дочерей",
-      "level": 4,
+      "level": 3,
       "people": [
         {"icon": "💎", "name": "Diamonita Grand", "role": "Любимая дочка"},
         {"icon": "🌸", "name": "Yandera_YouTube", "role": "Любимая дочка"},
