@@ -702,9 +702,45 @@ function render(data) {
 
   document.getElementById("content").innerHTML = html;
 
-  // Инициализация фишек после рендеринга данных
-  initSearch();
-  initCoupleHighlights();
+  function initCoupleHighlights() {
+  // Находим абсолютно всех людей на странице
+  var peopleCards = document.querySelectorAll('.person, .sidebar-card');
+  
+  peopleCards.forEach(function(card) {
+    // Слушаем наведение мышки
+    card.addEventListener('mouseenter', function() {
+      var nameEl = this.querySelector('.person-name, h4');
+      if (!nameEl) return;
+      
+      var hoveredName = nameEl.textContent.toLowerCase();
+
+      // Если навели на Diamonita Grand ИЛИ на EKSOD_GRAND
+      if (hoveredName.includes('diamonita grand') || hoveredName.includes('eksod_grand')) {
+        peopleCards.forEach(function(otherCard) {
+          var otherNameEl = otherCard.querySelector('.person-name, h4');
+          if (otherNameEl) {
+            var otherName = otherNameEl.textContent.toLowerCase();
+            // Зажигаем неоном ОБЕ карточки этой пары
+            if (otherName.includes('diamonita grand') || otherName.includes('eksod_grand')) {
+              otherCard.classList.add('couple-highlight');
+            }
+          }
+        });
+      }
+    });
+
+    // Когда мышка уходит — тушим подсветку
+    card.addEventListener('mouseleave', function() {
+      peopleCards.forEach(function(otherCard) {
+        otherCard.classList.remove('couple-highlight');
+      });
+    });
+  });
+}
+
+// Инициализация фишек после рендеринга данных
+initSearch();
+initCoupleHighlights();
 }
 
 function loadFamily() {
