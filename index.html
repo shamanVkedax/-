@@ -757,9 +757,10 @@ function drawLasers() {
   });
 }
 function initCoupleHighlights() {
-  var grid = document.getElementById('main-grid');
+  // Исправлено: теперь находим главный контейнер по его реальному CSS-классу
+  var grid = document.querySelector('.layout-grid');
   
-  // Отслеживаем наведение на уровне всего документа, чтобы не терять динамические карточки
+  // Отслеживаем наведение на уровне всего документа, чтобы динамические карточки никогда не терялись
   document.body.addEventListener('mouseover', function(e) {
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
@@ -779,11 +780,13 @@ function initCoupleHighlights() {
       });
     }
 
-    // Всеядная проверка: ищем корни имён без привязки к пробелам или подчёркиваниям
+    // Всеядная проверка пары: ищем корни имён без привязки к регистрам, пробелам или подчёркиваниям
     var isCoupleTarget = hoveredName.indexOf('diamonita') !== -1 || hoveredName.indexOf('eksod') !== -1;
     
-    grid.classList.add('tree-dimmed');
+    // Включаем режим фокуса (приглушаем остальной сайт), только если контейнер успешно найден
+    if (grid) grid.classList.add('tree-dimmed');
     
+    // Перебираем вообще все карточки, которые существуют на странице в секунду наведения
     var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
     allCards.forEach(function(otherCard) {
       var otherNameEl = otherCard.querySelector('.person-name, h4');
@@ -821,7 +824,7 @@ function initCoupleHighlights() {
     var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
     if (related === card) return;
 
-    grid.classList.remove('tree-dimmed');
+    if (grid) grid.classList.remove('tree-dimmed');
     var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
     allCards.forEach(function(otherCard) {
       otherCard.classList.remove('couple-highlight');
