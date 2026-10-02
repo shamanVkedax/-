@@ -597,7 +597,6 @@ function renderGroup(group, tagClass, showGenTag) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    // Жестко фиксируем ID на корневом внешнем блоке карточки
     var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
     h += '<div class="person"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -633,7 +632,6 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      // Жестко фиксируем ID на корневом внешнем блоке сайдбара
       var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
       h += '<div class="sidebar-card"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -653,6 +651,7 @@ function toggleCollapse(element) {
   element.classList.toggle('collapsed');
   if (!ecoMode) setTimeout(drawLasers, 100);
 }
+
 function toggleEcoMode() {
   ecoMode = !ecoMode;
   var btn = document.getElementById('perf-btn');
@@ -685,9 +684,8 @@ function initAnimatedBg() {
     document.body.style.setProperty('--bg-y2', (15 + (y - 50) * 0.08) + '%');
   });
 }
-
 function init3DTilt() {
-  // Вешаем один глобальный обработчик для 3D наклона — это полностью убирает фризы памяти
+  // Обрабатываем 3D наклон для всех карточек через один общий обработчик мыши
   document.body.addEventListener('mousemove', function(e) {
     if (ecoMode) return;
     var card = e.target.closest('.person, .sidebar-card, .center-card');
@@ -703,6 +701,7 @@ function init3DTilt() {
     
     card.style.transform = "perspective(600px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(15px)";
     
+    // Защита: не перебиваем кастомные неоновые цвета у особых ролей стандартным фиолетовым цветом
     if (card.id === 'node-batya' || card.id === 'node-shmel' || card.id === 'node-priest' || card.id === 'node-femboy' || card.id === 'node-police') {
       return; 
     }
@@ -888,7 +887,6 @@ function initSearch() {
     if (!ecoMode) setTimeout(drawLasers, 50);
   });
 }
-
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -978,7 +976,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) in JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
       }
       console.error(err);
     });
