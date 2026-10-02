@@ -775,37 +775,42 @@ function drawLasers() {
 function initCoupleHighlights() {
   var grid = document.querySelector('.layout-grid');
   var observer = new MutationObserver(function() {
-    var peopleCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+    // Собираем абсолютно ВСЕ карточки на странице, у которых есть ID (начинается с node-)
+    var peopleCards = document.querySelectorAll('[id^="node-"]');
     
     peopleCards.forEach(function(card) {
       if (card.getAttribute('data-has-highlights')) return;
       card.setAttribute('data-has-highlights', 'true');
 
+      // 1. Мышка зашла на карточку любого родственника
       card.addEventListener('mouseenter', function() {
         var selfId = this.id ? this.id.replace('node-', '') : '';
         if (!selfId) return;
 
-        // Собираем лазерные связи родственников из JSON
+        // Собираем стандартные лазерные связи из JSON
         var connectedIds = [selfId];
         activeConnections.forEach(function(conn) {
           if (conn.from === selfId) connectedIds.push(conn.to);
           if (conn.to === selfId) connectedIds.push(conn.from);
         });
 
-        // ЖЕЛЕЗОБЕТОННАЯ СВЯЗЬ ПАРЫ ПО ID ИЗ JSON (doch1 + zyat1)
+        // ЖЕЛЕЗОБЕТОННАЯ СВЯЗЬ НАШЕЙ ПАРЫ ПО ИХ ID В JSON
+        // Если навели на doch1 (Diamonita) или zyat1 (EKSOD), они ОБА железно подсвечиваются вместе
         var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
         if (isCoupleTarget) {
           if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
           if (connectedIds.indexOf('zyat1') === -1) connectedIds.push('zyat1');
         }
 
-        // Включаем режим фокуса (приглушаем весь сайт)
+        // Включаем затемнение остального фона сайта
         if (grid) grid.classList.add('tree-dimmed');
         
-        var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+        // Снова выбираем все элементы с ID, чтобы зажечь нужные
+        var allCards = document.querySelectorAll('[id^="node-"]');
         allCards.forEach(function(otherCard) {
           var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
           
+          // Если ID карточки есть в списке разрешенных связей — зажигаем ярким неоном
           if (otherId && connectedIds.indexOf(otherId) !== -1) {
             otherCard.classList.add('couple-highlight');
           } else {
@@ -815,9 +820,10 @@ function initCoupleHighlights() {
         if (!ecoMode) drawLasers();
       });
 
+      // 2. Мышка ушла с карточки родственника — мгновенно тушим всё
       card.addEventListener('mouseleave', function() {
         if (grid) grid.classList.remove('tree-dimmed');
-        var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+        var allCards = document.querySelectorAll('[id^="node-"]');
         allCards.forEach(function(otherCard) {
           otherCard.classList.remove('couple-highlight');
         });
