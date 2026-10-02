@@ -96,6 +96,22 @@
   ],
   "closePeople": [
     {
+      "title": "🎶 Особые люди",
+      "subtitle": "Те, кто делает жизнь ярче",
+      "people": [
+        {"icon": "🩺", "name": "Nócta", "role": "Психотерапевт"},
+        {"icon": "🎤", "name": "MrNiles57", "role": "Музыкант"},
+        {"icon": "🤓", "name": "Furry_foxy7", "role": "Всезнающий душнила"},
+        {"icon": "🎀", "name": "bekap_1", "role": "Маленький фембойчик"},
+        {"icon": "🎀", "name": "Un_own", "role": "Семейный питомец"},
+        {"icon": "🎀", "name": "Buyback", "role": "Семейный питомец"},
+        {"icon": "🎀", "name": "Noki_Jodo", "role": "Невский участковый"},
+        {"icon": "🐝", "name": "LLlmel`", "role": "Шмель домашний, ручной"}
+      ]
+    }
+  ],
+  "secondaryPeople": [
+    {
       "title": "🕯️ Священник",
       "subtitle": "Духовная опора семьи",
       "people": [
@@ -109,20 +125,6 @@
         {"icon": "🌟", "name": "Velens 5b31", "role": "Лучшая подруга"},
         {"icon": "🦊", "name": "Foxyk_Lishton", "role": "Лучшая подруга"},
         {"icon": "🌸", "name": "Aiserin", "role": "Лучшая подруга"}
-      ]
-    },
-    {
-      "title": "🎶 Особые люди",
-      "subtitle": "Те, кто делает жизнь ярче",
-      "people": [
-        {"icon": "🩺", "name": "Nócta", "role": "Психотерапевт"},
-        {"icon": "🎤", "name": "MrNiles57", "role": "Музыкант"},
-        {"icon": "🤓", "name": "Furry_foxy7", "role": "Всезнающий душнила"},
-        {"icon": "🎀", "name": "bekap_1", "role": "Маленький фембойчик"},
-        {"icon": "🎀", "name": "Un_own", "role": "Семейный питомец"},
-        {"icon": "🎀", "name": "Buyback", "role": "Семейный питомец"},
-        {"icon": "🎀", "name": "Noki_Jodo", "role": "Невский участковый"},
-        {"icon": "🎀", "name": "LLlmel`", "role": "Шмель домашний, ручной"}
       ]
     },
     {
