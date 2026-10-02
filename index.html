@@ -302,9 +302,11 @@ h1 {
   line-height: 1.4;
 }
 
+/* Обновленный контейнер карточки группы */
 .group {
   flex: 1 1 320px;
-  max-width: 400px;
+  /* Если участников много (больше 4), плашка автоматически расширится */
+  max-width: 600px; 
   border: 1px solid var(--border-outer);
   border-radius: 18px;
   background: var(--bg-panel);
@@ -342,9 +344,10 @@ h1 {
   line-height: 1.4;
 }
 
+/* Умная двухколоночная сетка для людей внутри группы */
 .people {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 10px;
   padding: 12px;
 }
@@ -408,7 +411,7 @@ h1 {
   max-width: 600px;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .layout-grid {
     grid-template-columns: 1fr;
   }
@@ -450,7 +453,7 @@ function esc(v) {
   return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
 function levelLabelText(level) {
-  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
+  var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",3:"Племянники и племянницы",4:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
@@ -592,7 +595,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) in JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
       }
       console.error(err);
     });
