@@ -782,32 +782,30 @@ function drawLasers() {
 function initCoupleHighlights() {
   var grid = document.querySelector('.layout-grid');
   
-  // Ловим наведение мышки на уровне всего документа
+  // Отслеживаем наведение на уровне всего документа
   document.body.addEventListener('mouseover', function(e) {
-    // Находим любую карточку (в дереве или в сайдбаре), на которую наступила мышь
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
 
-    // Вытаскиваем текстовое имя из карточки
     var nameEl = card.querySelector('.person-name, h4, .name');
     if (!nameEl) return;
     
     var text = nameEl.textContent.toLowerCase();
 
-    // Проверяем, относится ли эта карточка к дочке или зятю
+    // Проверяем по тексту, дочка это или зять
     var isCoupleTarget = (text.indexOf('diamonita') !== -1 || text.indexOf('eksod') !== -1);
     
     if (isCoupleTarget) {
-      // Приглушаем весь остальной сайт
       if (grid) grid.classList.add('tree-dimmed');
       
-      // Находим ВООБЩЕ ВСЕ карточки на странице
+      // Находим абсолютно все карточки на странице в секунду наведения
       var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
       allCards.forEach(function(otherCard) {
         var otherNameEl = otherCard.querySelector('.person-name, h4, .name');
         if (otherNameEl) {
           var otherText = otherNameEl.textContent.toLowerCase();
-          // Если в карточке написано diamonita или eksod — зажигаем её!
+          
+          // Если в карточке есть имя дочки или зятя — зажигаем обе карточки принудительно!
           if (otherText.indexOf('diamonita') !== -1 || otherText.indexOf('eksod') !== -1) {
             otherCard.classList.add('couple-highlight');
           }
@@ -816,6 +814,23 @@ function initCoupleHighlights() {
       if (!ecoMode) drawLasers();
     }
   });
+
+  // Отслеживаем уход мышки с карточки
+  document.body.addEventListener('mouseout', function(e) {
+    var card = e.target.closest('.person, .sidebar-card, .center-card');
+    if (!card) return;
+    
+    var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
+    if (related === card) return;
+
+    if (grid) grid.classList.remove('tree-dimmed');
+    var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+    allCards.forEach(function(otherCard) {
+      otherCard.classList.remove('couple-highlight');
+    });
+    if (!ecoMode) drawLasers();
+  });
+}
 
   // Ловим уход мышки с карточки
   document.body.addEventListener('mouseout', function(e) {
