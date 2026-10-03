@@ -595,6 +595,7 @@ function renderGroup(group, tagClass, showGenTag) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
+    // ИСПРАВЛЕНО: Теперь ID вешается на корневой внешний блок карточки в дереве
     var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
     h += '<div class="person"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -630,6 +631,7 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
+      // ИСПРАВЛЕНО: Добавлен pId для боковых колонок, чтобы карточка зятя получала свой ID
       var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
       h += '<div class="sidebar-card"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
