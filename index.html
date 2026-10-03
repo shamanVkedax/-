@@ -946,6 +946,7 @@ function render(data) {
 function loadFamily() {
   var status = document.getElementById("status");
   status.innerHTML = '<span class="dot"></span>Загружаю...';
+  // ИСПРАВЬ ВОТ ЭТУ СТРОКУ ИЗ-ЗА КОТОРОЙ СЕРВЕР ГИДХАБА ДАЕТ СТАРЫЙ ФАЙЛ:
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
     .then(function(resp) {
       if (!resp.ok) throw new Error("HTTP " + resp.status);
