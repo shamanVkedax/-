@@ -595,7 +595,6 @@ function renderGroup(group, tagClass, showGenTag) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР КАРТОЧКИ В ДЕРЕВЕ
     var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
     h += '<div class="person"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -631,7 +630,6 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      // ЖЕСТКО ВШИВАЕМ ID НА ВНЕШНИЙ КОРНЕВОЙ КОНТЕЙНЕР БОКОВОЙ КАРТОЧКИ
       var pId = p.id ? ' id="node-' + esc(p.id) + '"' : '';
       h += '<div class="sidebar-card"' + pId + ' data-name="' + esc(p.name).toLowerCase() + '" data-role="' + esc(p.role || "").toLowerCase() + '">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
@@ -685,7 +683,6 @@ function initAnimatedBg() {
 }
 
 function init3DTilt() {
-  // Вешаем один глобальный обработчик для 3D наклона — это полностью убирает фризы памяти
   document.body.addEventListener('mousemove', function(e) {
     if (ecoMode) return;
     var card = e.target.closest('.person, .sidebar-card, .center-card');
@@ -725,7 +722,6 @@ function init3DTilt() {
     card.style.boxShadow = "";
   });
 }
-
 var activeConnections = [];
 
 function drawLasers() {
