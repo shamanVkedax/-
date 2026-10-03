@@ -782,38 +782,58 @@ function drawLasers() {
 function initCoupleHighlights() {
   var grid = document.querySelector('.layout-grid');
   
+  // Ловим наведение мышки на уровне всего документа
   document.body.addEventListener('mouseover', function(e) {
+    // Находим любую карточку (в дереве или в сайдбаре), на которую наступила мышь
     var card = e.target.closest('.person, .sidebar-card, .center-card');
     if (!card) return;
 
-    var selfId = card.id ? card.id.replace('node-', '') : '';
-    if (!selfId) return;
-
-    var connectedIds = [selfId];
-    activeConnections.forEach(function(conn) {
-      if (conn.from === selfId) connectedIds.push(conn.to);
-      if (conn.to === selfId) connectedIds.push(conn.from);
-    });
-
-    var isCoupleTarget = (selfId === 'doch1' || selfId === 'zyat1');
-    if (isCoupleTarget) {
-      if (connectedIds.indexOf('doch1') === -1) connectedIds.push('doch1');
-      if (connectedIds.indexOf('zyat1') === -1) connectedIds.push('zyat1');
-    }
-
-    if (grid) grid.classList.add('tree-dimmed');
+    // Вытаскиваем текстовое имя из карточки
+    var nameEl = card.querySelector('.person-name, h4, .name');
+    if (!nameEl) return;
     
-    var allCards = document.querySelectorAll('[id^="node-"]');
+    var text = nameEl.textContent.toLowerCase();
+
+    // Проверяем, относится ли эта карточка к дочке или зятю
+    var isCoupleTarget = (text.indexOf('diamonita') !== -1 || text.indexOf('eksod') !== -1);
+    
+    if (isCoupleTarget) {
+      // Приглушаем весь остальной сайт
+      if (grid) grid.classList.add('tree-dimmed');
+      
+      // Находим ВООБЩЕ ВСЕ карточки на странице
+      var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
+      allCards.forEach(function(otherCard) {
+        var otherNameEl = otherCard.querySelector('.person-name, h4, .name');
+        if (otherNameEl) {
+          var otherText = otherNameEl.textContent.toLowerCase();
+          // Если в карточке написано diamonita или eksod — зажигаем её!
+          if (otherText.indexOf('diamonita') !== -1 || otherText.indexOf('eksod') !== -1) {
+            otherCard.classList.add('couple-highlight');
+          }
+        }
+      });
+      if (!ecoMode) drawLasers();
+    }
+  });
+
+  // Ловим уход мышки с карточки
+  document.body.addEventListener('mouseout', function(e) {
+    var card = e.target.closest('.person, .sidebar-card, .center-card');
+    if (!card) return;
+    
+    var related = e.relatedTarget ? e.relatedTarget.closest('.person, .sidebar-card, .center-card') : null;
+    if (related === card) return;
+
+    // Убираем подсветку со всего сайта
+    if (grid) grid.classList.remove('tree-dimmed');
+    var allCards = document.querySelectorAll('.person, .sidebar-card, .center-card');
     allCards.forEach(function(otherCard) {
-      var otherId = otherCard.id ? otherCard.id.replace('node-', '') : '';
-      if (otherId && connectedIds.indexOf(otherId) !== -1) {
-        otherCard.classList.add('couple-highlight');
-      } else {
-        otherCard.classList.remove('couple-highlight');
-      }
+      otherCard.classList.remove('couple-highlight');
     });
     if (!ecoMode) drawLasers();
   });
+}
 
   document.body.addEventListener('mouseout', function(e) {
     var card = e.target.closest('.person, .sidebar-card, .center-card');
