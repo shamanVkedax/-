@@ -12,8 +12,8 @@
 :root {
   --bg-dark: #07030f;
   --bg-panel: rgba(17, 11, 31, 0.88);
-  --accent-1: #b55ffc;
-  --accent-2: #ec4899;
+  --accent-1: #b55ffc; /* Аметистовая орхидея */
+  --accent-2: #ec4899; /* Розовый неон для пар */
   --accent-3: #475569;
   --text-main: #fcfaff;
   --text-muted: #b4abbf;
@@ -76,7 +76,6 @@ body {
   max-width: 1920px;
   margin: 0 auto;
 }
-/* Аметистовые боковые панели с независимым скроллом */
 .sidebar, .sidebar-secondary {
   padding: 40px 18px;
   background: rgba(5, 3, 13, 0.7);
@@ -638,7 +637,7 @@ function levelLabelText(level) {
   return labels[level] || ("Уровень " + level);
 }
 
-// Исправленный, полноценный рендеринг блоков со всеми людьми для центра и сайдбаров
+// Исправленный, полноценный рендеринг блоков со всеми людьми для центра и сайдбаров без потерь контента
 function renderGroup(group) {
   var h = "";
   h += '<article class="group" data-search-block="true">';
@@ -650,7 +649,7 @@ function renderGroup(group) {
   h += '</div>';
   h += '<div class="people">';
   
-  // ВОЗВРАЩЕН ЦИКЛ: теперь ники и роли людей рендерятся идеально
+  // ГАРАНТИРОВАННЫЙ ЦИКЛ: теперь ники и роли людей рендерятся идеально без потерь персонажей
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
@@ -686,7 +685,7 @@ function populateSidebar(elementId, dataArray) {
   document.getElementById(elementId).innerHTML = h;
 }
 
-// Декларативная база влюбленных пар
+// База данных влюбленных пар
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
@@ -695,7 +694,7 @@ function getPartnerName(name) {
   return pairs[name] || null;
 }
 
-// Функция генерации забавных ролевых описаний для модального окна
+// Функция генерации ролевых описаний для модального окна
 function generateChaosStatus(name, role) {
   if (name === "Diamonita Grand" || name === "EKSOD_GRAND") {
     return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
@@ -946,7 +945,7 @@ modalOverlay.addEventListener('click', function(e) {
 document.getElementById('tree-search').addEventListener('input', applySearchFilter);
 
 loadFamily();
-setInterval(loadFamily, REFRESH_MS); // Исправлена опечатка в REFRESH_MS
+setInterval(loadFamily, REFRESH_MS);
 
 document.addEventListener('mouseover', function(e) {
   var personCard = e.target.closest('.person');
