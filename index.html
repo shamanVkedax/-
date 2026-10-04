@@ -73,8 +73,7 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-
-/* Исправлено: жестко прописали размеры точек звезд в пикселях, теперь они горят ярко! */
+/* Гарантированный звездный фон с точными пиксельными размерами */
 .bg-canvas {
   position: fixed;
   inset: 0;
@@ -112,6 +111,7 @@ body {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(45px, 35px) scale(1.12); }
 }
+
 /* Переключатель режима экономии ресурсов в левом верхнем углу */
 .perf-toggle {
   position: fixed;
@@ -754,13 +754,15 @@ function populateSidebar(elementId, dataArray) {
   document.getElementById(elementId).innerHTML = h;
 }
 
-// Расширенная база данных влюбленных пар (Вшита взаимная подсветка для двух союзов)
+// Расширенная база данных связей (Вшита взаимная подсветка для 3-х союзов, включая Дедушку и Сестру)
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
     "EKSOD_GRAND": "Diamonita Grand",
     "卄乇ㄥㄥ匚卂ㄒ": "sataney",
-    "sataney": "卄乇ㄥㄥ匚卂ㄒ"
+    "sataney": "卄乇ㄥㄥ匚卂ㄒ",
+    "§LAGDAN§": "vera ba7a",
+    "vera ba7a": "§LAGDAN§"
   };
   return pairs[name] || null;
 }
@@ -769,6 +771,9 @@ function getPartnerName(name) {
 function generateChaosStatus(name, role) {
   if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") {
     return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
+  }
+  if (name === "vera ba7a" || name === "§LAGDAN§") {
+    return "Кровные узы: Родные брат и сестра. Фундамент и вековая мудрость старшего поколения хроник хаоса.";
   }
   if (role.toLowerCase().indexOf("священник") !== -1) {
     return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен.";
@@ -780,7 +785,7 @@ function generateChaosStatus(name, role) {
     return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках.";
   }
   if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) {
-    return "Статус в хаосе: Пушистый хранитель тепла. Назнажение — генерация мурчания и требование внеочередной еды. 🐾";
+    return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾";
   }
   return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
