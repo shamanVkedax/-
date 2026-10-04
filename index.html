@@ -3,25 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Семейное древо — Хроники Хаоса</title>
+<title>Семейное древо — Интерактивный Холст</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
 <link rel="preconnect" href="https://googleapis.com">
 <link rel="preconnect" href="https://gstatic.com" crossorigin>
 <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-dark: #07040d;
-  --bg-panel: rgba(15, 11, 28, 0.75);
+  --bg-dark: #06030a;
+  --bg-panel: rgba(14, 10, 26, 0.8);
   --accent-1: #8b5cf6;
   --accent-2: #ec4899;
   --accent-3: #10b981;
   --text-main: #f3f1f6;
-  --text-muted: #a79cb5;
-  --border-inner: rgba(139, 92, 246, 0.5);
+  --text-muted: #9c91aa;
+  --border-inner: rgba(139, 92, 246, 0.45);
   --border-outer: rgba(255, 255, 255, 0.04);
-  --glow: 0 0 20px rgba(139, 92, 246, 0.25);
-  --glow-partner: 0 0 25px rgba(236, 72, 153, 0.45);
-  --line-grad: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.3), transparent);
+  --glow: 0 0 20px rgba(139, 92, 246, 0.2);
+  --glow-partner: 0 0 25px rgba(236, 72, 153, 0.5);
   --card-radius: 16px;
   --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -33,85 +32,84 @@
 }
 
 body {
-  min-height: 100vh;
+  height: 100vh;
   margin: 0;
   color: var(--text-main);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background: #000;
-  background-attachment: fixed;
-  overflow-x: hidden;
+  background: var(--bg-dark);
+  overflow: hidden;
   position: relative;
 }
 
-/* Динамический живой фон с неоновыми сферами */
-.bg-blobs {
+/* Сетка чертежного холста на фоне */
+.bg-canvas {
   position: fixed;
   inset: 0;
   z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, #0c0817 0%, var(--bg-dark) 100%);
+  background-color: #06030a;
+  background-image: 
+    radial-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 0),
+    radial-gradient(rgba(236, 72, 153, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
 }
+
+/* Декоративные размытые неоновые сферы */
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(140px);
-  opacity: 0.18;
-  animation: floatBlobs 20s infinite alternate ease-in-out;
+  filter: blur(160px);
+  opacity: 0.12;
+  pointer-events: none;
 }
-.blob-1 { top: 10%; left: 10%; width: 450px; height: 450px; background: var(--accent-1); }
-.blob-2 { bottom: 15%; right: 10%; width: 500px; height: 500px; background: var(--accent-2); animation-delay: -5s; }
-
-@keyframes floatBlobs {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(50px, 40px) scale(1.15); }
-}
+.blob-1 { top: -10%; left: 20%; width: 600px; height: 600px; background: var(--accent-1); }
+.blob-2 { bottom: -10%; right: 20%; width: 600px; height: 600px; background: var(--accent-2); }
 .layout-grid {
   display: grid;
-  grid-template-columns: 340px 340px 1fr;
-  min-height: 100vh;
-  max-width: 1920px;
+  grid-template-columns: 340px 1fr 340px;
+  height: 100vh;
+  max-width: 100vw;
   margin: 0 auto;
   position: relative;
+  overflow: hidden;
 }
 
-/* Стилизация премиальных сайдбаров */
+/* Фиксированные сайдбары по краям экрана */
 .sidebar, .sidebar-secondary {
   padding: 40px 24px;
-  background: rgba(4, 2, 8, 0.45);
-  border-right: 1px solid rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(4, 2, 8, 0.7);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   overflow-y: auto;
-  position: sticky;
-  top: 0;
   height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 36px;
+  z-index: 10;
 }
 
 .sidebar-secondary {
-  background: rgba(4, 2, 8, 0.25);
+  border-right: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(4, 2, 8, 0.55);
 }
 
-/* Кастомный футуристичный скроллбар */
-.sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar {
-  width: 5px;
+/* Изящный скрывающийся скроллбар панелей */
+.sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar, .canvas-viewport::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-.sidebar::-webkit-scrollbar-track, .sidebar-secondary::-webkit-scrollbar-track {
+.sidebar::-webkit-scrollbar-track, .sidebar-secondary::-webkit-scrollbar-track, .canvas-viewport::-webkit-scrollbar-track {
   background: transparent;
 }
-.sidebar::-webkit-scrollbar-thumb, .sidebar-secondary::-webkit-scrollbar-thumb {
+.sidebar::-webkit-scrollbar-thumb, .sidebar-secondary::-webkit-scrollbar-thumb, .canvas-viewport::-webkit-scrollbar-thumb {
   background: rgba(139, 92, 246, 0);
   border-radius: 99px;
   transition: var(--transition-smooth);
 }
-.sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.35);
-}
-.sidebar::-webkit-scrollbar-thumb:hover, .sidebar-secondary::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-1);
+.sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb, .canvas-viewport:hover::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
 }
 
 .section-block {
@@ -121,7 +119,7 @@ body {
 }
 
 .section-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -129,14 +127,13 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  text-shadow: 0 0 15px rgba(236, 72, 153, 0.35);
+  text-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
 }
 
 .section-desc {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
   line-height: 1.5;
-  padding-left: 2px;
 }
 
 .card-list {
@@ -157,50 +154,58 @@ body {
 }
 
 .sidebar-card:hover {
-  transform: translateX(6px) scale(1.01);
-  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateX(4px);
+  border-color: rgba(139, 92, 246, 0.35);
   box-shadow: var(--glow);
-  background: rgba(22, 16, 41, 0.85);
+  background: rgba(20, 14, 38, 0.9);
 }
 
 .avatar-small {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   display: grid;
   place-items: center;
-  font-size: 22px;
-  background: rgba(255, 255, 255, 0.03);
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .info-small h4 {
   font-size: 14px;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.3px;
 }
 
 .info-small p {
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
+}
+
+/* Центральная интерактивная область холста */
+.canvas-viewport {
+  height: 100vh;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  padding: 60px 40px;
+  padding: 60px 80px;
+  min-width: max-content;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
+  align-items: flex-start;
 }
 
 .hero {
-  text-align: center;
   margin-bottom: 54px;
-  width: 100%;
+  max-width: 650px;
+  position: sticky;
+  left: 80px;
 }
 
 .eyebrow {
@@ -214,48 +219,41 @@ body {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
 }
 
 h1 {
-  margin: 18px 0 10px;
-  font-size: clamp(32px, 4.5vw, 52px);
-  line-height: 1.1;
+  margin: 16px 0 8px;
+  font-size: 42px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #ffffff 30%, #e2d9f3 70%, #ffd6eb 100%);
+  background: linear-gradient(135deg, #ffffff 40%, #ffd6eb 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
 }
 
 .subtitle {
-  max-width: 600px;
-  margin: 0 auto 20px;
   color: var(--text-muted);
   font-size: 15px;
   line-height: 1.6;
 }
 
 .status {
-  margin: 14px auto 0;
+  margin-top: 14px;
   width: fit-content;
   padding: 6px 16px;
   border-radius: 999px;
   color: #fff;
-  background: rgba(16, 185, 129, 0.06);
+  background: rgba(16, 185, 129, 0.05);
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  backdrop-filter: blur(5px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .status .dot {
-  display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -265,172 +263,155 @@ h1 {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.9); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
+/* Древо: Горизонтальные поколения (Слева направо) */
 .tree {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 48px;
+  padding-bottom: 40px;
 }
 
-.level-row {
+.level-column {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 28px;
-  width: 100%;
+  flex-direction: column;
+  gap: 24px;
+  width: 380px;
   position: relative;
-  margin-bottom: 40px;
 }
 
 .level-label {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 14px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
-  opacity: 0.8;
+  opacity: 0.7;
+  padding-left: 4px;
+  border-left: 2px solid var(--accent-1);
 }
 
-.connector {
+/* Измененный горизонтальный коннектор между поколениями */
+.connector-h {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 100%;
-  padding: 12px 0;
+  justify-content: center;
+  width: 48px;
+  height: 100%;
   position: relative;
 }
-
-.connector .vline {
-  width: 2px;
-  height: 40px;
-  background: var(--line-grad);
+.connector-h .hline {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(to right, rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.15));
+  margin-top: 40px;
 }
 
 .center-card {
-  min-width: min(330px, 100%);
-  text-align: center;
-  padding: 32px 24px;
-  border-radius: 24px;
+  width: 100%;
+  padding: 28px 24px;
+  border-radius: 22px;
   border: 1px solid var(--border-inner);
-  background: rgba(20, 13, 38, 0.85);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), var(--glow);
+  background: rgba(18, 12, 36, 0.9);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), var(--glow);
   position: relative;
-  flex: 1 1 330px;
-  max-width: 420px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: var(--transition-smooth);
 }
 
 .center-card:hover {
-  transform: translateY(-6px);
-  border-color: #a78bfa;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55), 0 0 25px rgba(139, 92, 246, 0.4);
 }
 
 .center-card::before {
   content: '';
   position: absolute;
   inset: -1px;
-  border-radius: 24px;
+  border-radius: 22px;
   background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
   z-index: -1;
-  opacity: 0.3;
+  opacity: 0.25;
 }
 
 .center-card .icon {
-  font-size: 38px;
-  line-height: 1;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
-  transition: transform 0.3s ease;
-}
-.center-card:hover .icon {
-  transform: scale(1.15) rotate(5deg);
+  font-size: 36px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
 }
 
 .center-card .name {
   display: block;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
-  letter-spacing: -0.3px;
-  background: linear-gradient(135deg, #fff 0%, #c4b5e0 100%);
+  background: linear-gradient(135deg, #fff 0%, #d8cff0 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  line-height: 1.2;
 }
 
 .center-card .role {
   display: block;
   color: var(--accent-2);
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 6px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.2px;
 }
 
 .group {
-  flex: 1 1 330px;
-  max-width: 420px;
+  width: 100%;
   border: 1px solid var(--border-outer);
-  border-radius: 20px;
+  border-radius: 18px;
   background: var(--bg-panel);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
   transition: var(--transition-smooth);
 }
 
 .group:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .group-head {
-  padding: 18px 20px 14px;
+  padding: 16px 18px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   background: rgba(255, 255, 255, 0.01);
 }
 
 .group-head h2 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   color: #fff;
-  letter-spacing: 0.3px;
 }
 
 .group-head .sub {
-  margin-top: 6px;
+  margin-top: 4px;
   color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .people {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
+  gap: 8px;
+  padding: 14px;
 }
 
 .person {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.02);
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.01);
   border-radius: var(--card-radius);
   background: rgba(255, 255, 255, 0.01);
   transition: var(--transition-smooth);
@@ -438,33 +419,28 @@ h1 {
 
 .person:hover {
   background: rgba(139, 92, 246, 0.06);
-  border-color: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.18);
   transform: translateX(4px);
 }
 
-/* Эффект взаимной подсветки влюбленных пар без багов */
+/* Неприкосновенный эффект взаимной неоновой подсветки влюбленных */
 .person.partner-highlighted {
-  background: rgba(236, 72, 153, 0.09) !important;
-  border-color: rgba(236, 72, 153, 0.5) !important;
+  background: rgba(236, 72, 153, 0.1) !important;
+  border-color: rgba(236, 72, 153, 0.55) !important;
   box-shadow: var(--glow-partner) !important;
-  transform: scale(1.03) translateY(-2px);
+  transform: scale(1.025) translateX(4px);
 }
 
 .avatar {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
-  border-radius: 12px;
-  font-size: 20px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s;
-}
-.person:hover .avatar {
-  transform: scale(1.1);
 }
 
 .person-info {
@@ -476,77 +452,75 @@ h1 {
   font-weight: 600;
   font-size: 14px;
   overflow-wrap: anywhere;
-  line-height: 1.4;
   color: #fff;
-  letter-spacing: 0.2px;
 }
 
 .person-role {
-  margin-top: 3px;
+  margin-top: 2px;
   color: var(--text-muted);
   font-size: 12px;
-  line-height: 1.3;
 }
 
 .final-quote {
-  margin-top: 70px;
-  text-align: center;
+  margin-top: 50px;
   color: var(--text-muted);
   font-size: 14px;
-  line-height: 1.7;
-  max-width: 580px;
-  padding: 24px;
+  line-height: 1.6;
+  max-width: 600px;
+  padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
+  position: sticky;
+  left: 80px;
 }
 
-@media (max-width: 1300px) {
-  .layout-grid { grid-template-columns: 300px 300px 1fr; }
-}
+.heart { color: #a855f7; display: inline-block; }
 
 @media (max-width: 1200px) {
-  .layout-grid { grid-template-columns: 1fr; }
-  .sidebar, .sidebar-secondary {
-    height: auto;
-    position: relative;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .main-content { padding: 40px 20px; }
+  .layout-grid { grid-template-columns: 1fr; height: auto; overflow: auto; }
+  .sidebar, .sidebar-secondary { height: auto; position: relative; border: none; backdrop-filter: none; }
+  .canvas-viewport { height: auto; overflow: visible; }
+  .main-content { padding: 40px 20px; min-width: 100%; }
+  .hero, .final-quote { position: relative; left: 0; }
+  .tree { flex-direction: column; width: 100%; gap: 32px; }
+  .level-column { width: 100%; }
+  .connector-h { display: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- Динамические неоновые сферы на фоне приложения -->
-<div class="bg-blobs">
+<!-- Интерактивная чертежная сетка и неоновый фон -->
+<div class="bg-canvas">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
 </div>
 
 <main class="layout-grid">
-  <!-- Левый сайдбар: Близкий круг и Питомцы -->
+  <!-- Левая фиксированная панель: Близкий круг и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
   
-  <!-- Правый сайдбар: Окружение и Инфраструктура -->
-  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
+  <!-- Центральная область холста с независимой прокруткой -->
+  <div class="canvas-viewport">
+    <div class="main-content">
+      
+      <header class="hero">
+        <div class="eyebrow" id="eyebrow">Интеграция систем...</div>
+        <h1 id="title">Семейное древо</h1>
+        <p class="subtitle" id="subtitle"></p>
+        <div class="status" id="status"><span class="dot"></span>Развертывание холста family.json...</div>
+      </header>
 
-  <!-- Центральная область с интерактивным древом поколений -->
-  <div class="main-content">
-    <header class="hero">
-      <div class="eyebrow" id="eyebrow">Синхронизация...</div>
-      <h1 id="title">Семейное древо</h1>
-      <p class="subtitle" id="subtitle"></p>
-      <div class="status" id="status"><span class="dot"></span>Подключение к family.json...</div>
-    </header>
-
-    <!-- Секция для динамической генерации древа -->
-    <section id="content"></section>
-    
-    <!-- Хроники тепла -->
-    <footer class="final-quote" id="footer"></footer>
+      <!-- Контейнер для динамической горизонтальной генерации древа -->
+      <section id="content"></section>
+      
+      <!-- Семейные хроники -->
+      <footer class="final-quote" id="footer"></footer>
+      
+    </div>
   </div>
+  
+  <!-- Правая фиксированная панель: Окружение и Инфраструктура -->
+  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 </main>
 <script>
 var JSON_FILE = "family.json";
@@ -661,9 +635,9 @@ function render(data) {
     var lv = sortedLevels[idx];
     var levelNum = Number(lv);
     if (idx > 0) {
-      html += '<div class="connector"><div class="vline"></div></div>';
+      html += '<div class="connector-h"><div class="hline"></div></div>';
     }
-    html += '<div class="level-row">';
+    html += '<div class="level-column">';
     html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
     if (levels[lv]._hasCenter) {
       html += renderCenter(center);
@@ -698,15 +672,15 @@ function loadFamily() {
       if (text !== lastJSON) {
         render(data);
         lastJSON = text;
-        status.innerHTML = '<span class="dot"></span>Обновлено: ' + new Date().toLocaleTimeString("ru-RU");
+        status.innerHTML = '<span class="dot"></span>Синхронизировано: ' + new Date().toLocaleTimeString("ru-RU");
       } else {
-        status.innerHTML = '<span class="dot"></span>Проверено: ' + new Date().toLocaleTimeString("ru-RU");
+        status.innerHTML = '<span class="dot"></span>Актуально: ' + new Date().toLocaleTimeString("ru-RU");
       }
     })
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в книге репозитория; 2) в JSON нет ошибок синтаксиса; 3) открыта консоль (F12).</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открыта консоль (F12).</div>';
       }
       console.error(err);
     });
@@ -715,7 +689,7 @@ function loadFamily() {
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
 
-// Изолированная декларативная база данных влюбленных пар
+// База данных влюбленных пар (Абсолютно нетронутая логика)
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
@@ -724,7 +698,7 @@ function getPartnerName(name) {
   return pairs[name] || null;
 }
 
-// Перехват событий наведения мыши для взаимного подсвечивания влюбленных пар
+// Слушатель событий мыши на холсте
 document.addEventListener('mouseover', function(e) {
   var personCard = e.target.closest('.person');
   if (!personCard) return;
@@ -741,7 +715,6 @@ document.addEventListener('mouseover', function(e) {
   }
 });
 
-// Сброс классов подсветки при уходе курсора
 document.addEventListener('mouseout', function(e) {
   var personCard = e.target.closest('.person');
   if (!personCard) return;
