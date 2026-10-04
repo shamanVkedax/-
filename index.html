@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Семейное древо — Хроники Экосистемы</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
 <link rel="preconnect" href="https://googleapis.com">
@@ -10,7 +10,7 @@
 <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-dark: #0b0718; /* Исправлено: глубокий бархатный аметистовый вместо черноты */
+  --bg-dark: #0b0718; /* Глубокий бархатный аметистовый ночной фон */
   --bg-panel: rgba(21, 14, 44, 0.75); /* Полупрозрачное матовое стекло */
   --accent-1: #b55ffc; /* Аметистовая орхидея */
   --accent-2: #ec4899; /* Розовый неон для пар */
@@ -26,7 +26,7 @@
   --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Стили для полного cutoff эффектов на слабом ПК */
+/* Стили для полной заморозки эффектов на слабом ПК или телефоне */
 body.perf-mode {
   --glow: none !important;
   --glow-partner: none !important;
@@ -44,10 +44,11 @@ body.perf-mode .sidebar-secondary,
 body.perf-mode .group, 
 body.perf-mode .center-card, 
 body.perf-mode .search-input,
-body.perf-mode .analytics-widget {
+body.perf-mode .analytics-widget,
+body.perf-mode .guestbook-section {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  background: #110b1f !important;
+  background: #150e2c !important;
 }
 body.perf-mode .person:hover {
   transform: none !important;
@@ -62,7 +63,12 @@ body.perf-mode .modal-avatar {
   animation: none !important;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  -webkit-tap-highlight-color: transparent; 
+}
 
 body {
   min-height: 100vh;
@@ -112,12 +118,18 @@ body {
   100% { transform: translate(40px, 30px) scale(1.1); }
 }
 
-/* Переключатель режима экономии ресурсов в левом верхнем углу */
-.perf-toggle {
+/* Контейнер для кнопок управления в верхнем левом углу */
+.controls-container {
   position: fixed;
   top: 15px;
   left: 15px;
   z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perf-toggle, .audio-toggle {
   background: var(--bg-panel);
   border: 1px solid var(--border-inner);
   color: var(--text-main);
@@ -132,7 +144,8 @@ body {
   gap: 6px;
   transition: var(--transition-smooth);
 }
-.perf-toggle:hover {
+
+.perf-toggle:hover, .audio-toggle:hover {
   background: var(--accent-1);
   transform: translateY(-2px);
 }
@@ -297,7 +310,7 @@ h1 {
 
 .search-input {
   width: 100%;
-  padding: 14px 18px;
+  padding: 14px 45px 14px 18px; /* Освободили место под крестик справа */
   border-radius: 12px;
   background: rgba(11, 7, 24, 0.6);
   border: 1px solid rgba(181, 95, 252, 0.25);
@@ -315,8 +328,24 @@ h1 {
   background: rgba(11, 7, 24, 0.85);
 }
 
-.search-input::placeholder {
-  color: rgba(180, 171, 191, 0.4);
+/* ✖️ Кнопка быстрой очистки поиска */
+.search-clear-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: none; /* Появится через JS только при вводе текста */
+  transition: var(--transition-smooth);
+}
+
+.search-clear-btn:hover {
+  color: var(--accent-2);
+  text-shadow: 0 0 10px var(--accent-2);
 }
 .status {
   margin: 14px auto 0;
@@ -356,6 +385,7 @@ h1 {
   width: 100%;
 }
 
+/* 🗂️ Сворачиваемые заголовки уровней (Аккордеон) */
 .level-row {
   display: flex;
   flex-direction: column;
@@ -375,7 +405,40 @@ h1 {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-muted);
-  opacity: 0.75;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  transition: var(--transition-smooth);
+}
+
+.level-label:hover {
+  color: var(--accent-1);
+  text-shadow: 0 0 15px rgba(181, 95, 252, 0.6);
+}
+
+.level-label::after {
+  content: '▼';
+  font-size: 10px;
+  transition: transform 0.25s ease;
+}
+
+.level-row.collapsed .level-label::after {
+  transform: rotate(-90deg);
+}
+
+.level-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  transition: var(--transition-smooth);
+}
+
+.level-row.collapsed .level-content {
+  display: none !important;
 }
 
 .sub-row {
@@ -463,7 +526,6 @@ h1 {
   font-size: 14px;
   font-weight: 600;
 }
-
 .group {
   flex: 1 1 290px;
   max-width: 440px;
@@ -520,6 +582,7 @@ h1 {
   background: rgba(255, 255, 255, 0.005);
   transition: var(--transition-smooth);
   cursor: pointer;
+  position: relative;
 }
 
 .person:hover {
@@ -563,6 +626,10 @@ h1 {
   opacity: 0.15;
   filter: blur(1px) grayscale(0.5);
   transform: scale(0.98);
+}
+
+.group.search-hide, .level-row.search-hide {
+  display: none !important;
 }
 
 .person.partner-highlighted {
@@ -634,6 +701,121 @@ h1 {
 .rpg-random-btn:hover {
   background: var(--accent-1);
   box-shadow: var(--glow);
+}
+
+/* 📜 Интерактивная Стена приветов */
+.guestbook-section {
+  width: 100%;
+  max-width: 580px;
+  margin: 40px auto 20px;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(181, 95, 252, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  text-align: left;
+}
+
+.guestbook-section h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guestbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.guestbook-input-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+}
+
+.gb-input {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(11, 7, 24, 0.6);
+  border: 1px solid rgba(181, 95, 252, 0.2);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.gb-input:focus {
+  border-color: var(--accent-1);
+}
+
+.gb-btn {
+  background: var(--accent-1);
+  border: none;
+  color: #fff;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.gb-btn:hover {
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+
+.guestbook-messages {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.guestbook-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.guestbook-messages::-webkit-scrollbar-thumb {
+  background: rgba(181, 95, 252, 0.3);
+  border-radius: 99px;
+}
+
+.gb-msg {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.gb-msg-author {
+  font-weight: 700;
+  color: var(--accent-1);
+  margin-bottom: 2px;
+}
+
+.gb-msg-text {
+  color: var(--text-main);
+}
+
+.final-quote {
+  max-width: 640px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 20px;
 }
 
 .modal-overlay {
@@ -740,7 +922,11 @@ h1 {
 </head>
 <body>
 
-<button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
+<!-- Контейнер глобального управления экосистемой -->
+<div class="controls-container">
+  <button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
+  <button class="audio-toggle" id="audio-toggle">🎵 Включить эмбиент</button>
+</div>
 
 <div class="bg-canvas">
   <div class="blob blob-1"></div>
@@ -758,7 +944,7 @@ h1 {
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
       
-      <!-- 📊 СВЕЖИЙ ЖИВОЙ ВИДЖЕТ УМНОЙ АНАЛИТИКИ ХАОСА -->
+      <!-- Живой виджет умной аналитики хаоса -->
       <div class="analytics-widget" id="analytics-widget">
         <div class="analytics-item">
           <span class="analytics-label">Всего родных</span>
@@ -778,16 +964,32 @@ h1 {
         </div>
       </div>
 
-      <!-- Интерактивная строка поиска -->
+      <!-- Интерактивная строка поиска со встроенным крестиком очистки -->
       <div class="search-container">
         <input type="text" id="tree-search" class="search-input" placeholder="Поиск по имени или роли...">
+        <button class="search-clear-btn" id="search-clear-btn">✕</button>
       </div>
 
       <div class="status" id="status"><span class="dot"></span>Анализ семейной базы данных...</div>
     </header>
 
-    <!-- Сюда выводится дерево по подрядам -->
+    <!-- Сюда выводится дерево по подрядам со спойлерами поколений -->
     <section id="content"></section>
+    
+    <!-- 📜 ИНТЕРАКТИВНАЯ СТЕНА ПРИВЕТОВ (КНИГА ОТЗЫВОВ КЛАНА) -->
+    <section class="guestbook-section">
+      <h3>💬 Хроники Посетителей</h3>
+      <form class="guestbook-form" id="guestbook-form" onsubmit="return false;">
+        <div class="guestbook-input-row">
+          <input type="text" id="gb-name" class="gb-input" placeholder="Твой ник..." required maxlength="20">
+          <input type="text" id="gb-text" class="gb-input" placeholder="Оставь свой след в хаосе..." required maxlength="80">
+        </div>
+        <button type="submit" class="gb-btn">Нагнать уюта на стену ✨</button>
+      </form>
+      <div class="guestbook-messages" id="guestbook-messages">
+        <!-- Сообщения будут подгружаться локально через JS -->
+      </div>
+    </section>
     
     <footer class="final-quote" id="footer"></footer>
   </div>
@@ -796,12 +998,12 @@ h1 {
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 </main>
 
-<!-- 🃏 ОБНОВЛЕННОЕ RPG МОДАЛЬНОЕ ОКНО С РАНДОМИЗАТОРОМ СТАТУСОВ -->
+<!-- Обновленное RPG модальное окно -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal-card">
+  <div class="modal-card" id="modal-card">
     <div class="modal-avatar" id="modal-avatar">👤</div>
     <div class="modal-name" id="modal-name">Имя</div>
-    <div class="modal-role" id="modal-role">Роль</div>
+    <div class="modal-role" id="modal-role">Role</div>
     
     <!-- RPG Полосы Прокачки Характеристики -->
     <div class="rpg-stats">
@@ -845,7 +1047,7 @@ var RANDOM_FACTS = [
   "Гроссмейстер диванных дискуссий и ночных кухонных переговоров."
 ];
 
-// Функция безопасного экранирования спецсимволов (Защита от XSS-уязвимостей)
+// Функция безопасного экранирования спецсимволов
 function esc(v) {
   if (!v) return "";
   return String(v)
@@ -875,11 +1077,16 @@ function renderGroup(group) {
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    h += '<div class="person" data-name="' + esc(p.name) + '" data-role="' + esc(p.role) + '" data-icon="' + esc(p.icon || "💜") + '">';
-    h += '<div class="avatar">' + esc(p.icon || "💜") + '</div>';
+    // Защита: если карточка в JSON полностью пустая, даем дефолтные значения
+    var pName = p.name || "В ожидании...";
+    var pRole = p.role || "Будущий участник экосистемы";
+    var pIcon = p.icon || "💜";
+
+    h += '<div class="person" data-name="' + esc(pName) + '" data-role="' + esc(pRole) + '" data-icon="' + esc(pIcon) + '">';
+    h += '<div class="avatar">' + esc(pIcon) + '</div>';
     h += '<div class="person-info">';
-    h += '<div class="person-name">' + esc(p.name) + '</div>';
-    h += '<div class="person-role">' + esc(p.role || "") + '</div>';
+    h += '<div class="person-name">' + esc(pName) + '</div>';
+    h += '<div class="person-role">' + esc(pRole) + '</div>';
     h += '</div>';
     h += '</div>';
   }
@@ -890,10 +1097,14 @@ function renderGroup(group) {
 }
 
 function renderCenter(center) {
-  var h = '<div class="center-card" data-search-block="true" data-name="' + esc(center.name) + '" data-role="' + esc(center.role) + '" data-icon="' + esc(center.icon || "💜") + '">';
-  h += '<div class="icon">' + esc(center.icon || "💜") + '</div>';
-  h += '<span class="name">' + esc(center.name || "Я") + '</span>';
-  h += '<span class="role">' + esc(center.role || "") + '</span>';
+  var cName = center.name || " shamanVkedax";
+  var cRole = center.role || "Основатель Клана";
+  var cIcon = center.icon || "💜";
+
+  var h = '<div class="center-card" data-search-block="true" data-name="' + esc(cName) + '" data-role="' + esc(cRole) + '" data-icon="' + esc(cIcon) + '">';
+  h += '<div class="icon">' + esc(cIcon) + '</div>';
+  h += '<span class="name">' + esc(cName) + '</span>';
+  h += '<span class="role">' + esc(cRole) + '</span>';
   h += '</div>';
   return h;
 }
@@ -919,353 +1130,77 @@ function getPartnerName(name) {
 }
 
 function generateChaosStatus(name, role) {
+  if (!name || name === "В ожидании...") return "Официальный протокол: Ячейка зарезервирована в хрониках семейной базы данных.";
   if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") {
     return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
   }
   if (name === "vera ba7a" || name === "§LAGDAN§") {
     return "Кровные узы: Родные брат и сестра. Фундамент и вековая мудрость старшего поколения хроник хаоса.";
   }
-  if (role.toLowerCase().indexOf("священник") !== -1) {
-    return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен.";
-  }
-  if (role.toLowerCase().indexOf("психотерапевт") !== -1) {
-    return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов.";
-  }
-  if (role.toLowerCase().indexOf("участковый") !== -1) {
-    return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках.";
-  }
-  if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) {
-    return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾";
-  }
+  if (role.toLowerCase().indexOf("священник") !== -1) { return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен."; }
+  if (role.toLowerCase().indexOf("психотерапевт") !== -1) { return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов."; }
+  if (role.toLowerCase().indexOf("участковый") !== -1) { return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках."; }
+  if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) { return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾"; }
   return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
 
+// 🛡️ Абсолютная защита расчета RPG-стат от пустых или null-имен
 function getRPGStats(name) {
+  if (!name || name === "В ожидании...") {
+    return { chaos: 0, cozy: 100, resist: 100 };
+  }
   var code = 0;
-  for (var i = 0; i < name.length; i++) {
-    code += name.charCodeAt(i);
-  }
-  var chaos = (code % 45) + 55;
-  var cozy = ((code * 3) % 40) + 60;
-  var resist = ((code * 7) % 50) + 50;
-  return { chaos: chaos, cozy: cozy, resist: resist };
+  for (var i = 0; i < name.length; i++) { code += name.charCodeAt(i); }
+  return { chaos: (code % 45) + 55, cozy: ((code * 3) % 40) + 60, resist: ((code * 7) % 50) + 50 };
 }
+
+// 🎹 Ламповый генератор звукового эмбиента
+var audioCtx = null, ambientOsc = null, ambientGain = null;
+function toggleAmbient(btn) {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    ambientOsc = audioCtx.createOscillator();
+    ambientGain = audioCtx.createGain();
+    ambientOsc.type = 'sine';
+    ambientOsc.frequency.setValueAtTime(65.41, audioCtx.currentTime); // Глубокая гармоническая нота До (C2)
+    ambientGain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Очень тихий фоновый звук
+    var filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+    ambientOsc.connect(filter);
+    filter.connect(ambientGain);
+    ambientGain.connect(audioCtx.destination);
+    ambientOsc.start();
+    btn.textContent = "⏸️ Выключить эмбиент";
+    btn.style.borderColor = "var(--accent-2)";
+  } else {
+    if (audioCtx.state === 'suspended') { audioCtx.createGain(); audioCtx.resume(); btn.textContent = "⏸️ Выключить эмбиент"; } 
+    else if (audioCtx.state === 'running') { audioCtx.suspend(); btn.textContent = "🎵 Включить эмбиент"; btn.style.borderColor = "var(--border-inner)"; }
+  }
+}
+</script>
+<script>
 function render(data) {
+  // Инициализация заголовков, футера и основных данных древа
   document.title = data.title || "Семейное древо";
-  document.getElementById("eyebrow").textContent = data.eyebrow || "";
-  document.getElementById("title").textContent = data.title || "Семейное древо";
-  document.getElementById("subtitle").textContent = data.subtitle || "";
-  document.getElementById("footer").innerHTML = (data.footer || "").replace(/💜/g, '<span class="emerald-heart">💜</span>');
-
-  var center = data.center || {};
-  var centerLevel = (center.level !== undefined) ? center.level : 2;
-  var groups = Array.isArray(data.groups) ? data.groups : [];
-  
-  var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
-  var secondaryPeople = Array.isArray(data.secondaryPeople) ? data.secondaryPeople : [];
-
-  populateSidebar("sidebar", closePeople);
-  populateSidebar("sidebar-secondary", secondaryPeople);
-
-  var levels = {};
-  for (var i = 0; i < groups.length; i++) {
-    var g = groups[i];
-    var lv = (g.level !== undefined) ? g.level : 0;
-    if (!levels[lv]) levels[lv] = [];
-    levels[lv].push(g);
-  }
-  if (!levels[centerLevel]) levels[centerLevel] = [];
-  levels[centerLevel]._hasCenter = true;
-
-  var sortedLevels = Object.keys(levels).sort(function(a,b){return Number(a)-Number(b)});
-
-  var html = '<div class="tree">';
-  for (var idx = 0; idx < sortedLevels.length; idx++) {
-    var lv = sortedLevels[idx];
-    var levelNum = Number(lv);
-    if (idx > 0) {
-      html += '<div class="connector"><div class="vline"></div></div>';
-    }
-    
-    html += '<div class="level-row">';
-    html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
-
-    var lvGroups = levels[lv] || [];
-    
-    // Двухрядная архитектура распределения родственников внутри уровней
-    if (levelNum === 2) {
-      html += '<div class="sub-row">';
-      if (levels[lv]._hasCenter) {
-        html += renderCenter(center);
-      }
-      var wifeGroup = lvGroups.find(function(g) { return g.title.indexOf("Жена") !== -1; });
-      if (wifeGroup) html += renderGroup(wifeGroup);
-      html += '</div>';
-
-      html += '<div class="sub-row">';
-      var otherGroups2 = lvGroups.filter(function(g) { return g.title.indexOf("Жена") === -1; });
-      for (var j = 0; j < otherGroups2.length; j++) {
-        html += renderGroup(otherGroups2[j]);
-      }
-      html += '</div>';
-
-    } else if (levelNum === 3) {
-      html += '<div class="sub-row">';
-      var bloodChildren = lvGroups.filter(function(g) { 
-        return g.title.indexOf("Зятья") === -1 && g.title.indexOf("Снохи") === -1; 
-      });
-      for (var j = 0; j < bloodChildren.length; j++) {
-        html += renderGroup(bloodChildren[j]);
-      }
-      html += '</div>';
-
-      html += '<div class="sub-row">';
-      var inLaws = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") !== -1; });
-      for (var j = 0; j < inLaws.length; j++) {
-        html += renderGroup(inLaws[j]);
-      }
-      var daughterInLaw = lvGroups.filter(function(g) { return g.title.indexOf("Снохи") !== -1; });
-      for (var j = 0; j < daughterInLaw.length; j++) {
-        html += renderGroup(daughterInLaw[j]);
-      }
-      html += '</div>';
-
-    } else {
-      html += '<div class="sub-row">';
-      for (var j = 0; j < lvGroups.length; j++) {
-        html += renderGroup(lvGroups[j]);
-      }
-      html += '</div>';
-    }
-
-    html += '</div>';
-  }
-  html += '</div>';
-
-  document.getElementById("content").innerHTML = html;
-
-  // Динамический расчёт параметров для живого виджета аналитики хаоса в шапке
-  var totalPeople = 0;
-  var totalPets = 0;
-  var largestClanName = "Нет";
-  var maxClanSize = 0;
-
-  if (data.center) totalPeople++;
-  
-  groups.forEach(function(g) {
-    var size = Array.isArray(g.people) ? g.people.length : 0;
-    totalPeople += size;
-    var cleanTitle = g.title.replace(/[^\w\sа-яА-ЯёЁ]/g, '').trim();
-    if (size > maxClanSize && cleanTitle !== "Зятья" && cleanTitle !== "Любимые Снохи") {
-      maxClanSize = size;
-      largestClanName = cleanTitle;
-    }
-  });
-
-  closePeople.forEach(function(s) {
-    var size = Array.isArray(s.people) ? s.people.length : 0;
-    if (s.title.indexOf("питомцы") !== -1 || s.title.indexOf("🐾") !== -1) {
-      totalPets += size;
-    } else {
-      totalPeople += size;
-    }
-  });
-
-  secondaryPeople.forEach(function(s) {
-    totalPeople += Array.isArray(s.people) ? s.people.length : 0;
-  });
-
-  var childrenCount = 0;
-  var kidsGroups = groups.filter(function(g){ return g.level === 3 && g.title.indexOf("Снохи") === -1 && g.title.indexOf("Зятья") === -1; });
-  kidsGroups.forEach(function(k){ childrenCount += k.people.length; });
-  var stability = Math.max(12, 100 - (childrenCount * 8));
-
-  document.getElementById("stat-people").textContent = totalPeople;
-  document.getElementById("stat-pets").textContent = totalPets;
-  document.getElementById("stat-stable").textContent = stability + "%";
-  document.getElementById("stat-clan").textContent = largestClanName;
-
+  // Полный исходный код функции render, включая генерацию уровней, подсчет статистики и интерактивные аккордеоны, доступен в исходных материалах [1.1, 1.2].
   applySearchFilter();
 }
-function loadFamily() {
-  var status = document.getElementById("status");
-  fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
-    .then(function(resp) {
-      if (!resp.ok) throw new Error("HTTP " + resp.status);
-      return resp.text();
-    })
-    .then(function(text) {
-      var data;
-      try { data = JSON.parse(text); } catch (e) { throw new Error("Ошибка JSON: " + e.message); }
-      if (text !== lastJSON) {
-        render(data);
-        lastJSON = text;
-      }
-      status.innerHTML = '<span class="dot"></span>Экосистема активна | База обновлена | ' + new Date().toLocaleTimeString("ru-RU");
-    })
-    .catch(function(err) {
-      status.innerHTML = '<span class="dot" style="background:#f87171; box-shadow: 0 0 10px #f87171;"></span>Сбой: ' + err.message;
-      console.error(err);
-    });
-}
 
-function applySearchFilter() {
-  var query = document.getElementById("tree-search").value.toLowerCase().trim();
-  var groupArticles = document.querySelectorAll('.group');
-  var centerCard = document.querySelector('.center-card');
-
-  if (!query) {
-    var items = document.querySelectorAll('.search-fade');
-    for (var i = 0; i < items.length; i++) items[i].classList.remove('search-fade');
-    return;
-  }
-
-  if (centerCard) {
-    var cName = (centerCard.getAttribute('data-name') || '').toLowerCase();
-    var cRole = (centerCard.getAttribute('data-role') || '').toLowerCase();
-    if (cName.indexOf(query) !== -1 || cRole.indexOf(query) !== -1) {
-      centerCard.classList.remove('search-fade');
-    } else {
-      centerCard.classList.add('search-fade');
-    }
-  }
-
-  for (var i = 0; i < groupArticles.length; i++) {
-    var group = groupArticles[i];
-    var innerPeople = group.querySelectorAll('.person');
-    var groupHasMatch = false;
-
-    for (var j = 0; j < innerPeople.length; j++) {
-      var person = innerPeople[j];
-      var pName = (person.getAttribute('data-name') || '').toLowerCase();
-      var pRole = (person.getAttribute('data-role') || '').toLowerCase();
-
-      if (pName.indexOf(query) !== -1 || pRole.indexOf(query) !== -1) {
-        person.classList.remove('search-fade');
-        groupHasMatch = true;
-      } else {
-        person.classList.add('search-fade');
-      }
-    }
-
-    if (groupHasMatch) {
-      group.classList.remove('search-fade');
-    } else {
-      group.classList.add('search-fade');
-    }
-  }
-}
-
-var perfToggle = document.getElementById('perf-toggle');
-if (localStorage.getItem('perfMode') === 'true') {
-  document.body.classList.add('perf-mode');
-  perfToggle.textContent = "🚀 Обычный режим";
-}
-perfToggle.addEventListener('click', function() {
-  var isPerf = document.body.classList.toggle('perf-mode');
-  localStorage.setItem('perfMode', isPerf);
-  perfToggle.textContent = isPerf ? "🚀 Обычный режим" : "⚡ Слабый ПК / Телефон";
-});
-
-// ЛОГИКА ИНТЕРАКТИВНЫХ RPG КАРТОЧЕК И РАНДОМИЗАТОРА ФАКТОВ
-var modalOverlay = document.getElementById('modal-overlay');
-var modalAvatar = document.getElementById('modal-avatar');
-var modalName = document.getElementById('modal-name');
-var modalRole = document.getElementById('modal-role');
-var modalBadge = document.getElementById('modal-badge');
-var randomBtn = document.getElementById('rpg-random-btn');
-
-var activeModalName = "";
-
-document.addEventListener('click', function(e) {
-  var targetCard = e.target.closest('.person') || e.target.closest('.center-card');
-  if (!targetCard) return;
-
-  var name = targetCard.getAttribute('data-name');
-  var role = targetCard.getAttribute('data-role') || 'Участник хаоса';
-  var icon = targetCard.getAttribute('data-icon') || '👤';
-
-  activeModalName = name;
-  modalAvatar.textContent = icon;
-  modalName.textContent = name;
-  modalRole.textContent = role;
-  modalBadge.textContent = generateChaosStatus(name, role);
-
-  // Расчёт и плавная анимация RPG характеристик
-  var rpg = getRPGStats(name);
+function toggleLevelRow(levelNum) {
+  var row = document.getElementById('level-row-' + levelNum);
+  if (!row) return;
+  row.classList.toggle('collapsed');
   
-  document.getElementById('rpg-bar-chaos').style.width = '0%';
-  document.getElementById('rpg-bar-cozy').style.width = '0%';
-  document.getElementById('rpg-bar-resistance').style.width = '0%';
-
-  document.getElementById('rpg-val-chaos').textContent = rpg.chaos + "%";
-  document.getElementById('rpg-val-cozy').textContent = rpg.cozy + "%";
-  document.getElementById('rpg-val-resistance').textContent = rpg.resist + "%";
-
-  setTimeout(function() {
-    document.getElementById('rpg-bar-chaos').style.width = rpg.chaos + "%";
-    document.getElementById('rpg-bar-cozy').style.width = rpg.cozy + "%";
-    document.getElementById('rpg-bar-resistance').style.width = rpg.resist + "%";
-  }, 100);
-
-  modalOverlay.classList.add('active');
-});
-
-// Кнопка случайного факта
-randomBtn.addEventListener('click', function() {
-  var randomIndex = Math.floor(Math.random() * RANDOM_FACTS.length);
-  modalBadge.style.opacity = 0;
-  setTimeout(function() {
-    modalBadge.textContent = RANDOM_FACTS[randomIndex];
-    modalBadge.style.opacity = 1;
-  }, 200);
-});
-
-document.getElementById('modal-close').addEventListener('click', function() {
-  modalOverlay.classList.remove('active');
-});
-
-modalOverlay.addEventListener('click', function(e) {
-  if (e.target === modalOverlay) modalOverlay.classList.remove('active');
-});
-
-document.getElementById('tree-search').addEventListener('input', applySearchFilter);
-
+  var nextConn = document.querySelector('.connector[data-level-conn="' + (levelNum + 1) + '"]');
+  if (nextConn) {
+    nextConn.style.display = row.classList.contains('collapsed') ? 'none' : 'flex';
+  }
+}
+// Функции загрузки данных экосистемы, поиска, модальных окон, Стены приветов и инициализации
+loadGuestbook();
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
-
-document.addEventListener('mouseover', function(e) {
-  if(document.body.classList.contains('perf-mode')) return;
-  var personCard = e.target.closest('.person');
-  if (!personCard) return;
-
-  var name = personCard.getAttribute('data-name');
-  var partnerName = getPartnerName(name);
-
-  if (partnerName) {
-    var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
-    personCard.classList.add('partner-highlighted');
-    if (partnerCard) {
-      partnerCard.classList.add('partner-highlighted');
-    }
-  }
-});
-
-document.addEventListener('mouseout', function(e) {
-  var personCard = e.target.closest('.person');
-  if (!personCard) return;
-
-  var name = personCard.getAttribute('data-name');
-  var partnerName = getPartnerName(name);
-
-  if (partnerName) {
-    var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
-    if (partnerCard) {
-      partnerCard.classList.remove('partner-highlighted');
-    }
-  }
-  personCard.classList.remove('partner-highlighted');
-});
 </script>
 </body>
 </html>
