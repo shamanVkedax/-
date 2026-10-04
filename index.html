@@ -110,7 +110,6 @@ body {
   border-color: var(--accent-1);
   box-shadow: var(--glow);
 }
-
 .avatar-small {
   flex: 0 0 36px;
   width: 36px;
@@ -247,7 +246,26 @@ h1 {
   height: 36px;
   background: var(--line-grad);
 }
+</style>
+</head>
+<body>
+<main class="layout-grid">
+  <aside class="sidebar" id="sidebar"></aside>
+  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
+  <div class="main-content">
+    <header class="hero">
+      <div class="eyebrow" id="eyebrow">Загрузка...</div>
+      <h1 id="title">Семейное древо</h1>
+      <p class="subtitle" id="subtitle"></p>
+      <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
+    </header>
+
+    <section id="content"></section>
+    <footer class="final-quote" id="footer"></footer>
+  </div>
+</main>
+<style>
 .center-card {
   min-width: min(320px, 100%);
   text-align: center;
@@ -420,27 +438,9 @@ h1 {
   }
 }
 </style>
-</head>
-<body>
-<main class="layout-grid">
-  <aside class="sidebar" id="sidebar"></aside>
-  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
-
-  <div class="main-content">
-    <header class="hero">
-      <div class="eyebrow" id="eyebrow">Загрузка...</div>
-      <h1 id="title">Семейное древо</h1>
-      <p class="subtitle" id="subtitle"></p>
-      <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
-    </header>
-
-    <section id="content"></section>
-    <footer class="final-quote" id="footer"></footer>
-  </div>
-</main>
 
 <script>
-var JSON_FILE = "./family.json";
+var JSON_FILE = "family.json";
 var REFRESH_MS = 30000;
 var lastJSON = "";
 
@@ -449,24 +449,24 @@ function esc(v) {
   v = String(v);
   return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
+
 function levelLabelText(level) {
   var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
-
 function renderGroup(group, tagClass, showGenTag) {
   var h = "";
   h += '<article class="group">';
   h += '<div class="group-head">';
-  h += '<h2>' + esc(group.title);
-  h += '</h2>';
+  h += '<h2>' + esc(group.title) + '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
   h += '</div>';
   h += '<div class="people">';
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    h += '<div class="person">';
+    // Интегрирован специальный атрибут data-name для точечной подсветки пар
+    h += '<div class="person" data-name="' + esc(p.name) + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
     h += '<div class="person-info">';
     h += '<div class="person-name">' + esc(p.name) + '</div>';
@@ -566,7 +566,6 @@ function render(data) {
 
   document.getElementById("content").innerHTML = html;
 }
-
 function loadFamily() {
   var status = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
@@ -600,6 +599,60 @@ function loadFamily() {
 
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
+
+// Логика взаимной подсветки пары при наведении
+document.addEventListener('mouseover', function(e) {
+  var personCard = e.target.closest('.person');
+  if (!personCard) return;
+
+  var name = personCard.getAttribute('data-name');
+  var partnerName = null;
+
+  // Проверка связей супругов
+  if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
+  if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
+
+  if (partnerName) {
+    var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
+    if (partnerCard) {
+      // Подсвечиваем обе карточки
+      personCard.style.background = "rgba(124, 58, 237, 0.12)";
+      personCard.style.borderColor = "rgba(124, 58, 237, 0.6)";
+      personCard.style.boxShadow = "var(--glow)";
+
+      partnerCard.style.background = "rgba(124, 58, 237, 0.12)";
+      partnerCard.style.borderColor = "rgba(124, 58, 237, 0.6)";
+      partnerCard.style.boxShadow = "var(--glow)";
+    }
+  }
+});
+
+// Сброс подсветки, когда курсор уходит с карточки
+document.addEventListener('mouseout', function(e) {
+  var personCard = e.target.closest('.person');
+  if (!personCard) return;
+
+  var name = personCard.getAttribute('data-name');
+  var partnerName = null;
+
+  if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
+  if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
+
+  if (partnerName) {
+    var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
+    
+    // Возвращаем исходные стили из CSS
+    personCard.style.background = "";
+    personCard.style.borderColor = "";
+    personCard.style.boxShadow = "";
+    
+    if (partnerCard) {
+      partnerCard.style.background = "";
+      partnerCard.style.borderColor = "";
+      partnerCard.style.boxShadow = "";
+    }
+  }
+});
 </script>
 </body>
 </html>
