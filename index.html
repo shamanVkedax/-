@@ -71,7 +71,7 @@ body {
 
 .layout-grid {
   display: grid;
-  grid-template-columns: 340px 1fr 340px;
+  grid-template-columns: minmax(290px, 340px) 1fr minmax(290px, 340px);
   min-height: 100vh;
   max-width: 1920px;
   margin: 0 auto;
@@ -98,7 +98,6 @@ body {
   border-left: 1px solid rgba(16, 185, 129, 0.05);
 }
 
-/* Тонкие скрывающиеся скроллбары */
 .sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar {
   width: 4px;
 }
@@ -223,6 +222,7 @@ h1 {
   50% { opacity: 0.4; }
 }
 
+/* Выравнивание дерева и строк строго по центру экрана */
 .tree {
   display: flex;
   flex-direction: column;
@@ -234,8 +234,10 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
   gap: 24px;
   width: 100%;
+  max-width: 900px; /* Защита от разлетания карточек на широких экранах */
   position: relative;
   margin-bottom: 32px;
   transition: var(--transition-smooth);
@@ -278,7 +280,7 @@ h1 {
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45), var(--glow);
   position: relative;
   flex: 1 1 290px;
-  max-width: 400px;
+  max-width: 420px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: var(--transition-smooth);
@@ -326,8 +328,10 @@ h1 {
   font-weight: 600;
 }
 
+/* Монолитный дизайн карточек групп: убрали жесткий левый сдвиг */
 .group {
-  width: 100%;
+  flex: 1 1 290px;
+  max-width: 420px;
   border: 1px solid var(--border-outer);
   border-radius: 18px;
   background: var(--bg-panel);
@@ -338,7 +342,7 @@ h1 {
 }
 
 .group:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: rgba(16, 185, 129, 0.15);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
@@ -451,7 +455,7 @@ h1 {
 
 @media (max-width: 1400px) {
   .layout-grid {
-    grid-template-columns: 300px 1fr 300px;
+    grid-template-columns: 280px 1fr 280px;
   }
 }
 
@@ -483,10 +487,10 @@ h1 {
 <!-- Монолитная трехколоночная сетка -->
 <main class="layout-grid">
   
-  <!-- 1. ЛЕВАЯ КОЛОНКА (Особые люди и Питомцы) -->
+  <!-- 1. ЛЕВАЯ КОЛОНКА: Особые люди и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
 
-  <!-- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА (Строго по центру между панелями) -->
+  <!-- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА: Шапка, Поиск и Древо поколений -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Инициализация...</div>
@@ -509,7 +513,7 @@ h1 {
     <footer class="final-quote" id="footer"></footer>
   </div>
   
-  <!-- 3. ПРАВАЯ КОЛОНКА (Инфраструктура и Окружение) -->
+  <!-- 3. ПРАВАЯ КОЛОНКА: Инфраструктура и Окружение -->
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
 </main>
@@ -534,7 +538,7 @@ function levelLabelText(level) {
   return labels[level] || ("Уровень " + level);
 }
 
-// Универсальный рендеринг блоков для центра древа и сайдбаров
+// Универсальный рендеринг сочных, объемных блоков для всего приложения
 function renderGroup(group) {
   var h = "";
   h += '<article class="group" data-search-block="true">';
@@ -568,7 +572,7 @@ function renderCenter(center) {
   return h;
 }
 
-// Сайдбары нативно используют тот же визуальный шаблон group, что и дерево
+// Заполнение сайдбаров аналогичными большими блоками
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) {
@@ -577,7 +581,7 @@ function populateSidebar(elementId, dataArray) {
   document.getElementById(elementId).innerHTML = h;
 }
 
-// Декларативная база влюбленных пар
+// База данных влюбленных пар
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
@@ -586,7 +590,7 @@ function getPartnerName(name) {
   return pairs[name] || null;
 }
 
-// Функция подсчета живой статистики из JSON-структуры
+// Функция подсчета живой статистики из JSON
 function calculateStats(data) {
   var totalPeople = 0;
   var totalPets = 0;
@@ -613,6 +617,7 @@ function calculateStats(data) {
   }
   return { people: totalPeople, pets: totalPets };
 }
+
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -688,7 +693,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171; box-shadow: 0 0 10px #f87171;"></span>Сбой: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в книге репозитория; 2) в JSON нет синтаксических ошибок.</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет синтаксических ошибок.</div>';
       }
       console.error(err);
     });
@@ -710,7 +715,7 @@ function applySearchFilter() {
     var cName = (centerCard.getAttribute('data-name') || '').toLowerCase();
     var cRole = (centerCard.getAttribute('data-role') || '').toLowerCase();
     if (cName.indexOf(query) !== -1 || cRole.indexOf(query) !== -1) {
-      centerCard.classList.remove('search-fade');
+      centerCard.substring.classList.remove('search-fade');
     } else {
       centerCard.classList.add('search-fade');
     }
