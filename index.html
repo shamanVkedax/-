@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Семейное древо — Хроники Экосистемы</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
 <link rel="preconnect" href="https://googleapis.com">
@@ -10,8 +10,8 @@
 <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-dark: #0b0718; /* Исправлено: глубокий бархатный аметистовый вместо черноты */
-  --bg-panel: rgba(21, 14, 44, 0.75); /* Полупрозрачное матовое стекло */
+  --bg-dark: #0b0718; /* Ночной аметистовый бархат */
+  --bg-panel: rgba(21, 14, 44, 0.75); /* Матовое стекло */
   --accent-1: #b55ffc; /* Аметистовая орхидея */
   --accent-2: #ec4899; /* Розовый неон для пар */
   --accent-3: #475569;
@@ -26,13 +26,13 @@
   --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Стили для полного cutoff эффектов на слабом ПК */
+/* Эко-режим: полная заморозка тяжелой графики */
 body.perf-mode {
   --glow: none !important;
   --glow-partner: none !important;
   --transition-smooth: none !important;
 }
-body.perf-mode .blob {
+body.perf-mode .blob, body.perf-mode .pulse-ring, body.perf-mode .online-dot {
   display: none !important;
 }
 body.perf-mode .bg-canvas {
@@ -44,10 +44,11 @@ body.perf-mode .sidebar-secondary,
 body.perf-mode .group, 
 body.perf-mode .center-card, 
 body.perf-mode .search-input,
-body.perf-mode .analytics-widget {
+body.perf-mode .analytics-widget,
+body.perf-mode .guestbook-section {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  background: #110b1f !important;
+  background: #150e2c !important;
 }
 body.perf-mode .person:hover {
   transform: none !important;
@@ -62,7 +63,12 @@ body.perf-mode .modal-avatar {
   animation: none !important;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  -webkit-tap-highlight-color: transparent;
+}
 
 body {
   min-height: 100vh;
@@ -112,12 +118,18 @@ body {
   100% { transform: translate(40px, 30px) scale(1.1); }
 }
 
-/* Переключатель режима экономии ресурсов в левом верхнем углу */
-.perf-toggle {
+/* Контейнер для кнопок управления в верхнем левом углу */
+.controls-container {
   position: fixed;
   top: 15px;
   left: 15px;
   z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perf-toggle, .audio-toggle {
   background: var(--bg-panel);
   border: 1px solid var(--border-inner);
   color: var(--text-main);
@@ -132,7 +144,8 @@ body {
   gap: 6px;
   transition: var(--transition-smooth);
 }
-.perf-toggle:hover {
+
+.perf-toggle:hover, .audio-toggle:hover {
   background: var(--accent-1);
   transform: translateY(-2px);
 }
@@ -297,7 +310,7 @@ h1 {
 
 .search-input {
   width: 100%;
-  padding: 14px 18px;
+  padding: 14px 45px 14px 18px; /* Освободили место под крестик справа */
   border-radius: 12px;
   background: rgba(11, 7, 24, 0.6);
   border: 1px solid rgba(181, 95, 252, 0.25);
@@ -315,8 +328,24 @@ h1 {
   background: rgba(11, 7, 24, 0.85);
 }
 
-.search-input::placeholder {
-  color: rgba(180, 171, 191, 0.4);
+/* ✖️ Кнопка быстрой очистки поиска */
+.search-clear-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: none; /* Появится через JS только при вводе текста */
+  transition: var(--transition-smooth);
+}
+
+.search-clear-btn:hover {
+  color: var(--accent-2);
+  text-shadow: 0 0 10px var(--accent-2);
 }
 .status {
   margin: 14px auto 0;
@@ -356,6 +385,7 @@ h1 {
   width: 100%;
 }
 
+/* 🗂️ Сворачиваемые заголовки уровней (Аккордеон) */
 .level-row {
   display: flex;
   flex-direction: column;
@@ -375,7 +405,40 @@ h1 {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-muted);
-  opacity: 0.75;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  transition: var(--transition-smooth);
+}
+
+.level-label:hover {
+  color: var(--accent-1);
+  text-shadow: 0 0 15px rgba(181, 95, 252, 0.6);
+}
+
+.level-label::after {
+  content: '▼';
+  font-size: 10px;
+  transition: transform 0.25s ease;
+}
+
+.level-row.collapsed .level-label::after {
+  transform: rotate(-90deg);
+}
+
+.level-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  transition: var(--transition-smooth);
+}
+
+.level-row.collapsed .level-content {
+  display: none !important;
 }
 
 .sub-row {
@@ -405,6 +468,30 @@ h1 {
   background: var(--line-grad);
 }
 
+/* 🌌 Живой пульс гравитации у костра (Центральная карточка) */
+.center-card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-ring {
+  position: absolute;
+  border: 2px solid var(--accent-1);
+  border-radius: 30px;
+  inset: -4px;
+  opacity: 0;
+  pointer-events: none;
+  animation: gravitationalWave 4s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+
+@keyframes gravitationalWave {
+  0% { transform: scale(0.96); opacity: 0.4; filter: blur(2px); }
+  50% { opacity: 0.1; filter: blur(6px); }
+  100% { transform: scale(1.25); opacity: 0; filter: blur(12px); }
+}
+
 .center-card {
   min-width: min(300px, 100%);
   text-align: center;
@@ -420,6 +507,7 @@ h1 {
   -webkit-backdrop-filter: blur(20px);
   transition: var(--transition-smooth);
   cursor: pointer;
+  z-index: 2;
 }
 
 .center-card:hover {
@@ -463,7 +551,6 @@ h1 {
   font-size: 14px;
   font-weight: 600;
 }
-
 .group {
   flex: 1 1 290px;
   max-width: 440px;
@@ -520,6 +607,7 @@ h1 {
   background: rgba(255, 255, 255, 0.005);
   transition: var(--transition-smooth);
   cursor: pointer;
+  position: relative;
 }
 
 .person:hover {
@@ -528,6 +616,7 @@ h1 {
   transform: translateX(4px);
 }
 
+/* 🖼️ Реальный визуал: Круглые аватарки-картинки */
 .avatar {
   flex: 0 0 42px;
   width: 42px;
@@ -538,6 +627,13 @@ h1 {
   font-size: 22px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .person-info {
@@ -559,6 +655,27 @@ h1 {
   font-size: 13px;
 }
 
+/* 🕯️ «Огоньков присутствия» (Имитация онлайна) */
+.online-dot {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+.online-dot.active-cozy {
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+}
+
+.online-dot.active-chaos {
+  background: var(--accent-1);
+  box-shadow: 0 0 8px var(--accent-1);
+}
+
 .person.search-fade, .group.search-fade, .center-card.search-fade {
   opacity: 0.15;
   filter: blur(1px) grayscale(0.5);
@@ -574,173 +691,133 @@ h1 {
   filter: none !important;
 }
 
-/* 🃏 Карточки персонажей в стиле RPG-кликеров */
-.rpg-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 18px 0;
+.group.search-hide, .level-row.search-hide {
+  display: none !important;
+}
+
+/* 📜 Интерактивная Стена приветов */
+.guestbook-section {
+  width: 100%;
+  max-width: 580px;
+  margin: 40px auto 20px;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(181, 95, 252, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   text-align: left;
 }
 
-.rpg-stat-row {
+.guestbook-section h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guestbook-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.rpg-stat-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-muted);
+.guestbook-input-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
 }
 
-.rpg-bar-bg {
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 99px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-.rpg-bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  width: 0%;
-  transition: width 0.6s cubic-bezier(0.1, 1, 0.1, 1);
-}
-
-.bar-chaos { background: linear-gradient(90deg, #b55ffc, #ec4899); }
-.bar-cozy { background: linear-gradient(90deg, #34d399, #059669); }
-.bar-resistance { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
-
-.rpg-random-btn {
-  width: 100%;
-  margin-top: 14px;
-  background: rgba(181, 95, 252, 0.1);
-  border: 1px solid rgba(181, 95, 252, 0.3);
+.gb-input {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(11, 7, 24, 0.6);
+  border: 1px solid rgba(181, 95, 252, 0.2);
   color: #fff;
-  padding: 10px;
-  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.gb-input:focus {
+  border-color: var(--accent-1);
+}
+
+.gb-btn {
+  background: var(--accent-1);
+  border: none;
+  color: #fff;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.gb-btn:hover {
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+
+.guestbook-messages {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.guestbook-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.guestbook-messages::-webkit-scrollbar-thumb {
+  background: rgba(181, 95, 252, 0.3);
+  border-radius: 99px;
+}
+
+.gb-msg {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   font-size: 13px;
+  line-height: 1.4;
+}
+
+.gb-msg-author {
   font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.rpg-random-btn:hover {
-  background: var(--accent-1);
-  box-shadow: var(--glow);
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(3, 2, 7, 0.75);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.modal-card {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-inner);
-  box-shadow: var(--glow);
-  padding: 34px 28px;
-  border-radius: 24px;
-  max-width: 440px;
-  width: 90%;
-  text-align: center;
-  transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.modal-overlay.active .modal-card {
-  transform: scale(1);
-}
-
-.modal-avatar {
-  font-size: 64px;
-  margin-bottom: 12px;
-  display: inline-block;
-  animation: bounceEmoji 2s infinite alternate ease-in-out;
-}
-
-@keyframes bounceEmoji {
-  to { transform: translateY(-8px); }
-}
-
-.modal-name {
-  font-size: 26px;
-  font-weight: 800;
-  color: #fff;
-  margin-bottom: 4px;
-}
-
-.modal-role {
-  font-size: 15px;
   color: var(--accent-1);
-  font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 2px;
 }
 
-.modal-badge {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-outer);
-  padding: 12px 18px;
-  border-radius: 12px;
-  font-size: 14px;
+.gb-msg-text {
   color: var(--text-main);
-  line-height: 1.5;
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.modal-close {
-  margin-top: 16px;
-  background: #05030d;
-  border: 1px solid var(--border-inner);
-  color: #fff;
-  padding: 12px 28px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: var(--transition-smooth);
-}
-
-.modal-close:hover {
-  background: var(--accent-1);
-  box-shadow: var(--glow);
-}
-
-@media (max-width: 1200px) {
-  .layout-grid { grid-template-columns: 1fr; }
-  .sidebar, .sidebar-secondary { height: auto; position: relative; border: none; border-bottom: 1px solid rgba(16, 185, 129, 0.04); padding: 30px 16px; }
-  .main-content { padding: 40px 20px; }
-  .sub-row { flex-direction: column; align-items: center; }
+.final-quote {
+  max-width: 640px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 20px;
 }
 </style>
 </head>
 <body>
 
-<button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
+<!-- Контейнер глобального управления экосистемой -->
+<div class="controls-container">
+  <button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
+  <button class="audio-toggle" id="audio-toggle">🎵 Включить эмбиент</button>
+</div>
 
 <div class="bg-canvas">
   <div class="blob blob-1"></div>
@@ -758,7 +835,7 @@ h1 {
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
       
-      <!-- 📊 СВЕЖИЙ ЖИВОЙ ВИДЖЕТ УМНОЙ АНАЛИТИКИ ХАОСА -->
+      <!-- Живой виджет умной аналитики хаоса -->
       <div class="analytics-widget" id="analytics-widget">
         <div class="analytics-item">
           <span class="analytics-label">Всего родных</span>
@@ -778,16 +855,32 @@ h1 {
         </div>
       </div>
 
-      <!-- Интерактивная строка поиска -->
+      <!-- Интерактивная строка поиска со встроенным крестиком очистки -->
       <div class="search-container">
         <input type="text" id="tree-search" class="search-input" placeholder="Поиск по имени или роли...">
+        <button class="search-clear-btn" id="search-clear-btn">✕</button>
       </div>
 
       <div class="status" id="status"><span class="dot"></span>Анализ семейной базы данных...</div>
     </header>
 
-    <!-- Сюда выводится дерево по подрядам -->
+    <!-- Сюда выводится дерево по подрядам со спойлерами поколений -->
     <section id="content"></section>
+    
+    <!-- 📜 ИНТЕРАКТИВНАЯ СТЕНА ПРИВЕТОВ (КНИГА ОТЗЫВОВ КЛАНА) -->
+    <section class="guestbook-section">
+      <h3>💬 Хроники Посетителей</h3>
+      <form class="guestbook-form" id="guestbook-form" onsubmit="return false;">
+        <div class="guestbook-input-row">
+          <input type="text" id="gb-name" class="gb-input" placeholder="Твой ник..." required maxlength="20">
+          <input type="text" id="gb-text" class="gb-input" placeholder="Оставь свой след в хаосе..." required maxlength="80">
+        </div>
+        <button type="submit" class="gb-btn">Нагнать уюта на стену ✨</button>
+      </form>
+      <div class="guestbook-messages" id="guestbook-messages">
+        <!-- Сообщения будут подгружаться локально через JS -->
+      </div>
+    </section>
     
     <footer class="final-quote" id="footer"></footer>
   </div>
@@ -796,14 +889,14 @@ h1 {
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 </main>
 
-<!-- 🃏 ОБНОВЛЕННОЕ RPG МОДАЛЬНОЕ ОКНО С РАНДОМИЗАТОРОМ СТАТУСОВ -->
+<!-- Обновленное RPG модальное окно с поддержкой свайпов -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal-card">
+  <div class="modal-card" id="modal-card">
     <div class="modal-avatar" id="modal-avatar">👤</div>
     <div class="modal-name" id="modal-name">Имя</div>
     <div class="modal-role" id="modal-role">Роль</div>
     
-    <!-- RPG Полосы Прокачки Характеристики -->
+    <!-- RPG Полосы Прокачки Характеристик -->
     <div class="rpg-stats">
       <div class="rpg-stat-row">
         <div class="rpg-stat-header"><span>Урон хаосом</span><span id="rpg-val-chaos">0%</span></div>
@@ -845,7 +938,7 @@ var RANDOM_FACTS = [
   "Гроссмейстер диванных дискуссий и ночных кухонных переговоров."
 ];
 
-// Функция безопасного экранирования спецсимволов (Защита от XSS-уязвимостей)
+// Функция безопасного экранирования спецсимволов
 function esc(v) {
   if (!v) return "";
   return String(v)
@@ -859,6 +952,15 @@ function esc(v) {
 function levelLabelText(level) {
   var labels = {0: "Старшее поколение", 1: "Родители", 2: "Дети своих родителей", 4: "Племянники и племянницы", 3: "Мои Дети"};
   return labels[level] || ("Уровень " + level);
+}
+
+// 🖼️ Умный рендеринг аватарок: поддерживает и ссылки на картинки (.png/.jpg), и эмодзи
+function getAvatarHTML(icon) {
+  if (!icon) return "💜";
+  if (icon.indexOf("http") === 0 || icon.indexOf("/") === 0 || icon.indexOf(".") !== -1) {
+    return '<img src="' + esc(icon) + '" alt="avatar" onerror="this.outerHTML=\'💜\'">';
+  }
+  return esc(icon);
 }
 
 function renderGroup(group) {
@@ -876,11 +978,13 @@ function renderGroup(group) {
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
     h += '<div class="person" data-name="' + esc(p.name) + '" data-role="' + esc(p.role) + '" data-icon="' + esc(p.icon || "💜") + '">';
-    h += '<div class="avatar">' + esc(p.icon || "💜") + '</div>';
+    h += '<div class="avatar">' + getAvatarHTML(p.icon) + '</div>';
     h += '<div class="person-info">';
     h += '<div class="person-name">' + esc(p.name) + '</div>';
     h += '<div class="person-role">' + esc(p.role || "") + '</div>';
     h += '</div>';
+    // 🕯️ «Огонёк присутствия» (будет анимироваться через JS)
+    h += '<div class="online-dot"></div>';
     h += '</div>';
   }
   
@@ -890,10 +994,15 @@ function renderGroup(group) {
 }
 
 function renderCenter(center) {
-  var h = '<div class="center-card" data-search-block="true" data-name="' + esc(center.name) + '" data-role="' + esc(center.role) + '" data-icon="' + esc(center.icon || "💜") + '">';
-  h += '<div class="icon">' + esc(center.icon || "💜") + '</div>';
+  var h = '<div class="center-card-wrapper">';
+  // 🌌 Кольца гравитационных волн вокруг центра хаоса
+  h += '<div class="pulse-ring"></div>';
+  h += '<div class="pulse-ring" style="animation-delay: -2s;"></div>';
+  h += '<div class="center-card" data-search-block="true" data-name="' + esc(center.name) + '" data-role="' + esc(center.role) + '" data-icon="' + esc(center.icon || "💜") + '">';
+  h += '<div class="icon">' + getAvatarHTML(center.icon) + '</div>';
   h += '<span class="name">' + esc(center.name || "Я") + '</span>';
   h += '<span class="role">' + esc(center.role || "") + '</span>';
+  h += '</div>';
   h += '</div>';
   return h;
 }
@@ -925,31 +1034,56 @@ function generateChaosStatus(name, role) {
   if (name === "vera ba7a" || name === "§LAGDAN§") {
     return "Кровные узы: Родные брат и сестра. Фундамент и вековая мудрость старшего поколения хроник хаоса.";
   }
-  if (role.toLowerCase().indexOf("священник") !== -1) {
-    return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен.";
-  }
-  if (role.toLowerCase().indexOf("психотерапевт") !== -1) {
-    return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов.";
-  }
-  if (role.toLowerCase().indexOf("участковый") !== -1) {
-    return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках.";
-  }
-  if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) {
-    return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾";
-  }
+  if (role.toLowerCase().indexOf("священник") !== -1) { return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен."; }
+  if (role.toLowerCase().indexOf("психотерапевт") !== -1) { return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов."; }
+  if (role.toLowerCase().indexOf("участковый") !== -1) { return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках."; }
+  if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) { return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾"; }
   return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
 
 function getRPGStats(name) {
   var code = 0;
-  for (var i = 0; i < name.length; i++) {
-    code += name.charCodeAt(i);
-  }
-  var chaos = (code % 45) + 55;
-  var cozy = ((code * 3) % 40) + 60;
-  var resist = ((code * 7) % 50) + 50;
-  return { chaos: chaos, cozy: cozy, resist: resist };
+  for (var i = 0; i < name.length; i++) { code += name.charCodeAt(i); }
+  return { chaos: (code % 45) + 55, cozy: ((code * 3) % 40) + 60, resist: ((code * 7) % 50) + 50 };
 }
+
+// 🎹 ГЕНЕРАТОР КОСМИЧЕСКОГО ЭМБИЕНТА (Чистый Web Audio API)
+var audioCtx = null, ambientOsc = null, ambientGain = null;
+function toggleAmbient(btn) {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    ambientOsc = audioCtx.createOscillator();
+    ambientGain = audioCtx.createGain();
+    
+    ambientOsc.type = 'sine';
+    ambientOsc.frequency.setValueAtTime(65.41, audioCtx.currentTime); // Ламповая глубокая нота До (C2)
+    
+    // Делаем звук супер-тихим, расслабляющим задником
+    ambientGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+    
+    // Добавляем эффект фильтра низкой частоты для уюта
+    var filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(150, audioCtx.currentTime);
+    
+    ambientOsc.connect(filter);
+    filter.connect(ambientGain);
+    ambientGain.connect(audioCtx.destination);
+    ambientOsc.start();
+    btn.textContent = "⏸️ Выключить эмбиент";
+    btn.style.borderColor = "var(--accent-2)";
+  } else {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+      btn.textContent = "⏸️ Выключить эмбиент";
+    } else if (audioCtx.state === 'running') {
+      audioCtx.suspend();
+      btn.textContent = "🎵 Включить эмбиент";
+      btn.style.borderColor = "var(--border-inner)";
+    }
+  }
+}
+</script>
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -984,15 +1118,16 @@ function render(data) {
     var lv = sortedLevels[idx];
     var levelNum = Number(lv);
     if (idx > 0) {
-      html += '<div class="connector"><div class="vline"></div></div>';
+      html += '<div class="connector" data-level-conn="' + levelNum + '"><div class="vline"></div></div>';
     }
     
-    html += '<div class="level-row">';
-    html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
+    // Каждое поколение теперь обёрнуто в интерактивный сворачиваемый блок
+    html += '<div class="level-row" id="level-row-' + levelNum + '">';
+    html += '<div class="level-label" onclick="toggleLevelRow(' + levelNum + ')">' + esc(levelLabelText(levelNum)) + '</div>';
+    html += '<div class="level-content">';
 
     var lvGroups = levels[lv] || [];
     
-    // Двухрядная архитектура распределения родственников внутри уровней
     if (levelNum === 2) {
       html += '<div class="sub-row">';
       if (levels[lv]._hasCenter) {
@@ -1038,13 +1173,14 @@ function render(data) {
       html += '</div>';
     }
 
-    html += '</div>';
+    html += '</div>'; // level-content
+    html += '</div>'; // level-row
   }
   html += '</div>';
 
   document.getElementById("content").innerHTML = html;
 
-  // Динамический расчёт параметров для живого виджета аналитики хаоса в шапке
+  // Динамический расчёт параметров для живого виджета аналитики
   var totalPeople = 0;
   var totalPets = 0;
   var largestClanName = "Нет";
@@ -1086,6 +1222,36 @@ function render(data) {
   document.getElementById("stat-clan").textContent = largestClanName;
 
   applySearchFilter();
+  initOnlineDots(); // Активация огоньков присутствия после рендеринга
+}
+
+// 🗂️ Функция управления сворачиванием блоков (Аккордеон)
+function toggleLevelRow(levelNum) {
+  var row = document.getElementById('level-row-' + levelNum);
+  if (!row) return;
+  row.classList.toggle('collapsed');
+  
+  // Прячем или показываем соединительную стрелку-линию под спойлером
+  var nextConn = document.querySelector('.connector[data-level-conn="' + (levelNum + 1) + '"]');
+  if (nextConn) {
+    nextConn.style.display = row.classList.contains('collapsed') ? 'none' : 'flex';
+  }
+}
+
+// 🕯️ «Огоньки присутствия»: раздаёт случайные статусы онлайна для создания ощущения живого чата
+function initOnlineDots() {
+  var dots = document.querySelectorAll('.online-dot');
+  dots.forEach(function(dot) {
+    var rand = Math.random();
+    if (rand < 0.35) {
+      dot.classList.add('active-cozy');
+    } else if (rand < 0.65) {
+      dot.classList.add('active-chaos');
+    } else {
+      dot.style.background = 'transparent';
+      dot.style.boxShadow = 'none';
+    }
+  });
 }
 function loadFamily() {
   var status = document.getElementById("status");
@@ -1101,7 +1267,7 @@ function loadFamily() {
         render(data);
         lastJSON = text;
       }
-      status.innerHTML = '<span class="dot"></span>Экосистема активна | База обновлена | ' + new Date().toLocaleTimeString("ru-RU");
+      status.innerHTML = '<span class="dot"></span>Экосистема активна | ' + new Date().toLocaleTimeString("ru-RU");
     })
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171; box-shadow: 0 0 10px #f87171;"></span>Сбой: ' + err.message;
@@ -1110,13 +1276,23 @@ function loadFamily() {
 }
 
 function applySearchFilter() {
-  var query = document.getElementById("tree-search").value.toLowerCase().trim();
+  var searchInput = document.getElementById("tree-search");
+  var clearBtn = document.getElementById("search-clear-btn");
+  var query = searchInput.value.toLowerCase().trim();
+  
   var groupArticles = document.querySelectorAll('.group');
   var centerCard = document.querySelector('.center-card');
+  var levelRows = document.querySelectorAll('.level-row');
+  var connectors = document.querySelectorAll('.connector');
 
-  if (!query) {
-    var items = document.querySelectorAll('.search-fade');
-    for (var i = 0; i < items.length; i++) items[i].classList.remove('search-fade');
+  if (query.length > 0) {
+    clearBtn.style.display = "block";
+  } else {
+    clearBtn.style.display = "none";
+    var items = document.querySelectorAll('.search-fade, .search-hide');
+    for (var i = 0; i < items.length; i++) {
+      items[i].classList.remove('search-fade', 'search-hide');
+    }
     return;
   }
 
@@ -1149,13 +1325,37 @@ function applySearchFilter() {
     }
 
     if (groupHasMatch) {
-      group.classList.remove('search-fade');
+      group.classList.remove('search-fade', 'search-hide');
     } else {
       group.classList.add('search-fade');
     }
   }
+
+  levelRows.forEach(function(row) {
+    var activeCards = row.querySelectorAll('.center-card:not(.search-fade), .group:not(.search-fade)');
+    if (activeCards.length === 0) {
+      row.classList.add('search-hide');
+    } else {
+      row.classList.remove('search-hide');
+    }
+  });
+
+  connectors.forEach(function(conn) {
+    var nextRow = document.getElementById('level-row-' + conn.getAttribute('data-level-conn'));
+    if (nextRow && nextRow.classList.contains('search-hide')) {
+      conn.classList.add('search-hide');
+    } else {
+      conn.classList.remove('search-hide');
+    }
+  });
 }
 
+document.getElementById('search-clear-btn').addEventListener('click', function() {
+  var searchInput = document.getElementById("tree-search");
+  searchInput.value = "";
+  searchInput.focus();
+  applySearchFilter();
+});
 var perfToggle = document.getElementById('perf-toggle');
 if (localStorage.getItem('perfMode') === 'true') {
   document.body.classList.add('perf-mode');
@@ -1167,13 +1367,18 @@ perfToggle.addEventListener('click', function() {
   perfToggle.textContent = isPerf ? "🚀 Обычный режим" : "⚡ Слабый ПК / Телефон";
 });
 
-// ЛОГИКА ИНТЕРАКТИВНЫХ RPG КАРТОЧЕК И РАНДОМИЗАТОРА ФАКТОВ
+document.getElementById('audio-toggle').addEventListener('click', function() {
+  toggleAmbient(this);
+});
+
+// ЛОГИКА ИНТЕРАКТИВНЫХ RPG КАРТОЧЕК, РАНДОМИЗАТОРА И СВАЙПОВ
 var modalOverlay = document.getElementById('modal-overlay');
 var modalAvatar = document.getElementById('modal-avatar');
 var modalName = document.getElementById('modal-name');
 var modalRole = document.getElementById('modal-role');
 var modalBadge = document.getElementById('modal-badge');
 var randomBtn = document.getElementById('rpg-random-btn');
+var modalCard = document.getElementById('modal-card');
 
 var activeModalName = "";
 
@@ -1186,12 +1391,11 @@ document.addEventListener('click', function(e) {
   var icon = targetCard.getAttribute('data-icon') || '👤';
 
   activeModalName = name;
-  modalAvatar.textContent = icon;
+  modalAvatar.innerHTML = targetCard.querySelector('.avatar') ? targetCard.querySelector('.avatar').innerHTML : icon;
   modalName.textContent = name;
   modalRole.textContent = role;
   modalBadge.textContent = generateChaosStatus(name, role);
 
-  // Расчёт и плавная анимация RPG характеристик
   var rpg = getRPGStats(name);
   
   document.getElementById('rpg-bar-chaos').style.width = '0%';
@@ -1211,7 +1415,6 @@ document.addEventListener('click', function(e) {
   modalOverlay.classList.add('active');
 });
 
-// Кнопка случайного факта
 randomBtn.addEventListener('click', function() {
   var randomIndex = Math.floor(Math.random() * RANDOM_FACTS.length);
   modalBadge.style.opacity = 0;
@@ -1220,6 +1423,22 @@ randomBtn.addEventListener('click', function() {
     modalBadge.style.opacity = 1;
   }, 200);
 });
+
+// 📱 Мобильный жест: Закрытие карточки свайпом вниз или в сторону
+var touchStartY = 0, touchStartX = 0;
+modalCard.addEventListener('touchstart', function(e) {
+  touchStartY = e.changedTouches.screenY;
+  touchStartX = e.changedTouches.screenX;
+}, { passive: true });
+
+modalCard.addEventListener('touchend', function(e) {
+  var touchEndY = e.changedTouches.screenY;
+  var touchEndX = e.changedTouches.screenX;
+  
+  if (touchEndY - touchStartY > 120 || Math.abs(touchEndX - touchStartX) > 120) {
+    modalOverlay.classList.remove('active');
+  }
+}, { passive: true });
 
 document.getElementById('modal-close').addEventListener('click', function() {
   modalOverlay.classList.remove('active');
@@ -1231,9 +1450,52 @@ modalOverlay.addEventListener('click', function(e) {
 
 document.getElementById('tree-search').addEventListener('input', applySearchFilter);
 
-loadFamily();
-setInterval(loadFamily, REFRESH_MS);
+// 📜 ЛОГИКА СТЕНЫ ПРИВЕТОВ (Хранение отзывов в браузере)
+var guestbookForm = document.getElementById('guestbook-form');
+var guestbookMessages = document.getElementById('guestbook-messages');
 
+function loadGuestbook() {
+  var saved = localStorage.getItem('family_guestbook_msgs');
+  var msgs = saved ? JSON.parse(saved) : [
+    { name: "did1", text: "Уютный терминал получился. Батя одобряет! 👍" },
+    { name: "sataney", text: "Подсветка для нас с котиком — просто шикарная! 💜" }
+  ];
+  
+  var html = "";
+  for (var i = msgs.length - 1; i >= 0; i--) {
+    html += '<div class="gb-msg">';
+    html += '<div class="gb-msg-author">' + esc(msgs[i].name) + '</div>';
+    html += '<div class="gb-msg-text">' + esc(msgs[i].text) + '</div>';
+    html += '</div>';
+  }
+  guestbookMessages.innerHTML = html;
+}
+
+guestbookForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  var nameInput = document.getElementById('gb-name');
+  var textInput = document.getElementById('gb-text');
+  
+  var name = nameInput.value.trim();
+  var text = textInput.value.trim();
+  if(!name || !text) return;
+
+  var saved = localStorage.getItem('family_guestbook_msgs');
+  var msgs = saved ? JSON.parse(saved) : [
+    { name: "did1", text: "Уютный терминал получился. Батя одобряет! 👍" },
+    { name: "sataney", text: "Подсветка для нас с котиком — просто шикарная! 💜" }
+  ];
+
+  msgs.push({ name: name, text: text });
+  localStorage.setItem('family_guestbook_msgs', JSON.stringify(msgs));
+  
+  textInput.value = "";
+  loadGuestbook();
+  
+  if (navigator.vibrate) navigator.vibrate(30);
+});
+
+// ПАРНАЯ ПОДСВЕТКА ПРИ НАВЕДЕНИИ
 document.addEventListener('mouseover', function(e) {
   if(document.body.classList.contains('perf-mode')) return;
   var personCard = e.target.closest('.person');
@@ -1266,6 +1528,10 @@ document.addEventListener('mouseout', function(e) {
   }
   personCard.classList.remove('partner-highlighted');
 });
+
+loadGuestbook();
+loadFamily();
+setInterval(loadFamily, REFRESH_MS);
 </script>
 </body>
 </html>
