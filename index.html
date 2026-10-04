@@ -802,7 +802,7 @@ function render(data) {
       html += '</div>';
 
     } else if (levelNum === 3) {
-      // Ряд 1: Пнямые наследники (Любимые Дочки и Любимые Сыновья)
+      // Ряд 1: Прямые наследники (Любимые Дочки и Любимые Сыновья)
       html += '<div class="sub-row">';
       var bloodChildren = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") === -1; });
       for (var j = 0; j < bloodChildren.length; j++) {
