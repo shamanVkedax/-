@@ -20,7 +20,7 @@
   --line-color: rgba(255, 255, 255, 0.18);
   --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
 
-  /* Индивидуальный неон для веток */
+  /* Неоновые цвета веток */
   --neon-grand: #eab308;     
   --neon-batya: #3b82f6;     
   --neon-brothers: #00f2fe;  
@@ -168,31 +168,6 @@ h1 {
 .person-name { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; line-height: 1.3; color: var(--text-main); }
 .person-role { margin-top: 2px; color: var(--text-muted); font-size: 13px; line-height: 1.3; }
 .final-quote { margin-top: 60px; text-align: center; color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 600px; }
-
-/* Пустые слоты (Мама, Жена) */
-.empty-slot { background: rgba(124, 58, 237, 0.01) !important; border: 1px dashed rgba(124, 58, 237, 0.3) !important; }
-.empty-slot .avatar { background: rgba(255, 255, 255, 0.01) !important; border: 1px dashed rgba(255, 255, 255, 0.1) !important; color: var(--text-muted) !important; }
-.empty-slot:hover { border-color: var(--accent-2) !important; background: rgba(236, 72, 153, 0.03) !important; }
-
-/* Пасхалки питомцев */
-.pet-bubble {
-  position: absolute; right: -5px; top: -12px; background: var(--accent-1); color: #fff;
-  font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 8px;
-  opacity: 0; transform: scale(0.7); transition: all 0.3s ease; pointer-events: none; z-index: 10;
-}
-.sidebar-card[data-pet="Un_own"]:hover .avatar-small { animation: wag 0.3s infinite alternate; }
-.sidebar-card[data-pet="Buyback"]:hover .avatar-small { animation: wag 0.15s infinite alternate; }
-.sidebar-card[data-pet="bekap_1"]:hover { box-shadow: 0 0 12px #ff007f; border-color: #ff007f; }
-.sidebar-card[data-pet="LLlmel`"]:hover { animation: buzz 0.05s infinite; }
-.sidebar-card[data-pet]:hover .pet-bubble { opacity: 1; transform: scale(1); }
-
-@keyframes wag { 0% { transform: rotate(-8deg); } 100% { transform: rotate(12deg); } }
-@keyframes buzz { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
-
-@media (max-width: 1200px) {
-  .layout-grid { grid-template-columns: 1fr; }
-  .sidebar, .sidebar-secondary { height: auto; position: relative; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-}
 </style>
 </head>
 <body>
@@ -200,6 +175,7 @@ h1 {
   <aside class="sidebar" id="sidebar"></aside>
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
+  <!-- Полностью восстановленный контейнер, исправляющий загрузку страницы -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Загрузка...</div>
