@@ -20,15 +20,15 @@
   --line-color: rgba(255, 255, 255, 0.18);
   --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
 
-  /* Новые неоновые цвета для каждой ветки древа */
-  --neon-grand: #eab308;     /* Дедушка и Бабушка — Золотой */
-  --neon-batya: #3b82f6;     /* Батя — Мужественный Синий */
-  --neon-brothers: #00f2fe;  /* Братья — Киберпанк Бирюзовый */
-  --neon-sisters: #a855f7;   /* Сёстры — Магический Фиолетовый */
-  --neon-daughters: #ec4899; /* Дочки — Неоново-Розовый */
-  --neon-sons: #f97316;      /* Сыновья — Огненно-Оранжевый */
-  --neon-ziat: #14b8a6;      /* Зять — Изумрудно-Бирюзовый */
-  --neon-plem: #10b981;      /* Племянники — Мятно-Зелёный */
+  /* Индивидуальный неон для веток */
+  --neon-grand: #eab308;     
+  --neon-batya: #3b82f6;     
+  --neon-brothers: #00f2fe;  
+  --neon-sisters: #a855f7;   
+  --neon-daughters: #ec4899; 
+  --neon-sons: #f97316;      
+  --neon-ziat: #14b8a6;      
+  --neon-plem: #10b981;      
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,10 +53,8 @@ body {
   margin: 0 auto;
 }
 
-.sidebar {
+.sidebar, .sidebar-secondary {
   padding: 40px 20px;
-  background: rgba(0, 0, 0, 0.4);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
   overflow-y: auto;
   position: sticky;
   top: 0;
@@ -65,19 +63,8 @@ body {
   flex-direction: column;
   gap: 32px;
 }
-
-.sidebar-secondary {
-  padding: 40px 20px;
-  background: rgba(0, 0, 0, 0.2);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  overflow-y: auto;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
+.sidebar { background: rgba(0, 0, 0, 0.4); border-right: 1px solid rgba(255, 255, 255, 0.05); }
+.sidebar-secondary { background: rgba(0, 0, 0, 0.2); border-right: 1px solid rgba(255, 255, 255, 0.05); }
 
 .section-title {
   font-size: 18px;
@@ -91,18 +78,8 @@ body {
   text-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
 }
 
-.section-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-  line-height: 1.4;
-}
-
-.card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.section-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; }
+.card-list { display: flex; flex-direction: column; gap: 10px; }
 
 .sidebar-card {
   background: var(--bg-panel);
@@ -115,425 +92,106 @@ body {
   transition: all 0.2s;
   position: relative;
 }
-
-.sidebar-card:hover {
-  transform: translateX(4px);
-  border-color: var(--accent-1);
-  box-shadow: var(--glow);
-}
-/* --- Стили для Нового Поиска --- */
-.search-container {
-  margin: 20px auto 0;
-  width: 100%;
-  max-width: 460px;
-  position: relative;
-}
-
+.sidebar-card:hover { transform: translateX(4px); border-color: var(--accent-1); box-shadow: var(--glow); }
+/* Живой Поиск */
+.search-container { margin: 20px auto 0; width: 100%; max-width: 460px; position: relative; }
 .search-input {
-  width: 100%;
-  padding: 12px 20px;
-  font-size: 15px;
-  color: #fff;
-  background: rgba(22, 18, 36, 0.7);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: 999px;
-  outline: none;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  width: 100%; padding: 12px 20px; font-size: 15px; color: #fff;
+  background: rgba(22, 18, 36, 0.7); border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 999px; outline: none; text-align: center; transition: all 0.3s ease;
 }
+.search-input:focus { border-color: var(--accent-2); box-shadow: 0 0 16px rgba(236, 72, 153, 0.4); }
 
-.search-input:focus {
-  border-color: var(--accent-2);
-  box-shadow: 0 0 16px rgba(236, 72, 153, 0.4), inset 0 2px 4px rgba(0,0,0,0.2);
-}
+.person, .center-card, .sidebar-card { transition: opacity 0.3s, transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+.search-fade { opacity: 0.15 !important; pointer-events: none; }
+.search-highlight { opacity: 1 !important; transform: scale(1.03); box-shadow: 0 0 14px var(--active-neon, var(--accent-1)) !important; }
 
-/* Эффекты при поиске */
-.person, .center-card, .sidebar-card {
-  transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.search-fade {
-  opacity: 0.2 !important;
-  pointer-events: none;
-}
-
-.search-highlight {
-  opacity: 1 !important;
-  transform: scale(1.04);
-  animation: pulse-neon 1.5s infinite alternate;
-}
-
-@keyframes pulse-neon {
-  0% { box-shadow: 0 0 4px var(--active-neon, var(--accent-1)); }
-  100% { box-shadow: 0 0 18px var(--active-neon, var(--accent-1)); }
-}
-
-/* --- Стили интерактивных пустых слотов (Мама, Жена) --- */
-.empty-slot {
-  background: rgba(124, 58, 237, 0.02) !important;
-  border: 1px dashed rgba(124, 58, 237, 0.3) !important;
-  box-shadow: none !important;
-}
-
-.empty-slot .avatar {
-  background: rgba(255, 255, 255, 0.02) !important;
-  border: 1px dashed rgba(255, 255, 255, 0.1) !important;
-  color: var(--text-muted) !important;
-  animation: float-icon 3s infinite ease-in-out;
-}
-
-.empty-slot:hover {
-  border-color: var(--accent-2) !important;
-  background: rgba(236, 72, 153, 0.04) !important;
-  transform: translateY(-2px) !important;
-}
-
-.empty-slot:hover .avatar {
-  color: var(--accent-2) !important;
-  border-color: var(--accent-2) !important;
-  text-shadow: 0 0 8px var(--accent-2);
-}
-
-@keyframes float-icon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-/* --- Анимации и Пасхалки для Питомцев и Особых людей --- */
-.pet-bubble {
-  position: absolute;
-  right: -10px;
-  top: -15px;
-  background: var(--accent-1);
-  color: #fff;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 8px;
-  opacity: 0;
-  transform: scale(0.6) translateY(10px);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  pointer-events: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  z-index: 10;
-}
-
-/* Эффекты при наведении на питомцев */
-.sidebar-card[data-pet="Un_own"]:hover .avatar-small {
-  animation: cat-wag 0.3s infinite alternate;
-}
-.sidebar-card[data-pet="Buyback"]:hover .avatar-small {
-  animation: dog-wag 0.2s infinite alternate;
-}
-.sidebar-card[data-pet="bekap_1"]:hover {
-  animation: femboy-blush 0.5s infinite alternate;
-}
-.sidebar-card[data-pet="LLlmel`"]:hover .avatar-small {
-  animation: bee-buzz 0.1s infinite;
-}
-
-.sidebar-card[data-pet]:hover .pet-bubble {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-@keyframes cat-wag {
-  0% { transform: rotate(-10deg); }
-  100% { transform: rotate(15deg); }
-}
-@keyframes dog-wag {
-  0% { transform: translate(-2px, 1px) rotate(-5deg); }
-  100% { transform: translate(2px, -1px) rotate(5deg); }
-}
-@keyframes bee-buzz {
-  0% { transform: translate(1px, 1px) scale(1.05); }
-  100% { transform: translate(-1px, -1px) scale(0.95); }
-}
-@keyframes femboy-blush {
-  0% { box-shadow: 0 0 4px #ff007f; border-color: #ff007f; }
-  100% { box-shadow: 0 0 14px #ff007f; border-color: #ff007f; }
-}
-
-/* Базовые стили мелких элементов */
 .avatar-small {
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  flex: 0 0 36px; width: 36px; height: 36px; border-radius: 8px;
+  display: grid; place-items: center; font-size: 20px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
 }
 
 .info-small h4 { font-size: 15px; font-weight: 700; color: #fff; }
 .info-small p { font-size: 12px; color: var(--text-muted); }
-.main-content { padding: 40px 60px; display: flex; flex-direction: column; align-items: center; }
+.main-content { padding: 40px 60px; display: flex; flex-direction: column; align-items: center; width: 100%; }
 .hero { text-align: center; margin-bottom: 48px; width: 100%; }
+
 .eyebrow {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 999px;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 600;
+  display: inline-block; padding: 6px 14px; border-radius: 999px; color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
 }
 
 h1 {
-  margin: 12px 0 6px;
-  font-size: clamp(28px, 5vw, 56px);
-  line-height: 1.05;
-  font-weight: 800;
+  margin: 12px 0 6px; font-size: clamp(28px, 5vw, 56px); line-height: 1.05; font-weight: 800;
   background: linear-gradient(100deg, #fff, #c4b5e0, #ffdbeb);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 16px rgba(124, 58, 237, 0.24);
 }
 
-.subtitle {
-  max-width: 640px;
-  margin: 0 auto 16px;
-  color: var(--text-muted);
-  font-size: 15px;
-  line-height: 1.6;
-}
+.subtitle { max-width: 640px; margin: 0 auto 16px; color: var(--text-muted); font-size: 15px; line-height: 1.6; }
 
 .status {
-  margin: 12px auto 0;
-  width: fit-content;
-  padding: 6px 12px;
-  border-radius: 999px;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 12px auto 0; width: fit-content; padding: 6px 12px; border-radius: 999px;
+  color: var(--text-muted); background: rgba(255, 255, 255, 0.03); font-size: 12px; border: 1px solid rgba(255, 255, 255, 0.06);
 }
+.status .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-3); margin-right: 6px; animation: pulse 2s infinite; }
 
-.status .dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-3);
-  margin-right: 6px;
-  animation: pulse 2s infinite;
-}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.tree {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.level-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-  width: 100%;
-  position: relative;
-  margin-bottom: 32px;
-}
-
-.level-label {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-shadow: 0 0 8px rgba(124, 58, 237, 0.18);
-}
-
-.connector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 10px 0;
-  position: relative;
-}
-
-.connector .vline {
-  width: 2px;
-  height: 36px;
-  background: var(--line-grad);
-}
+.tree { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.level-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; width: 100%; position: relative; margin-bottom: 32px; }
+.level-label { width: 100%; text-align: center; margin-bottom: 10px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); text-shadow: 0 0 8px rgba(124, 58, 237, 0.18); }
+.connector { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 10px 0; position: relative; }
+.connector .vline { width: 2px; height: 36px; background: var(--line-grad); }
 
 .center-card {
-  min-width: min(320px, 100%);
-  text-align: center;
-  padding: 28px;
-  border-radius: 20px;
-  border: 1px solid var(--border-inner);
-  background: var(--bg-panel);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), var(--glow);
-  position: relative;
-  flex: 1 1 320px;
-  max-width: 400px;
-  backdrop-filter: blur(12px);
+  min-width: min(320px, 100%); text-align: center; padding: 28px; border-radius: 20px;
+  border: 1px solid var(--border-inner); background: var(--bg-panel);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), var(--glow); position: relative; flex: 1 1 320px; max-width: 400px; backdrop-filter: blur(12px);
 }
+.center-card::before { content: ''; position: absolute; inset: -2px; border-radius: 20px; background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3)); z-index: -1; opacity: 0.16; filter: blur(10px); }
+.center-card .icon { font-size: 34px; line-height: 1; margin-bottom: 8px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.36)); }
+.center-card .name { display: block; font-size: 24px; font-weight: 800; margin-top: 4px; background: linear-gradient(100deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1.1; text-shadow: 0 0 12px rgba(124, 58, 237, 0.32); }
+.center-card .role { display: block; color: var(--text-muted); margin-top: 6px; font-size: 15px; font-style: italic; line-height: 1.4; }
 
-.center-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
-  z-index: -1;
-  opacity: 0.16;
-  filter: blur(10px);
-}
+.group { flex: 1 1 320px; max-width: 400px; border: 1px solid var(--border-outer); border-radius: 18px; background: var(--bg-panel); backdrop-filter: blur(10px); overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.group-head { padding: 14px 18px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+.group-head h2 { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--text-main); text-shadow: 0 0 8px rgba(124, 58, 237, 0.2); }
+.group-head .sub { margin-top: 6px; color: var(--text-muted); font-size: 14px; line-height: 1.4; }
+.people { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
 
-.center-card .icon {
-  font-size: 34px;
-  line-height: 1;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.36));
-}
+.person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 14px; background: rgba(255, 255, 255, 0.02); transition: all 0.16s ease; }
+.avatar { flex: 0 0 38px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; font-size: 18px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-main); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.24); }
+.person-info { min-width: 0; flex: 1; }
+.person-name { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; line-height: 1.3; color: var(--text-main); }
+.person-role { margin-top: 2px; color: var(--text-muted); font-size: 13px; line-height: 1.3; }
+.final-quote { margin-top: 60px; text-align: center; color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 600px; }
 
-.center-card .name {
-  display: block;
-  font-size: 24px;
-  font-weight: 800;
-  margin-top: 4px;
-  background: linear-gradient(100deg, var(--accent-1), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  line-height: 1.1;
-  text-shadow: 0 0 12px rgba(124, 58, 237, 0.32);
-}
+/* Пустые слоты (Мама, Жена) */
+.empty-slot { background: rgba(124, 58, 237, 0.01) !important; border: 1px dashed rgba(124, 58, 237, 0.3) !important; }
+.empty-slot .avatar { background: rgba(255, 255, 255, 0.01) !important; border: 1px dashed rgba(255, 255, 255, 0.1) !important; color: var(--text-muted) !important; }
+.empty-slot:hover { border-color: var(--accent-2) !important; background: rgba(236, 72, 153, 0.03) !important; }
 
-.center-card .role {
-  display: block;
-  color: var(--text-muted);
-  margin-top: 6px;
-  font-size: 15px;
-  font-style: italic;
-  line-height: 1.4;
+/* Пасхалки питомцев */
+.pet-bubble {
+  position: absolute; right: -5px; top: -12px; background: var(--accent-1); color: #fff;
+  font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 8px;
+  opacity: 0; transform: scale(0.7); transition: all 0.3s ease; pointer-events: none; z-index: 10;
 }
+.sidebar-card[data-pet="Un_own"]:hover .avatar-small { animation: wag 0.3s infinite alternate; }
+.sidebar-card[data-pet="Buyback"]:hover .avatar-small { animation: wag 0.15s infinite alternate; }
+.sidebar-card[data-pet="bekap_1"]:hover { box-shadow: 0 0 12px #ff007f; border-color: #ff007f; }
+.sidebar-card[data-pet="LLlmel`"]:hover { animation: buzz 0.05s infinite; }
+.sidebar-card[data-pet]:hover .pet-bubble { opacity: 1; transform: scale(1); }
 
-.group {
-  flex: 1 1 320px;
-  max-width: 400px;
-  border: 1px solid var(--border-outer);
-  border-radius: 18px;
-  background: var(--bg-panel);
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.group-head {
-  padding: 14px 18px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.group-head h2 {
-  font-size: 17px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: var(--text-main);
-  text-shadow: 0 0 8px rgba(124, 58, 237, 0.2);
-}
-
-.group-head .sub {
-  margin-top: 6px;
-  color: var(--text-muted);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.people {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-}
-
-.person {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.02);
-  transition: all 0.16s ease;
-}
-
-.avatar {
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  font-size: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-main);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.24);
-}
-
-.person-info {
-  min-width: 0;
-  flex: 1;
-}
-
-.person-name {
-  font-weight: 600;
-  font-size: 15px;
-  overflow-wrap: anywhere;
-  line-height: 1.3;
-  color: var(--text-main);
-}
-
-.person-role {
-  margin-top: 2px;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-.final-quote {
-  margin-top: 60px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 15px;
-  line-height: 1.6;
-  max-width: 600px;
-}
+@keyframes wag { 0% { transform: rotate(-8deg); } 100% { transform: rotate(12deg); } }
+@keyframes buzz { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
 
 @media (max-width: 1200px) {
-  .layout-grid {
-    grid-template-columns: 1fr;
-  }
-  .sidebar, .sidebar-secondary {
-    height: auto;
-    position: relative;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
+  .layout-grid { grid-template-columns: 1fr; }
+  .sidebar, .sidebar-secondary { height: auto; position: relative; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 }
 </style>
 </head>
@@ -548,7 +206,6 @@ h1 {
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
       
-      <!-- Интегрированная строка поиска -->
       <div class="search-container">
         <input type="text" id="searchBar" class="search-input" placeholder="Поиск любимых родственников...">
       </div>
@@ -560,23 +217,21 @@ h1 {
     <footer class="final-quote" id="footer"></footer>
   </div>
 </main>
+
 <script>
 var JSON_FILE = "family.json";
 var REFRESH_MS = 30000;
 var lastJSON = "";
 
 function esc(v) {
-  v = v || "";
-  v = String(v);
+  v = v || ""; v = String(v);
   return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
-
 function levelLabelText(level) {
   var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
-// Автоматический подбор неонового цвета в зависимости от названия ветки
 function getNeonColor(title) {
   var t = title.toLowerCase();
   if (t.indexOf("дедушка") !== -1 || t.indexOf("бабушка") !== -1) return "var(--neon-grand)";
@@ -590,12 +245,11 @@ function getNeonColor(title) {
   return "var(--accent-1)";
 }
 
-function renderGroup(group, tagClass, showGenTag) {
+function renderGroup(group) {
   var ppl = group.people || [];
   var count = ppl.length;
   var neonColor = getNeonColor(group.title);
   
-  // Проверяем, является ли группа пустой (Мама или Жена) для создания уникального интерактивного слота
   if (count === 0) {
     var isMom = group.title.toLowerCase().indexOf("мама") !== -1;
     var defaultIcon = isMom ? "👩" : "💍";
@@ -620,7 +274,6 @@ function renderGroup(group, tagClass, showGenTag) {
     return h;
   }
 
-  // Рендеринг обычной заполненной группы с уникальным цветом ветки и счетчиком участников
   var h = "";
   h += '<article class="group" style="--active-neon: ' + neonColor + ';" onmouseenter="this.style.borderColor=' + "'" + neonColor + "'" + '; this.style.boxShadow=' + "'0 16px 40px rgba(0,0,0,0.36), 0 0 12px ' + neonColor + "'" + '" onmouseleave="this.style.borderColor=' + "''" + '; this.style.boxShadow=' + "''" + '">';
   h += '<div class="group-head">';
@@ -664,19 +317,14 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      
-      // Настройка уникальных всплывающих текстов-пасхалок для питомцев и особых людей
-      var petTag = "";
-      var bubbleText = "";
+      var petTag = ""; var bubbleText = "";
       if (p.name === "Un_own") { petTag = ' data-pet="Un_own"'; bubbleText = 'Мяу! 🐾'; }
       else if (p.name === "Buyback") { petTag = ' data-pet="Buyback"'; bubbleText = 'Гав! 🦴'; }
       else if (p.name === "bekap_1") { petTag = ' data-pet="bekap_1"'; bubbleText = 'Смущается... 👉👈'; }
       else if (p.name === "LLlmel`") { petTag = ' data-pet="LLlmel`"'; bubbleText = 'Бззз! 🐝'; }
       
       h += '<div class="sidebar-card"' + petTag + ' data-name="' + esc(p.name) + '">';
-      if (bubbleText) {
-        h += '<div class="pet-bubble">' + bubbleText + '</div>';
-      }
+      if (bubbleText) h += '<div class="pet-bubble">' + bubbleText + '</div>';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
       h += '<div class="info-small">';
       h += '<h4>' + esc(p.name) + '</h4>';
@@ -700,12 +348,10 @@ function render(data) {
   var centerLevel = (center.level !== undefined) ? center.level : 2;
   var groups = Array.isArray(data.groups) ? data.groups : [];
   
-  var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
-  var secondaryPeople = Array.isArray(data.secondaryPeople) ? data.secondaryPeople : [];
+  populateSidebar("sidebar", Array.isArray(data.closePeople) ? data.closePeople : []);
+  populateSidebar("sidebar-secondary", Array.isArray(data.secondaryPeople) ? data.secondaryPeople : []);
 
-  populateSidebar("sidebar", closePeople);
-  populateSidebar("sidebar-secondary", secondaryPeople);
-
+  // Полностью исправленная ДИНАМИЧЕСКАЯ сортировка уровней, которая больше никогда не ломается
   var levels = {};
   for (var i = 0; i < groups.length; i++) {
     var g = groups[i];
@@ -732,9 +378,7 @@ function render(data) {
     }
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
-      var g = lvGroups[j];
-      var showGenTag = (g.level === centerLevel);
-      html += renderGroup(g, String(levelNum), showGenTag);
+      html += renderGroup(lvGroups[j]);
     }
     html += '</div>';
   }
@@ -752,14 +396,9 @@ function loadFamily() {
     })
     .then(function(text) {
       var data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error("Ошибка JSON: " + e.message);
-      }
+      try { data = JSON.parse(text); } catch (e) { throw new Error("Ошибка JSON: " + e.message); }
       if (text !== lastJSON) {
-        render(data);
-        lastJSON = text;
+        render(data); lastJSON = text;
         status.innerHTML = '<span class="dot"></span>Обновлено: ' + new Date().toLocaleTimeString("ru-RU");
       } else {
         status.innerHTML = '<span class="dot"></span>Проверено: ' + new Date().toLocaleTimeString("ru-RU");
@@ -768,7 +407,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь консоль.</div>';
       }
       console.error(err);
     });
@@ -777,60 +416,47 @@ function loadFamily() {
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
 
-// --- Глобальный Интерактивный Поиск Родственников ---
+// Живой поиск
 window.searchActive = false;
 document.getElementById("searchBar").addEventListener("input", function(e) {
   var query = e.target.value.toLowerCase().trim();
   var elements = document.querySelectorAll(".person, .center-card, .sidebar-card");
-  
   if (!query) {
     window.searchActive = false;
-    elements.forEach(function(el) {
-      el.classList.remove("search-fade", "search-highlight");
-    });
+    elements.forEach(function(el) { el.classList.remove("search-fade", "search-highlight"); });
     return;
   }
-  
   window.searchActive = true;
   elements.forEach(function(el) {
     var nameEl = el.querySelector(".person-name, .name, h4");
     var roleEl = el.querySelector(".person-role, .role, p");
     var nameText = nameEl ? nameEl.textContent.toLowerCase() : "";
     var roleText = roleEl ? roleEl.textContent.toLowerCase() : "";
-    
     if (nameText.indexOf(query) !== -1 || roleText.indexOf(query) !== -1) {
-      el.classList.remove("search-fade");
-      el.classList.add("search-highlight");
+      el.classList.remove("search-fade"); el.classList.add("search-highlight");
     } else {
-      el.classList.remove("search-highlight");
-      el.classList.add("search-fade");
+      el.classList.remove("search-highlight"); el.classList.add("search-fade");
     }
   });
 });
 
-// --- СВЯЗАННАЯ ПОДСВЕТКА ДЛЯ ПАРЫ: Diamonita Grand и EKSOD_GRAND ---
+// Защищенная взаимная подсветка пары Diamonita Grand и EKSOD_GRAND
 document.addEventListener('mouseover', function(e) {
-  if (window.searchActive) return; // Не мешаем поиску, если он запущен
-  
+  if (window.searchActive) return;
   var personCard = e.target.closest('.person');
   if (!personCard) return;
-
   var name = personCard.getAttribute('data-name');
   var partnerName = null;
-
   if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
   if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
-
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
     if (partnerCard) {
-      var neonColor = "var(--neon-daughters)"; // Применяем яркий розовый неон для пары
-      
+      var neonColor = "var(--neon-daughters)";
       personCard.classList.add("custom-highlight");
       personCard.style.background = "rgba(255, 255, 255, 0.04)";
       personCard.style.borderColor = neonColor;
       personCard.style.boxShadow = "0 0 16px " + neonColor;
-
       partnerCard.classList.add("custom-highlight");
       partnerCard.style.background = "rgba(255, 255, 255, 0.04)";
       partnerCard.style.borderColor = neonColor;
@@ -842,26 +468,17 @@ document.addEventListener('mouseover', function(e) {
 document.addEventListener('mouseout', function(e) {
   var personCard = e.target.closest('.person');
   if (!personCard) return;
-
   var name = personCard.getAttribute('data-name');
   var partnerName = null;
-
   if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
   if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
-
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
-    
     personCard.classList.remove("custom-highlight");
-    personCard.style.background = "";
-    personCard.style.borderColor = "";
-    personCard.style.boxShadow = "";
-    
+    personCard.style.background = ""; personCard.style.borderColor = ""; personCard.style.boxShadow = "";
     if (partnerCard) {
       partnerCard.classList.remove("custom-highlight");
-      partnerCard.style.background = "";
-      partnerCard.style.borderColor = "";
-      partnerCard.style.boxShadow = "";
+      partnerCard.style.background = ""; partnerCard.style.borderColor = ""; partnerCard.style.boxShadow = "";
     }
   }
 });
