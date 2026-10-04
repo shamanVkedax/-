@@ -925,7 +925,6 @@ h1 {
 <!-- Контейнер глобального управления экосистемой -->
 <div class="controls-container">
   <button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
-  <button class="audio-toggle" id="audio-toggle">🎵 Включить эмбиент</button>
 </div>
 
 <div class="bg-canvas">
@@ -1202,9 +1201,11 @@ function toggleLevelRow(n) {
   var r = document.getElementById('level-row-' + n); if(!r) return; r.classList.toggle('collapsed');
   var c = document.querySelector('.connector[data-level-conn="' + (n + 1) + '"]'); if(c) c.style.display = r.classList.contains('collapsed') ? 'none' : 'flex';
 }
+
 function initOnlineDots() {
   document.querySelectorAll('.online-dot').forEach(d => { var r = Math.random(); if(r < 0.35) d.classList.add('active-cozy'); else if(r < 0.65) d.classList.add('active-chaos'); });
 }
+
 function loadFamily() {
   var s = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
@@ -1212,6 +1213,7 @@ function loadFamily() {
     .then(t => { if(t !== lastJSON) { render(JSON.parse(t)); lastJSON = t; } s.innerHTML = '<span class="dot"></span>Экосистема активна'; })
     .catch(e => { s.innerHTML = '<span class="dot" style="background:#f87171;"></span>Сбой'; });
 }
+
 function applySearchFilter() {
   var q = document.getElementById("tree-search").value.toLowerCase().trim(), c = document.querySelector('.center-card');
   if(!q) { document.querySelectorAll('.search-fade, .search-hide').forEach(i => i.classList.remove('search-fade', 'search-hide')); document.getElementById("search-clear-btn").style.display = "none"; return; }
@@ -1227,11 +1229,13 @@ function applySearchFilter() {
   document.querySelectorAll('.level-row').forEach(row => { if(row.querySelectorAll('.center-card:not(.search-fade), .group:not(.search-fade)').length === 0) row.classList.add('search-hide'); else row.classList.remove('search-hide'); });
   document.querySelectorAll('.connector').forEach(co => { var next = document.getElementById('level-row-' + co.getAttribute('data-level-conn')); if(next && next.classList.contains('search-hide')) co.classList.add('search-hide'); else co.classList.remove('search-hide'); });
 }
+
 document.getElementById('search-clear-btn').addEventListener('click', () => { var i = document.getElementById("tree-search"); i.value = ""; i.focus(); applySearchFilter(); });
+
 var perfToggle = document.getElementById('perf-toggle');
 if(localStorage.getItem('perfMode') === 'true') { document.body.classList.add('perf-mode'); perfToggle.textContent = "🚀 Обычный режим"; }
 perfToggle.addEventListener('click', () => { var p = document.body.classList.toggle('perf-mode'); localStorage.setItem('perfMode', p); perfToggle.textContent = p ? "🚀 Обычный режим" : "⚡ Слабый ПК / Телефон"; });
-document.getElementById('audio-toggle').addEventListener('click', function() { toggleAmbient(this); });
+
 var modalOverlay = document.getElementById('modal-overlay');
 document.addEventListener('click', e => {
   var t = e.target.closest('.person') || e.target.closest('.center-card'); if(!t) return;
@@ -1241,32 +1245,38 @@ document.addEventListener('click', e => {
   ['chaos', 'cozy', 'resistance'].forEach(k => { var key = k === 'resistance' ? 'resist' : k; document.getElementById('rpg-bar-' + k).style.width = '0%'; document.getElementById('rpg-val-' + k).textContent = rpg[key] + "%"; setTimeout(() => { document.getElementById('rpg-bar-' + k).style.width = rpg[key] + "%"; }, 100); });
   modalOverlay.classList.add('active');
 });
+
 document.getElementById('rpg-random-btn').addEventListener('click', () => { var b = document.getElementById('modal-badge'); b.style.opacity = 0; setTimeout(() => { b.textContent = RANDOM_FACTS[Math.floor(Math.random() * RANDOM_FACTS.length)]; b.style.opacity = 1; }, 200); });
 document.getElementById('modal-close').addEventListener('click', () => modalOverlay.classList.remove('active'));
 modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) modalOverlay.classList.remove('active'); });
 document.getElementById('tree-search').addEventListener('input', applySearchFilter);
+
 var guestbookForm = document.getElementById('guestbook-form'), guestbookMessages = document.getElementById('guestbook-messages');
 function loadGuestbook() {
   var msgs = JSON.parse(localStorage.getItem('family_guestbook_msgs') || '[{"name":"did1","text":"Уютный terminal получился. Батя одобряет! 👍"},{"name":"sataney","text":"Подсветка для нас с котиком — просто шикарная! 💜"}]'), h = "";
   for(var i = msgs.length - 1; i >= 0; i--) h += '<div class="gb-msg"><div class="gb-msg-author">' + esc(msgs[i].name) + '</div><div class="gb-msg-text">' + esc(msgs[i].text) + '</div></div>';
   guestbookMessages.innerHTML = h;
 }
+
 guestbookForm.addEventListener('submit', e => {
   e.preventDefault(); var nI = document.getElementById('gb-name'), tI = document.getElementById('gb-text'), n = nI.value.trim(), t = tI.value.trim(); if(!n || !t) return;
   var msgs = JSON.parse(localStorage.getItem('family_guestbook_msgs') || '[{"name":"did1","text":"Уютный terminal получился. Батя одобряет! 👍"},{"name":"sataney","text":"Подсветка для нас с котиком — просто шикарная! 💜"}]');
   msgs.push({name: n, text: t}); localStorage.setItem('family_guestbook_msgs', JSON.stringify(msgs)); tI.value = ""; loadGuestbook(); if(navigator.vibrate) navigator.vibrate(30);
 });
+
 document.addEventListener('mouseover', e => {
   if(document.body.classList.contains('perf-mode')) return;
   var p = e.target.closest('.person'); if(!p) return;
   var pN = getPartnerName(p.getAttribute('data-name')); if(!pN) return;
   var pC = document.querySelector('.person[data-name="' + pN + '"]'); p.classList.add('partner-highlighted'); if(pC) pC.classList.add('partner-highlighted');
 });
+
 document.addEventListener('mouseout', e => {
   var p = e.target.closest('.person'); if(!p) return;
   var pN = getPartnerName(p.getAttribute('data-name')); if(!pN) return;
   var pC = document.querySelector('.person[data-name="' + pN + '"]'); p.classList.remove('partner-highlighted'); if(pC) pC.classList.remove('partner-highlighted');
 });
+
 loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </script>
 </body>
