@@ -43,7 +43,8 @@ body.perf-mode .sidebar,
 body.perf-mode .sidebar-secondary, 
 body.perf-mode .group, 
 body.perf-mode .center-card, 
-body.perf-mode .search-input {
+body.perf-mode .search-input,
+body.perf-mode .analytics-widget {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   background: #110b1f !important;
@@ -251,6 +252,43 @@ h1 {
   line-height: 1.6;
 }
 
+/* 📊 Живой виджет «Глава Хаоса» и умная аналитика */
+.analytics-widget {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto 24px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: rgba(14, 8, 28, 0.6);
+  border: 1px solid rgba(181, 95, 252, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+
+.analytics-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analytics-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.analytics-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(181, 95, 252, 0.2);
+}
+
 .search-container {
   width: 100%;
   max-width: 440px;
@@ -281,7 +319,6 @@ h1 {
 .search-input::placeholder {
   color: rgba(180, 171, 191, 0.4);
 }
-
 .status {
   margin: 14px auto 0;
   width: fit-content;
@@ -538,6 +575,68 @@ h1 {
   filter: none !important;
 }
 
+/* 🃏 Карточки персонажей в стиле RPG-кликеров */
+.rpg-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 18px 0;
+  text-align: left;
+}
+
+.rpg-stat-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rpg-stat-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.rpg-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.rpg-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  width: 0%;
+  transition: width 0.6s cubic-bezier(0.1, 1, 0.1, 1);
+}
+
+.bar-chaos { background: linear-gradient(90deg, #b55ffc, #ec4899); }
+.bar-cozy { background: linear-gradient(90deg, #34d399, #059669); }
+.bar-resistance { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+
+.rpg-random-btn {
+  width: 100%;
+  margin-top: 14px;
+  background: rgba(181, 95, 252, 0.1);
+  border: 1px solid rgba(181, 95, 252, 0.3);
+  color: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.rpg-random-btn:hover {
+  background: var(--accent-1);
+  box-shadow: var(--glow);
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -562,7 +661,7 @@ h1 {
   background: var(--bg-panel);
   border: 1px solid var(--border-inner);
   box-shadow: var(--glow);
-  padding: 40px 30px;
+  padding: 34px 28px;
   border-radius: 24px;
   max-width: 440px;
   width: 90%;
@@ -577,7 +676,7 @@ h1 {
 
 .modal-avatar {
   font-size: 64px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   display: inline-block;
   animation: bounceEmoji 2s infinite alternate ease-in-out;
 }
@@ -590,14 +689,14 @@ h1 {
   font-size: 26px;
   font-weight: 800;
   color: #fff;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .modal-role {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--accent-1);
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .modal-badge {
@@ -608,10 +707,14 @@ h1 {
   font-size: 14px;
   color: var(--text-main);
   line-height: 1.5;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-close {
-  margin-top: 24px;
+  margin-top: 16px;
   background: #05030d;
   border: 1px solid var(--border-inner);
   color: #fff;
@@ -649,47 +752,99 @@ h1 {
   <!-- ЛЕВАЯ КОЛОНКА: Особые люди и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
 
-  <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА: Шапка, Поиск и Умное древо поколений -->
+  <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА: Шапка, Умная Аналитика и Древо -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Инициализация...</div>
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
       
-      <!-- Интерактивная строка поиска по древу -->
+      <!-- 📊 СВЕЖИЙ ЖИВОЙ ВИДЖЕТ УМНОЙ АНАЛИТИКИ ХАОСА -->
+      <div class="analytics-widget" id="analytics-widget">
+        <div class="analytics-item">
+          <span class="analytics-label">Всего родных</span>
+          <span class="analytics-value" id="stat-people">0</span>
+        </div>
+        <div class="analytics-item">
+          <span class="analytics-label">Хвостиков</span>
+          <span class="analytics-value" id="stat-pets">0</span>
+        </div>
+        <div class="analytics-item">
+          <span class="analytics-label">Стабильность</span>
+          <span class="analytics-value" id="stat-stable">100%</span>
+        </div>
+        <div class="analytics-item">
+          <span class="analytics-label">Правящий Клан</span>
+          <span class="analytics-value" id="stat-clan">Анализ...</span>
+        </div>
+      </div>
+
+      <!-- Интерактивная строка поиска -->
       <div class="search-container">
         <input type="text" id="tree-search" class="search-input" placeholder="Поиск по имени или роли...">
       </div>
 
-      <!-- Умный статус-бар с динамической живой статистикой -->
       <div class="status" id="status"><span class="dot"></span>Анализ семейной базы данных...</div>
     </header>
 
-    <!-- Сюда JavaScript выведет сгруппированные по подрядам поколения -->
+    <!-- Сюда выводится дерево по подрядам -->
     <section id="content"></section>
     
-    <!-- Хроники хронологии -->
     <footer class="final-quote" id="footer"></footer>
   </div>
   
-  <!-- ПРАВАЯ КОЛОНКА: Инфраструктура и Окружение -->
+  <!-- ПРАВАЯ КОЛОНКА: Окружение и Подруги -->
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 </main>
 
-<!-- Интерактивное модальное окно -->
+<!-- 🃏 ОБНОВЛЕННОЕ RPG МОДАЛЬНОЕ ОКНО С РАНДОМИЗАТОРОМ СТАТУСОВ -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-card">
     <div class="modal-avatar" id="modal-avatar">👤</div>
     <div class="modal-name" id="modal-name">Имя</div>
     <div class="modal-role" id="modal-role">Роль</div>
-    <div class="modal-badge" id="modal-badge">Статус</div>
-    <button class="modal-close" id="modal-close">Закрыть протокол</button>
+    
+    <!-- RPG Полосы Прокачки Характеристик -->
+    <div class="rpg-stats">
+      <div class="rpg-stat-row">
+        <div class="rpg-stat-header"><span>Урон хаосом</span><span id="rpg-val-chaos">0%</span></div>
+        <div class="rpg-bar-bg"><div class="rpg-bar-fill bar-chaos" id="rpg-bar-chaos"></div></div>
+      </div>
+      <div class="rpg-stat-row">
+        <div class="rpg-stat-header"><span>Генерация уюта</span><span id="rpg-val-cozy">0%</span></div>
+        <div class="rpg-bar-bg"><div class="rpg-bar-fill bar-cozy" id="rpg-bar-cozy"></div></div>
+      </div>
+      <div class="rpg-stat-row">
+        <div class="rpg-stat-header"><span>Иммунитет к душноте</span><span id="rpg-val-resistance">0%</span></div>
+        <div class="rpg-bar-bg"><div class="rpg-bar-fill bar-resistance" id="rpg-bar-resistance"></div></div>
+      </div>
+    </div>
+
+    <!-- Интерактивный Рандомизатор Секретных Фактов -->
+    <div class="modal-badge" id="modal-badge">Загрузка протокола хаоса...</div>
+    <button class="rpg-random-btn" id="rpg-random-btn">🎲 Сгенерировать случайный факт</button>
+    <br>
+    <button class="modal-close" id="modal-close">Закрыть профиль</button>
   </div>
 </div>
 <script>
 var JSON_FILE = "family.json";
 var REFRESH_MS = 30000;
 var lastJSON = "";
+
+// База данных угарных секретных статусов для рандомизатора
+var RANDOM_FACTS = [
+  "Замечен в скрытном поедании ночных вкусняшек на кухне.",
+  "Главный генератор хаотичных идей в общем семейном чате.",
+  "Обладает абсолютным врождённым иммунитетом к любой домашней душноте.",
+  "Регулярно крадет чужие носки, списывая это на аномалии хаоса.",
+  "Способен уснуть в любой точке квартиры за 4.2 секунды.",
+  "Секретное оружие уюта. Одним присутствием снимает бытовой стресс.",
+  "Официально признан самым громким смехом этой вселенной.",
+  "Подозревается в тайном заговоре с домашними питомцами ради внеочередной еды.",
+  "Мастер создавать панику из-за потерянного телефона, который в этот момент находится в руке.",
+  "Гроссмейстер диванных дискуссий и ночных кухонных переговоров."
+];
 
 // Функция безопасного экранирования спецсимволов (Защита от XSS-уязвимостей)
 function esc(v) {
@@ -707,7 +862,6 @@ function levelLabelText(level) {
   return labels[level] || ("Уровень " + level);
 }
 
-// Полноценный рендеринг блоков со всеми людьми для центра и сайдбаров без потерь контента
 function renderGroup(group) {
   var h = "";
   h += '<article class="group" data-search-block="true">';
@@ -745,7 +899,6 @@ function renderCenter(center) {
   return h;
 }
 
-// Боковые колонки генерируют полноценные карточки-группы со всеми людьми
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) {
@@ -754,7 +907,6 @@ function populateSidebar(elementId, dataArray) {
   document.getElementById(elementId).innerHTML = h;
 }
 
-// Расширенная база данных связей (Вшита взаимная подсветка для 3-х союзов, включая Дедушку и Сестру)
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
@@ -767,7 +919,6 @@ function getPartnerName(name) {
   return pairs[name] || null;
 }
 
-// Функция генерации ролевых описаний для модального окна
 function generateChaosStatus(name, role) {
   if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") {
     return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
@@ -790,31 +941,16 @@ function generateChaosStatus(name, role) {
   return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
 
-function calculateStats(data) {
-  var totalPeople = 0;
-  var totalPets = 0;
-
-  if (data.center) totalPeople++;
-  if (Array.isArray(data.groups)) {
-    data.groups.forEach(function(g) {
-      if (Array.isArray(g.people)) totalPeople += g.people.length;
-    });
+// Умный расчёт RPG-характеристик на основе букв в нике (Алгоритм псевдорандома)
+function getRPGStats(name) {
+  var code = 0;
+  for (var i = 0; i < name.length; i++) {
+    code += name.charCodeAt(i);
   }
-  if (Array.isArray(data.closePeople)) {
-    data.closePeople.forEach(function(s) {
-      if (s.title && (s.title.indexOf("питомцы") !== -1 || s.title.indexOf("🐾") !== -1)) {
-        if (Array.isArray(s.people)) totalPets += s.people.length;
-      } else {
-        if (Array.isArray(s.people)) totalPeople += s.people.length;
-      }
-    });
-  }
-  if (Array.isArray(data.secondaryPeople)) {
-    data.secondaryPeople.forEach(function(s) {
-      if (Array.isArray(s.people)) totalPeople += s.people.length;
-    });
-  }
-  return { people: totalPeople, pets: totalPets };
+  var chaos = (code % 45) + 55;      // От 55% до 100%
+  var cozy = ((code * 3) % 40) + 60;  // От 60% до 100%
+  var resist = ((code * 7) % 50) + 50;// От 50% до 100%
+  return { chaos: chaos, cozy: cozy, resist: resist };
 }
 function render(data) {
   document.title = data.title || "Семейное древо";
@@ -860,7 +996,6 @@ function render(data) {
     
     // Двухрядная архитектура распределения родственников внутри уровней
     if (levelNum === 2) {
-      // Ряд 1: Главная пара ядра семьи (shamanVkedax + Любимая Жена)
       html += '<div class="sub-row">';
       if (levels[lv]._hasCenter) {
         html += renderCenter(center);
@@ -869,7 +1004,6 @@ function render(data) {
       if (wifeGroup) html += renderGroup(wifeGroup);
       html += '</div>';
 
-      // Ряд 2: Кровные Братья и Сестры строго под ними
       html += '<div class="sub-row">';
       var otherGroups2 = lvGroups.filter(function(g) { return g.title.indexOf("Жена") === -1; });
       for (var j = 0; j < otherGroups2.length; j++) {
@@ -878,7 +1012,6 @@ function render(data) {
       html += '</div>';
 
     } else if (levelNum === 3) {
-      // Ряд 1: Прямые наследники (Любимые Дочки и Любимые Сыновья)
       html += '<div class="sub-row">';
       var bloodChildren = lvGroups.filter(function(g) { 
         return g.title.indexOf("Зятья") === -1 && g.title.indexOf("Снохи") === -1; 
@@ -888,7 +1021,6 @@ function render(data) {
       }
       html += '</div>';
 
-      // Ряд 2: Пришедшие в семью супруги детей (Зятья и Любимые Снохи) параллельно друг другу
       html += '<div class="sub-row">';
       var inLaws = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") !== -1; });
       for (var j = 0; j < inLaws.length; j++) {
@@ -901,7 +1033,6 @@ function render(data) {
       html += '</div>';
 
     } else {
-      // Стандартный центрированный вывод для остальных поколений (Дедушки/Бати)
       html += '<div class="sub-row">';
       for (var j = 0; j < lvGroups.length; j++) {
         html += renderGroup(lvGroups[j]);
@@ -914,9 +1045,50 @@ function render(data) {
   html += '</div>';
 
   document.getElementById("content").innerHTML = html;
+
+  // Динамический расчёт параметров для живого виджета аналитики хаоса в шапке
+  var totalPeople = 0;
+  var totalPets = 0;
+  var largestClanName = "Нет";
+  var maxClanSize = 0;
+
+  if (data.center) totalPeople++;
+  
+  groups.forEach(function(g) {
+    var size = Array.isArray(g.people) ? g.people.length : 0;
+    totalPeople += size;
+    var cleanTitle = g.title.replace(/[^\w\sа-яА-ЯёЁ]/g, '').trim();
+    if (size > maxClanSize && cleanTitle !== "Зятья" && cleanTitle !== "Любимые Снохи") {
+      maxClanSize = size;
+      largestClanName = cleanTitle;
+    }
+  });
+
+  closePeople.forEach(function(s) {
+    var size = Array.isArray(s.people) ? s.people.length : 0;
+    if (s.title.indexOf("питомцы") !== -1 || s.title.indexOf("🐾") !== -1) {
+      totalPets += size;
+    } else {
+      totalPeople += size;
+    }
+  });
+
+  secondaryPeople.forEach(function(s) {
+    totalPeople += Array.isArray(s.people) ? s.people.length : 0;
+  });
+
+  var childrenCount = 0;
+  var kidsGroups = groups.filter(function(g){ return g.level === 3 && g.title.indexOf("Снохи") === -1 && g.title.indexOf("Зятья") === -1; });
+  kidsGroups.forEach(function(k){ childrenCount += k.people.length; });
+  var stability = Math.max(12, 100 - (childrenCount * 8));
+
+  document.getElementById("stat-people").textContent = totalPeople;
+  document.getElementById("stat-pets").textContent = totalPets;
+  document.getElementById("stat-stable").textContent = stability + "%";
+  document.getElementById("stat-clan").textContent = largestClanName;
+
   applySearchFilter();
 }
-
 function loadFamily() {
   var status = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
@@ -927,19 +1099,14 @@ function loadFamily() {
     .then(function(text) {
       var data;
       try { data = JSON.parse(text); } catch (e) { throw new Error("Ошибка JSON: " + e.message); }
-      
       if (text !== lastJSON) {
         render(data);
         lastJSON = text;
       }
-      var stats = calculateStats(data);
-      status.innerHTML = '<span class="dot"></span>Экосистема активна | Родных: ' + stats.people + ' | Хвостиков: ' + stats.pets + ' | ' + new Date().toLocaleTimeString("ru-RU");
+      status.innerHTML = '<span class="dot"></span>Экосистема активна | База обновлена | ' + new Date().toLocaleTimeString("ru-RU");
     })
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171; box-shadow: 0 0 10px #f87171;"></span>Сбой: ' + err.message;
-      if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет синтаксических ошибок.</div>';
-      }
       console.error(err);
     });
 }
@@ -991,7 +1158,6 @@ function applySearchFilter() {
   }
 }
 
-// Логика переключения режима производительности
 var perfToggle = document.getElementById('perf-toggle');
 if (localStorage.getItem('perfMode') === 'true') {
   document.body.classList.add('perf-mode');
@@ -1003,11 +1169,15 @@ perfToggle.addEventListener('click', function() {
   perfToggle.textContent = isPerf ? "🚀 Обычный режим" : "⚡ Слабый ПК / Телефон";
 });
 
+// ЛОГИКА ИНТЕРАКТИВНЫХ RPG КАРТОЧЕК И РАНДОМИЗАТОРА ФАКТОВ
 var modalOverlay = document.getElementById('modal-overlay');
 var modalAvatar = document.getElementById('modal-avatar');
 var modalName = document.getElementById('modal-name');
 var modalRole = document.getElementById('modal-role');
 var modalBadge = document.getElementById('modal-badge');
+var randomBtn = document.getElementById('rpg-random-btn');
+
+var activeModalName = "";
 
 document.addEventListener('click', function(e) {
   var targetCard = e.target.closest('.person') || e.target.closest('.center-card');
@@ -1017,12 +1187,40 @@ document.addEventListener('click', function(e) {
   var role = targetCard.getAttribute('data-role') || 'Участник хаоса';
   var icon = targetCard.getAttribute('data-icon') || '👤';
 
+  activeModalName = name;
   modalAvatar.textContent = icon;
   modalName.textContent = name;
   modalRole.textContent = role;
   modalBadge.textContent = generateChaosStatus(name, role);
 
+  // Расчёт и плавная анимация RPG характеристик
+  var rpg = getRPGStats(name);
+  
+  document.getElementById('rpg-bar-chaos').style.width = '0%';
+  document.getElementById('rpg-bar-cozy').style.width = '0%';
+  document.getElementById('rpg-bar-resistance').style.width = '0%';
+
+  document.getElementById('rpg-val-chaos').textContent = rpg.chaos + "%";
+  document.getElementById('rpg-val-cozy').textContent = rpg.cozy + "%";
+  document.getElementById('rpg-val-resistance').textContent = rpg.resist + "%";
+
+  setTimeout(function() {
+    document.getElementById('rpg-bar-chaos').style.width = rpg.chaos + "%";
+    document.getElementById('rpg-bar-cozy').style.width = rpg.cozy + "%";
+    document.getElementById('rpg-bar-resistance').style.width = rpg.resist + "%";
+  }, 100);
+
   modalOverlay.classList.add('active');
+});
+
+// Кнопка случайного факта
+randomBtn.addEventListener('click', function() {
+  var randomIndex = Math.floor(Math.random() * RANDOM_FACTS.length);
+  modalBadge.style.opacity = 0;
+  setTimeout(function() {
+    modalBadge.textContent = RANDOM_FACTS[randomIndex];
+    modalBadge.style.opacity = 1;
+  }, 200);
 });
 
 document.getElementById('modal-close').addEventListener('click', function() {
@@ -1064,11 +1262,11 @@ document.addEventListener('mouseout', function(e) {
 
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
-    personCard.classList.remove('partner-highlighted');
     if (partnerCard) {
       partnerCard.classList.remove('partner-highlighted');
     }
   }
+  personCard.classList.remove('partner-highlighted');
 });
 </script>
 </body>
