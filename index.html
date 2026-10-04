@@ -71,12 +71,12 @@ body {
 
 .layout-grid {
   display: grid;
-  grid-template-columns: minmax(290px, 340px) 1fr minmax(290px, 340px);
+  grid-template-columns: 340px 1fr 340px;
   min-height: 100vh;
   max-width: 1920px;
   margin: 0 auto;
 }
-/* Бархатно-изумрудные боковые колонки с независимым скроллом */
+/* Изумрудно-бархатные боковые панели с независимым скроллом */
 .sidebar, .sidebar-secondary {
   padding: 40px 16px;
   background: rgba(3, 8, 6, 0.65);
@@ -89,7 +89,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Шаг между большими карточками */
+  gap: 24px;
 }
 
 .sidebar-secondary {
@@ -98,7 +98,7 @@ body {
   border-left: 1px solid rgba(16, 185, 129, 0.05);
 }
 
-/* Тонкий скроллбар для сайдбаров */
+/* Тонкие скрывающиеся скроллбары */
 .sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar {
   width: 4px;
 }
@@ -326,7 +326,6 @@ h1 {
   font-weight: 600;
 }
 
-/* Монолитный дизайн карточек-групп для гармонии всего интерфейса */
 .group {
   width: 100%;
   border: 1px solid var(--border-outer);
@@ -396,7 +395,6 @@ h1 {
   transform: scale(0.98);
 }
 
-/* Наша фирменная неоново-розовая подсветка пар */
 .person.partner-highlighted {
   background: rgba(236, 72, 153, 0.12) !important;
   border-color: rgba(236, 72, 153, 0.6) !important;
@@ -568,7 +566,7 @@ function renderCenter(center) {
   return h;
 }
 
-// Теперь сайдбары нативно используют тот же визуальный шаблон group, что и дерево
+// Сайдбары нативно используют тот же визуальный шаблон group, что и дерево
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) {
@@ -688,7 +686,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171; box-shadow: 0 0 10px #f87171;"></span>Сбой: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет синтаксических ошибок.</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в книге репозитория; 2) в JSON нет синтаксических ошибок.</div>';
       }
       console.error(err);
     });
