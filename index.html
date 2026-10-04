@@ -19,6 +19,16 @@
   --glow: 0 0 12px rgba(124, 58, 237, 0.36);
   --line-color: rgba(255, 255, 255, 0.18);
   --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
+
+  /* Новые неоновые цвета для каждой ветки древа */
+  --neon-grand: #eab308;     /* Дедушка и Бабушка — Золотой */
+  --neon-batya: #3b82f6;     /* Батя — Мужественный Синий */
+  --neon-brothers: #00f2fe;  /* Братья — Киберпанк Бирюзовый */
+  --neon-sisters: #a855f7;   /* Сёстры — Магический Фиолетовый */
+  --neon-daughters: #ec4899; /* Дочки — Неоново-Розовый */
+  --neon-sons: #f97316;      /* Сыновья — Огненно-Оранжевый */
+  --neon-ziat: #14b8a6;      /* Зять — Изумрудно-Бирюзовый */
+  --neon-plem: #10b981;      /* Племянники — Мятно-Зелёный */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -103,6 +113,7 @@ body {
   align-items: center;
   gap: 12px;
   transition: all 0.2s;
+  position: relative;
 }
 
 .sidebar-card:hover {
@@ -110,6 +121,141 @@ body {
   border-color: var(--accent-1);
   box-shadow: var(--glow);
 }
+/* --- Стили для Нового Поиска --- */
+.search-container {
+  margin: 20px auto 0;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 15px;
+  color: #fff;
+  background: rgba(22, 18, 36, 0.7);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 999px;
+  outline: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.search-input:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 16px rgba(236, 72, 153, 0.4), inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Эффекты при поиске */
+.person, .center-card, .sidebar-card {
+  transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-fade {
+  opacity: 0.2 !important;
+  pointer-events: none;
+}
+
+.search-highlight {
+  opacity: 1 !important;
+  transform: scale(1.04);
+  animation: pulse-neon 1.5s infinite alternate;
+}
+
+@keyframes pulse-neon {
+  0% { box-shadow: 0 0 4px var(--active-neon, var(--accent-1)); }
+  100% { box-shadow: 0 0 18px var(--active-neon, var(--accent-1)); }
+}
+
+/* --- Стили интерактивных пустых слотов (Мама, Жена) --- */
+.empty-slot {
+  background: rgba(124, 58, 237, 0.02) !important;
+  border: 1px dashed rgba(124, 58, 237, 0.3) !important;
+  box-shadow: none !important;
+}
+
+.empty-slot .avatar {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px dashed rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-muted) !important;
+  animation: float-icon 3s infinite ease-in-out;
+}
+
+.empty-slot:hover {
+  border-color: var(--accent-2) !important;
+  background: rgba(236, 72, 153, 0.04) !important;
+  transform: translateY(-2px) !important;
+}
+
+.empty-slot:hover .avatar {
+  color: var(--accent-2) !important;
+  border-color: var(--accent-2) !important;
+  text-shadow: 0 0 8px var(--accent-2);
+}
+
+@keyframes float-icon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* --- Анимации и Пасхалки для Питомцев и Особых людей --- */
+.pet-bubble {
+  position: absolute;
+  right: -10px;
+  top: -15px;
+  background: var(--accent-1);
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 8px;
+  opacity: 0;
+  transform: scale(0.6) translateY(10px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+/* Эффекты при наведении на питомцев */
+.sidebar-card[data-pet="Un_own"]:hover .avatar-small {
+  animation: cat-wag 0.3s infinite alternate;
+}
+.sidebar-card[data-pet="Buyback"]:hover .avatar-small {
+  animation: dog-wag 0.2s infinite alternate;
+}
+.sidebar-card[data-pet="bekap_1"]:hover {
+  animation: femboy-blush 0.5s infinite alternate;
+}
+.sidebar-card[data-pet="LLlmel`"]:hover .avatar-small {
+  animation: bee-buzz 0.1s infinite;
+}
+
+.sidebar-card[data-pet]:hover .pet-bubble {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+@keyframes cat-wag {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(15deg); }
+}
+@keyframes dog-wag {
+  0% { transform: translate(-2px, 1px) rotate(-5deg); }
+  100% { transform: translate(2px, -1px) rotate(5deg); }
+}
+@keyframes bee-buzz {
+  0% { transform: translate(1px, 1px) scale(1.05); }
+  100% { transform: translate(-1px, -1px) scale(0.95); }
+}
+@keyframes femboy-blush {
+  0% { box-shadow: 0 0 4px #ff007f; border-color: #ff007f; }
+  100% { box-shadow: 0 0 14px #ff007f; border-color: #ff007f; }
+}
+
+/* Базовые стили мелких элементов */
 .avatar-small {
   flex: 0 0 36px;
   width: 36px;
@@ -122,28 +268,10 @@ body {
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-.info-small h4 {
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-}
-.info-small p {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.main-content {
-  padding: 40px 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hero {
-  text-align: center;
-  margin-bottom: 48px;
-  width: 100%;
-}
-
+.info-small h4 { font-size: 15px; font-weight: 700; color: #fff; }
+.info-small p { font-size: 12px; color: var(--text-muted); }
+.main-content { padding: 40px 60px; display: flex; flex-direction: column; align-items: center; }
+.hero { text-align: center; margin-bottom: 48px; width: 100%; }
 .eyebrow {
   display: inline-block;
   padding: 6px 14px;
@@ -246,26 +374,7 @@ h1 {
   height: 36px;
   background: var(--line-grad);
 }
-</style>
-</head>
-<body>
-<main class="layout-grid">
-  <aside class="sidebar" id="sidebar"></aside>
-  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
-  <div class="main-content">
-    <header class="hero">
-      <div class="eyebrow" id="eyebrow">Загрузка...</div>
-      <h1 id="title">Семейное древо</h1>
-      <p class="subtitle" id="subtitle"></p>
-      <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
-    </header>
-
-    <section id="content"></section>
-    <footer class="final-quote" id="footer"></footer>
-  </div>
-</main>
-<style>
 .center-card {
   min-width: min(320px, 100%);
   text-align: center;
@@ -331,12 +440,6 @@ h1 {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.group:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-inner);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36), var(--glow);
-}
-
 .group-head {
   padding: 14px 18px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -376,11 +479,6 @@ h1 {
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.02);
   transition: all 0.16s ease;
-}
-
-.person:hover {
-  background: rgba(124, 58, 237, 0.06);
-  border-color: rgba(124, 58, 237, 0.24);
 }
 
 .avatar {
@@ -438,7 +536,30 @@ h1 {
   }
 }
 </style>
+</head>
+<body>
+<main class="layout-grid">
+  <aside class="sidebar" id="sidebar"></aside>
+  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
+  <div class="main-content">
+    <header class="hero">
+      <div class="eyebrow" id="eyebrow">Загрузка...</div>
+      <h1 id="title">Семейное древо</h1>
+      <p class="subtitle" id="subtitle"></p>
+      
+      <!-- Интегрированная строка поиска -->
+      <div class="search-container">
+        <input type="text" id="searchBar" class="search-input" placeholder="Поиск любимых родственников...">
+      </div>
+
+      <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
+    </header>
+
+    <section id="content"></section>
+    <footer class="final-quote" id="footer"></footer>
+  </div>
+</main>
 <script>
 var JSON_FILE = "family.json";
 var REFRESH_MS = 30000;
@@ -454,19 +575,63 @@ function levelLabelText(level) {
   var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
+
+// Автоматический подбор неонового цвета в зависимости от названия ветки
+function getNeonColor(title) {
+  var t = title.toLowerCase();
+  if (t.indexOf("дедушка") !== -1 || t.indexOf("бабушка") !== -1) return "var(--neon-grand)";
+  if (t.indexOf("батя") !== -1) return "var(--neon-batya)";
+  if (t.indexOf("братья") !== -1) return "var(--neon-brothers)";
+  if (t.indexOf("сёстры") !== -1 || t.indexOf("сестры") !== -1) return "var(--neon-sisters)";
+  if (t.indexOf("дочки") !== -1) return "var(--neon-daughters)";
+  if (t.indexOf("сыновья") !== -1) return "var(--neon-sons)";
+  if (t.indexOf("зятья") !== -1) return "var(--neon-ziat)";
+  if (t.indexOf("племянники") !== -1) return "var(--neon-plem)";
+  return "var(--accent-1)";
+}
+
 function renderGroup(group, tagClass, showGenTag) {
+  var ppl = group.people || [];
+  var count = ppl.length;
+  var neonColor = getNeonColor(group.title);
+  
+  // Проверяем, является ли группа пустой (Мама или Жена) для создания уникального интерактивного слота
+  if (count === 0) {
+    var isMom = group.title.toLowerCase().indexOf("мама") !== -1;
+    var defaultIcon = isMom ? "👩" : "💍";
+    var defaultRole = isMom ? "Ищем маму для нашей банды..." : "В поиске той самой...";
+    
+    var h = "";
+    h += '<article class="group empty-slot" style="--active-neon: var(--accent-2); border-color: rgba(236, 72, 153, 0.2);">';
+    h += '<div class="group-head">';
+    h += '<h2>' + esc(group.title) + ' <span style="font-size: 13px; color: var(--accent-2); opacity: 0.8;">[Свободный слот]</span></h2>';
+    h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
+    h += '</div>';
+    h += '<div class="people">';
+    h += '<div class="person">';
+    h += '<div class="avatar">' + defaultIcon + '</div>';
+    h += '<div class="person-info">';
+    h += '<div class="person-name" style="color: var(--text-muted); font-style: italic;">Ожидание ⏳</div>';
+    h += '<div class="person-role">' + defaultRole + '</div>';
+    h += '</div>';
+    h += '</div>';
+    h += '</div>';
+    h += '</article>';
+    return h;
+  }
+
+  // Рендеринг обычной заполненной группы с уникальным цветом ветки и счетчиком участников
   var h = "";
-  h += '<article class="group">';
+  h += '<article class="group" style="--active-neon: ' + neonColor + ';" onmouseenter="this.style.borderColor=' + "'" + neonColor + "'" + '; this.style.boxShadow=' + "'0 16px 40px rgba(0,0,0,0.36), 0 0 12px ' + neonColor + "'" + '" onmouseleave="this.style.borderColor=' + "''" + '; this.style.boxShadow=' + "''" + '">';
   h += '<div class="group-head">';
-  h += '<h2>' + esc(group.title) + '</h2>';
+  h += '<h2>' + esc(group.title) + ' <span style="font-size: 14px; color: ' + neonColor + '; font-weight: 800; opacity: 0.9;">(' + count + ')</span></h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
   h += '</div>';
   h += '<div class="people">';
-  var ppl = group.people || [];
-  for (var i = 0; i < ppl.length; i++) {
+  
+  for (var i = 0; i < count; i++) {
     var p = ppl[i];
-    // Интегрирован специальный атрибут data-name для точечной подсветки пар
-    h += '<div class="person" data-name="' + esc(p.name) + '">';
+    h += '<div class="person" data-name="' + esc(p.name) + '" style="--active-neon: ' + neonColor + ';" onmouseenter="if(!window.searchActive){this.style.background=' + "'rgba(255,255,255,0.04)';" + ' this.style.borderColor=' + "'" + neonColor + "'" + ';}" onmouseleave="if(!window.searchActive && !this.classList.contains(' + "'custom-highlight'" + ')){this.style.background=' + "''" + '; this.style.borderColor=' + "''" + ';}">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
     h += '<div class="person-info">';
     h += '<div class="person-name">' + esc(p.name) + '</div>';
@@ -480,7 +645,7 @@ function renderGroup(group, tagClass, showGenTag) {
 }
 
 function renderCenter(center) {
-  var h = '<div class="center-card">';
+  var h = '<div class="center-card" style="--active-neon: var(--accent-1);">';
   h += '<div class="icon">' + esc(center.icon || "\uD83D\uDC9C") + '</div>';
   h += '<span class="name">' + esc(center.name || "Я") + '</span>';
   h += '<span class="role">' + esc(center.role || "") + '</span>';
@@ -499,7 +664,19 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      h += '<div class="sidebar-card">';
+      
+      // Настройка уникальных всплывающих текстов-пасхалок для питомцев и особых людей
+      var petTag = "";
+      var bubbleText = "";
+      if (p.name === "Un_own") { petTag = ' data-pet="Un_own"'; bubbleText = 'Мяу! 🐾'; }
+      else if (p.name === "Buyback") { petTag = ' data-pet="Buyback"'; bubbleText = 'Гав! 🦴'; }
+      else if (p.name === "bekap_1") { petTag = ' data-pet="bekap_1"'; bubbleText = 'Смущается... 👉👈'; }
+      else if (p.name === "LLlmel`") { petTag = ' data-pet="LLlmel`"'; bubbleText = 'Бззз! 🐝'; }
+      
+      h += '<div class="sidebar-card"' + petTag + ' data-name="' + esc(p.name) + '">';
+      if (bubbleText) {
+        h += '<div class="pet-bubble">' + bubbleText + '</div>';
+      }
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
       h += '<div class="info-small">';
       h += '<h4>' + esc(p.name) + '</h4>';
@@ -512,7 +689,6 @@ function populateSidebar(elementId, dataArray) {
   }
   document.getElementById(elementId).innerHTML = h;
 }
-
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -566,6 +742,7 @@ function render(data) {
 
   document.getElementById("content").innerHTML = html;
 }
+
 function loadFamily() {
   var status = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
@@ -600,34 +777,68 @@ function loadFamily() {
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
 
-// Логика взаимной подсветки пары при наведении
+// --- Глобальный Интерактивный Поиск Родственников ---
+window.searchActive = false;
+document.getElementById("searchBar").addEventListener("input", function(e) {
+  var query = e.target.value.toLowerCase().trim();
+  var elements = document.querySelectorAll(".person, .center-card, .sidebar-card");
+  
+  if (!query) {
+    window.searchActive = false;
+    elements.forEach(function(el) {
+      el.classList.remove("search-fade", "search-highlight");
+    });
+    return;
+  }
+  
+  window.searchActive = true;
+  elements.forEach(function(el) {
+    var nameEl = el.querySelector(".person-name, .name, h4");
+    var roleEl = el.querySelector(".person-role, .role, p");
+    var nameText = nameEl ? nameEl.textContent.toLowerCase() : "";
+    var roleText = roleEl ? roleEl.textContent.toLowerCase() : "";
+    
+    if (nameText.indexOf(query) !== -1 || roleText.indexOf(query) !== -1) {
+      el.classList.remove("search-fade");
+      el.classList.add("search-highlight");
+    } else {
+      el.classList.remove("search-highlight");
+      el.classList.add("search-fade");
+    }
+  });
+});
+
+// --- СВЯЗАННАЯ ПОДСВЕТКА ДЛЯ ПАРЫ: Diamonita Grand и EKSOD_GRAND ---
 document.addEventListener('mouseover', function(e) {
+  if (window.searchActive) return; // Не мешаем поиску, если он запущен
+  
   var personCard = e.target.closest('.person');
   if (!personCard) return;
 
   var name = personCard.getAttribute('data-name');
   var partnerName = null;
 
-  // Проверка связей супругов
   if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
   if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
 
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
     if (partnerCard) {
-      // Подсвечиваем обе карточки
-      personCard.style.background = "rgba(124, 58, 237, 0.12)";
-      personCard.style.borderColor = "rgba(124, 58, 237, 0.6)";
-      personCard.style.boxShadow = "var(--glow)";
+      var neonColor = "var(--neon-daughters)"; // Применяем яркий розовый неон для пары
+      
+      personCard.classList.add("custom-highlight");
+      personCard.style.background = "rgba(255, 255, 255, 0.04)";
+      personCard.style.borderColor = neonColor;
+      personCard.style.boxShadow = "0 0 16px " + neonColor;
 
-      partnerCard.style.background = "rgba(124, 58, 237, 0.12)";
-      partnerCard.style.borderColor = "rgba(124, 58, 237, 0.6)";
-      partnerCard.style.boxShadow = "var(--glow)";
+      partnerCard.classList.add("custom-highlight");
+      partnerCard.style.background = "rgba(255, 255, 255, 0.04)";
+      partnerCard.style.borderColor = neonColor;
+      partnerCard.style.boxShadow = "0 0 16px " + neonColor;
     }
   }
 });
 
-// Сброс подсветки, когда курсор уходит с карточки
 document.addEventListener('mouseout', function(e) {
   var personCard = e.target.closest('.person');
   if (!personCard) return;
@@ -641,12 +852,13 @@ document.addEventListener('mouseout', function(e) {
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
     
-    // Возвращаем исходные стили из CSS
+    personCard.classList.remove("custom-highlight");
     personCard.style.background = "";
     personCard.style.borderColor = "";
     personCard.style.boxShadow = "";
     
     if (partnerCard) {
+      partnerCard.classList.remove("custom-highlight");
       partnerCard.style.background = "";
       partnerCard.style.borderColor = "";
       partnerCard.style.boxShadow = "";
