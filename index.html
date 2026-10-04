@@ -19,16 +19,6 @@
   --glow: 0 0 12px rgba(124, 58, 237, 0.36);
   --line-color: rgba(255, 255, 255, 0.18);
   --line-grad: linear-gradient(to bottom, transparent, rgba(124, 58, 237, 0.24), transparent);
-
-  /* Неоновые цвета веток */
-  --neon-grand: #eab308;     
-  --neon-batya: #3b82f6;     
-  --neon-brothers: #00f2fe;  
-  --neon-sisters: #a855f7;   
-  --neon-daughters: #ec4899; 
-  --neon-sons: #f97316;      
-  --neon-ziat: #14b8a6;      
-  --neon-plem: #10b981;      
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,8 +43,10 @@ body {
   margin: 0 auto;
 }
 
-.sidebar, .sidebar-secondary {
+.sidebar {
   padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   overflow-y: auto;
   position: sticky;
   top: 0;
@@ -63,8 +55,19 @@ body {
   flex-direction: column;
   gap: 32px;
 }
-.sidebar { background: rgba(0, 0, 0, 0.4); border-right: 1px solid rgba(255, 255, 255, 0.05); }
-.sidebar-secondary { background: rgba(0, 0, 0, 0.2); border-right: 1px solid rgba(255, 255, 255, 0.05); }
+
+.sidebar-secondary {
+  padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
 
 .section-title {
   font-size: 18px;
@@ -78,8 +81,18 @@ body {
   text-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
 }
 
-.section-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; }
-.card-list { display: flex; flex-direction: column; gap: 10px; }
+.section-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .sidebar-card {
   background: var(--bg-panel);
@@ -90,84 +103,149 @@ body {
   align-items: center;
   gap: 12px;
   transition: all 0.2s;
-  position: relative;
 }
-.sidebar-card:hover { transform: translateX(4px); border-color: var(--accent-1); box-shadow: var(--glow); }
-/* Живой Поиск */
-.search-container { margin: 20px auto 0; width: 100%; max-width: 460px; position: relative; }
-.search-input {
-  width: 100%; padding: 12px 20px; font-size: 15px; color: #fff;
-  background: rgba(22, 18, 36, 0.7); border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: 999px; outline: none; text-align: center; transition: all 0.3s ease;
+
+.sidebar-card:hover {
+  transform: translateX(4px);
+  border-color: var(--accent-1);
+  box-shadow: var(--glow);
 }
-.search-input:focus { border-color: var(--accent-2); box-shadow: 0 0 16px rgba(236, 72, 153, 0.4); }
-
-.person, .center-card, .sidebar-card { transition: opacity 0.3s, transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
-.search-fade { opacity: 0.15 !important; pointer-events: none; }
-.search-highlight { opacity: 1 !important; transform: scale(1.03); box-shadow: 0 0 14px var(--active-neon, var(--accent-1)) !important; }
-
 .avatar-small {
-  flex: 0 0 36px; width: 36px; height: 36px; border-radius: 8px;
-  display: grid; place-items: center; font-size: 20px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-.info-small h4 { font-size: 15px; font-weight: 700; color: #fff; }
-.info-small p { font-size: 12px; color: var(--text-muted); }
-.main-content { padding: 40px 60px; display: flex; flex-direction: column; align-items: center; width: 100%; }
-.hero { text-align: center; margin-bottom: 48px; width: 100%; }
+.info-small h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.info-small p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.main-content {
+  padding: 40px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 48px;
+  width: 100%;
+}
 
 .eyebrow {
-  display: inline-block; padding: 6px 14px; border-radius: 999px; color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 h1 {
-  margin: 12px 0 6px; font-size: clamp(28px, 5vw, 56px); line-height: 1.05; font-weight: 800;
+  margin: 12px 0 6px;
+  font-size: clamp(28px, 5vw, 56px);
+  line-height: 1.05;
+  font-weight: 800;
   background: linear-gradient(100deg, #fff, #c4b5e0, #ffdbeb);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   text-shadow: 0 0 16px rgba(124, 58, 237, 0.24);
 }
 
-.subtitle { max-width: 640px; margin: 0 auto 16px; color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+.subtitle {
+  max-width: 640px;
+  margin: 0 auto 16px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
 
 .status {
-  margin: 12px auto 0; width: fit-content; padding: 6px 12px; border-radius: 999px;
-  color: var(--text-muted); background: rgba(255, 255, 255, 0.03); font-size: 12px; border: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 12px auto 0;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
-.status .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-3); margin-right: 6px; animation: pulse 2s infinite; }
 
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-.tree { display: flex; flex-direction: column; align-items: center; width: 100%; }
-.level-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; width: 100%; position: relative; margin-bottom: 32px; }
-.level-label { width: 100%; text-align: center; margin-bottom: 10px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); text-shadow: 0 0 8px rgba(124, 58, 237, 0.18); }
-.connector { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 10px 0; position: relative; }
-.connector .vline { width: 2px; height: 36px; background: var(--line-grad); }
-
-.center-card {
-  min-width: min(320px, 100%); text-align: center; padding: 28px; border-radius: 20px;
-  border: 1px solid var(--border-inner); background: var(--bg-panel);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), var(--glow); position: relative; flex: 1 1 320px; max-width: 400px; backdrop-filter: blur(12px);
+.status .dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-3);
+  margin-right: 6px;
+  animation: pulse 2s infinite;
 }
-.center-card::before { content: ''; position: absolute; inset: -2px; border-radius: 20px; background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3)); z-index: -1; opacity: 0.16; filter: blur(10px); }
-.center-card .icon { font-size: 34px; line-height: 1; margin-bottom: 8px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.36)); }
-.center-card .name { display: block; font-size: 24px; font-weight: 800; margin-top: 4px; background: linear-gradient(100deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1.1; text-shadow: 0 0 12px rgba(124, 58, 237, 0.32); }
-.center-card .role { display: block; color: var(--text-muted); margin-top: 6px; font-size: 15px; font-style: italic; line-height: 1.4; }
 
-.group { flex: 1 1 320px; max-width: 400px; border: 1px solid var(--border-outer); border-radius: 18px; background: var(--bg-panel); backdrop-filter: blur(10px); overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
-.group-head { padding: 14px 18px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
-.group-head h2 { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--text-main); text-shadow: 0 0 8px rgba(124, 58, 237, 0.2); }
-.group-head .sub { margin-top: 6px; color: var(--text-muted); font-size: 14px; line-height: 1.4; }
-.people { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
-.person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 14px; background: rgba(255, 255, 255, 0.02); transition: all 0.16s ease; }
-.avatar { flex: 0 0 38px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; font-size: 18px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-main); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.24); }
-.person-info { min-width: 0; flex: 1; }
-.person-name { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; line-height: 1.3; color: var(--text-main); }
-.person-role { margin-top: 2px; color: var(--text-muted); font-size: 13px; line-height: 1.3; }
-.final-quote { margin-top: 60px; text-align: center; color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 600px; }
+.tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.level-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.level-label {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-shadow: 0 0 8px rgba(124, 58, 237, 0.18);
+}
+
+.connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 10px 0;
+  position: relative;
+}
+
+.connector .vline {
+  width: 2px;
+  height: 36px;
+  background: var(--line-grad);
+}
 </style>
 </head>
 <body>
@@ -175,17 +253,11 @@ h1 {
   <aside class="sidebar" id="sidebar"></aside>
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
-  <!-- Полностью восстановленный контейнер, исправляющий загрузку страницы -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Загрузка...</div>
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
-      
-      <div class="search-container">
-        <input type="text" id="searchBar" class="search-input" placeholder="Поиск любимых родственников...">
-      </div>
-
       <div class="status" id="status"><span class="dot"></span>Загружаю family.json...</div>
     </header>
 
@@ -193,6 +265,179 @@ h1 {
     <footer class="final-quote" id="footer"></footer>
   </div>
 </main>
+<style>
+.center-card {
+  min-width: min(320px, 100%);
+  text-align: center;
+  padding: 28px;
+  border-radius: 20px;
+  border: 1px solid var(--border-inner);
+  background: var(--bg-panel);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), var(--glow);
+  position: relative;
+  flex: 1 1 320px;
+  max-width: 400px;
+  backdrop-filter: blur(12px);
+}
+
+.center-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  z-index: -1;
+  opacity: 0.16;
+  filter: blur(10px);
+}
+
+.center-card .icon {
+  font-size: 34px;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.36));
+}
+
+.center-card .name {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 4px;
+  background: linear-gradient(100deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.1;
+  text-shadow: 0 0 12px rgba(124, 58, 237, 0.32);
+}
+
+.center-card .role {
+  display: block;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.group {
+  flex: 1 1 320px;
+  max-width: 400px;
+  border: 1px solid var(--border-outer);
+  border-radius: 18px;
+  background: var(--bg-panel);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.group:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-inner);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36), var(--glow);
+}
+
+.group-head {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.group-head h2 {
+  font-size: 17px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--text-main);
+  text-shadow: 0 0 8px rgba(124, 58, 237, 0.2);
+}
+
+.group-head .sub {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.16s ease;
+}
+
+.person:hover {
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.24);
+}
+
+.avatar {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.24);
+}
+
+.person-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.person-name {
+  font-weight: 600;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+
+.person-role {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.final-quote {
+  margin-top: 60px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+@media (max-width: 1200px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar, .sidebar-secondary {
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+</style>
 
 <script>
 var JSON_FILE = "family.json";
@@ -200,67 +445,28 @@ var REFRESH_MS = 30000;
 var lastJSON = "";
 
 function esc(v) {
-  v = v || ""; v = String(v);
+  v = v || "";
+  v = String(v);
   return v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"'");
 }
+
 function levelLabelText(level) {
   var labels = {0:"Старшее поколение",1:"Родители",2:"Дети своих родителей",4:"Племянники и племянницы",3:"Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
-
-function getNeonColor(title) {
-  var t = title.toLowerCase();
-  if (t.indexOf("дедушка") !== -1 || t.indexOf("бабушка") !== -1) return "var(--neon-grand)";
-  if (t.indexOf("батя") !== -1) return "var(--neon-batya)";
-  if (t.indexOf("братья") !== -1) return "var(--neon-brothers)";
-  if (t.indexOf("сёстры") !== -1 || t.indexOf("сестры") !== -1) return "var(--neon-sisters)";
-  if (t.indexOf("дочки") !== -1) return "var(--neon-daughters)";
-  if (t.indexOf("сыновья") !== -1) return "var(--neon-sons)";
-  if (t.indexOf("зятья") !== -1) return "var(--neon-ziat)";
-  if (t.indexOf("племянники") !== -1) return "var(--neon-plem)";
-  return "var(--accent-1)";
-}
-
-function renderGroup(group) {
-  var ppl = group.people || [];
-  var count = ppl.length;
-  var neonColor = getNeonColor(group.title);
-  
-  if (count === 0) {
-    var isMom = group.title.toLowerCase().indexOf("мама") !== -1;
-    var defaultIcon = isMom ? "👩" : "💍";
-    var defaultRole = isMom ? "Ищем маму для нашей банды..." : "В поиске той самой...";
-    
-    var h = "";
-    h += '<article class="group empty-slot" style="--active-neon: var(--accent-2); border-color: rgba(236, 72, 153, 0.2);">';
-    h += '<div class="group-head">';
-    h += '<h2>' + esc(group.title) + ' <span style="font-size: 13px; color: var(--accent-2); opacity: 0.8;">[Свободный слот]</span></h2>';
-    h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
-    h += '</div>';
-    h += '<div class="people">';
-    h += '<div class="person">';
-    h += '<div class="avatar">' + defaultIcon + '</div>';
-    h += '<div class="person-info">';
-    h += '<div class="person-name" style="color: var(--text-muted); font-style: italic;">Ожидание ⏳</div>';
-    h += '<div class="person-role">' + defaultRole + '</div>';
-    h += '</div>';
-    h += '</div>';
-    h += '</div>';
-    h += '</article>';
-    return h;
-  }
-
+function renderGroup(group, tagClass, showGenTag) {
   var h = "";
-  h += '<article class="group" style="--active-neon: ' + neonColor + ';" onmouseenter="this.style.borderColor=' + "'" + neonColor + "'" + '; this.style.boxShadow=' + "'0 16px 40px rgba(0,0,0,0.36), 0 0 12px ' + neonColor + "'" + '" onmouseleave="this.style.borderColor=' + "''" + '; this.style.boxShadow=' + "''" + '">';
+  h += '<article class="group">';
   h += '<div class="group-head">';
-  h += '<h2>' + esc(group.title) + ' <span style="font-size: 14px; color: ' + neonColor + '; font-weight: 800; opacity: 0.9;">(' + count + ')</span></h2>';
+  h += '<h2>' + esc(group.title) + '</h2>';
   h += '<div class="sub">' + esc(group.subtitle || "") + '</div>';
   h += '</div>';
   h += '<div class="people">';
-  
-  for (var i = 0; i < count; i++) {
+  var ppl = group.people || [];
+  for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    h += '<div class="person" data-name="' + esc(p.name) + '" style="--active-neon: ' + neonColor + ';" onmouseenter="if(!window.searchActive){this.style.background=' + "'rgba(255,255,255,0.04)';" + ' this.style.borderColor=' + "'" + neonColor + "'" + ';}" onmouseleave="if(!window.searchActive && !this.classList.contains(' + "'custom-highlight'" + ')){this.style.background=' + "''" + '; this.style.borderColor=' + "''" + ';}">';
+    // Интегрирован специальный атрибут data-name для точечной подсветки пар
+    h += '<div class="person" data-name="' + esc(p.name) + '">';
     h += '<div class="avatar">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
     h += '<div class="person-info">';
     h += '<div class="person-name">' + esc(p.name) + '</div>';
@@ -274,7 +480,7 @@ function renderGroup(group) {
 }
 
 function renderCenter(center) {
-  var h = '<div class="center-card" style="--active-neon: var(--accent-1);">';
+  var h = '<div class="center-card">';
   h += '<div class="icon">' + esc(center.icon || "\uD83D\uDC9C") + '</div>';
   h += '<span class="name">' + esc(center.name || "Я") + '</span>';
   h += '<span class="role">' + esc(center.role || "") + '</span>';
@@ -293,14 +499,7 @@ function populateSidebar(elementId, dataArray) {
     var ppl = section.people || [];
     for (var j = 0; j < ppl.length; j++) {
       var p = ppl[j];
-      var petTag = ""; var bubbleText = "";
-      if (p.name === "Un_own") { petTag = ' data-pet="Un_own"'; bubbleText = 'Мяу! 🐾'; }
-      else if (p.name === "Buyback") { petTag = ' data-pet="Buyback"'; bubbleText = 'Гав! 🦴'; }
-      else if (p.name === "bekap_1") { petTag = ' data-pet="bekap_1"'; bubbleText = 'Смущается... 👉👈'; }
-      else if (p.name === "LLlmel`") { petTag = ' data-pet="LLlmel`"'; bubbleText = 'Бззз! 🐝'; }
-      
-      h += '<div class="sidebar-card"' + petTag + ' data-name="' + esc(p.name) + '">';
-      if (bubbleText) h += '<div class="pet-bubble">' + bubbleText + '</div>';
+      h += '<div class="sidebar-card">';
       h += '<div class="avatar-small">' + esc(p.icon || "\uD83D\uDC9C") + '</div>';
       h += '<div class="info-small">';
       h += '<h4>' + esc(p.name) + '</h4>';
@@ -313,6 +512,7 @@ function populateSidebar(elementId, dataArray) {
   }
   document.getElementById(elementId).innerHTML = h;
 }
+
 function render(data) {
   document.title = data.title || "Семейное древо";
   document.getElementById("eyebrow").textContent = data.eyebrow || "";
@@ -324,10 +524,12 @@ function render(data) {
   var centerLevel = (center.level !== undefined) ? center.level : 2;
   var groups = Array.isArray(data.groups) ? data.groups : [];
   
-  populateSidebar("sidebar", Array.isArray(data.closePeople) ? data.closePeople : []);
-  populateSidebar("sidebar-secondary", Array.isArray(data.secondaryPeople) ? data.secondaryPeople : []);
+  var closePeople = Array.isArray(data.closePeople) ? data.closePeople : [];
+  var secondaryPeople = Array.isArray(data.secondaryPeople) ? data.secondaryPeople : [];
 
-  // Полностью исправленная ДИНАМИЧЕСКАЯ сортировка уровней, которая больше никогда не ломается
+  populateSidebar("sidebar", closePeople);
+  populateSidebar("sidebar-secondary", secondaryPeople);
+
   var levels = {};
   for (var i = 0; i < groups.length; i++) {
     var g = groups[i];
@@ -354,7 +556,9 @@ function render(data) {
     }
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
-      html += renderGroup(lvGroups[j]);
+      var g = lvGroups[j];
+      var showGenTag = (g.level === centerLevel);
+      html += renderGroup(g, String(levelNum), showGenTag);
     }
     html += '</div>';
   }
@@ -362,7 +566,6 @@ function render(data) {
 
   document.getElementById("content").innerHTML = html;
 }
-
 function loadFamily() {
   var status = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
@@ -372,9 +575,14 @@ function loadFamily() {
     })
     .then(function(text) {
       var data;
-      try { data = JSON.parse(text); } catch (e) { throw new Error("Ошибка JSON: " + e.message); }
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error("Ошибка JSON: " + e.message);
+      }
       if (text !== lastJSON) {
-        render(data); lastJSON = text;
+        render(data);
+        lastJSON = text;
         status.innerHTML = '<span class="dot"></span>Обновлено: ' + new Date().toLocaleTimeString("ru-RU");
       } else {
         status.innerHTML = '<span class="dot"></span>Проверено: ' + new Date().toLocaleTimeString("ru-RU");
@@ -383,7 +591,7 @@ function loadFamily() {
     .catch(function(err) {
       status.innerHTML = '<span class="dot" style="background:#f87171"></span>Ошибка: ' + err.message;
       if (!lastJSON) {
-        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь консоль.</div>';
+        document.getElementById("content").innerHTML = '<div class="error-box">Ошибка загрузки family.json. Проверь: 1) файл лежит в корне репозитория; 2) в JSON нет ошибок синтаксиса; 3) открой консоль (F12).</div>';
       }
       console.error(err);
     });
@@ -392,69 +600,56 @@ function loadFamily() {
 loadFamily();
 setInterval(loadFamily, REFRESH_MS);
 
-// Живой поиск
-window.searchActive = false;
-document.getElementById("searchBar").addEventListener("input", function(e) {
-  var query = e.target.value.toLowerCase().trim();
-  var elements = document.querySelectorAll(".person, .center-card, .sidebar-card");
-  if (!query) {
-    window.searchActive = false;
-    elements.forEach(function(el) { el.classList.remove("search-fade", "search-highlight"); });
-    return;
-  }
-  window.searchActive = true;
-  elements.forEach(function(el) {
-    var nameEl = el.querySelector(".person-name, .name, h4");
-    var roleEl = el.querySelector(".person-role, .role, p");
-    var nameText = nameEl ? nameEl.textContent.toLowerCase() : "";
-    var roleText = roleEl ? roleEl.textContent.toLowerCase() : "";
-    if (nameText.indexOf(query) !== -1 || roleText.indexOf(query) !== -1) {
-      el.classList.remove("search-fade"); el.classList.add("search-highlight");
-    } else {
-      el.classList.remove("search-highlight"); el.classList.add("search-fade");
-    }
-  });
-});
-
-// Защищенная взаимная подсветка пары Diamonita Grand и EKSOD_GRAND
+// Логика взаимной подсветки пары при наведении
 document.addEventListener('mouseover', function(e) {
-  if (window.searchActive) return;
   var personCard = e.target.closest('.person');
   if (!personCard) return;
+
   var name = personCard.getAttribute('data-name');
   var partnerName = null;
+
+  // Проверка связей супругов
   if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
   if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
+
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
     if (partnerCard) {
-      var neonColor = "var(--neon-daughters)";
-      personCard.classList.add("custom-highlight");
-      personCard.style.background = "rgba(255, 255, 255, 0.04)";
-      personCard.style.borderColor = neonColor;
-      personCard.style.boxShadow = "0 0 16px " + neonColor;
-      partnerCard.classList.add("custom-highlight");
-      partnerCard.style.background = "rgba(255, 255, 255, 0.04)";
-      partnerCard.style.borderColor = neonColor;
-      partnerCard.style.boxShadow = "0 0 16px " + neonColor;
+      // Подсвечиваем обе карточки
+      personCard.style.background = "rgba(124, 58, 237, 0.12)";
+      personCard.style.borderColor = "rgba(124, 58, 237, 0.6)";
+      personCard.style.boxShadow = "var(--glow)";
+
+      partnerCard.style.background = "rgba(124, 58, 237, 0.12)";
+      partnerCard.style.borderColor = "rgba(124, 58, 237, 0.6)";
+      partnerCard.style.boxShadow = "var(--glow)";
     }
   }
 });
 
+// Сброс подсветки, когда курсор уходит с карточки
 document.addEventListener('mouseout', function(e) {
   var personCard = e.target.closest('.person');
   if (!personCard) return;
+
   var name = personCard.getAttribute('data-name');
   var partnerName = null;
+
   if (name === "Diamonita Grand") partnerName = "EKSOD_GRAND";
   if (name === "EKSOD_GRAND") partnerName = "Diamonita Grand";
+
   if (partnerName) {
     var partnerCard = document.querySelector('.person[data-name="' + partnerName + '"]');
-    personCard.classList.remove("custom-highlight");
-    personCard.style.background = ""; personCard.style.borderColor = ""; personCard.style.boxShadow = "";
+    
+    // Возвращаем исходные стили из CSS
+    personCard.style.background = "";
+    personCard.style.borderColor = "";
+    personCard.style.boxShadow = "";
+    
     if (partnerCard) {
-      partnerCard.classList.remove("custom-highlight");
-      partnerCard.style.background = ""; partnerCard.style.borderColor = ""; partnerCard.style.boxShadow = "";
+      partnerCard.style.background = "";
+      partnerCard.style.borderColor = "";
+      partnerCard.style.boxShadow = "";
     }
   }
 });
