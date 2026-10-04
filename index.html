@@ -73,26 +73,27 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-/* Уютный космический хаос на фоне */
+
+/* Исправлено: жестко прописали размеры точек звезд в пикселях, теперь они горят ярко! */
 .bg-canvas {
   position: fixed;
   inset: 0;
   z-index: -2;
   background-color: var(--bg-dark);
   background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0),
-    radial-gradient(rgba(181, 95, 252, 0.12) 2px, transparent 0),
-    radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 0);
-  background-size: 40px 40px, 90px 90px, 130px 130px;
-  background-position: 0 0, 20px 20px, 65px 65px;
+    radial-gradient(circle, rgba(255, 255, 255, 0.3) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(181, 95, 252, 0.25) 2.5px, transparent 2.5px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.2) 2px, transparent 2px);
+  background-size: 50px 50px, 110px 110px, 150px 130px;
+  background-position: 0 0, 25px 30px, 70px 60px;
   pointer-events: none;
   animation: spaceGlow 20s infinite alternate ease-in-out;
 }
 
 @keyframes spaceGlow {
-  0% { opacity: 0.85; transform: scale(1); }
+  0% { opacity: 0.8; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.02); }
-  100% { opacity: 0.9; transform: scale(0.99); }
+  100% { opacity: 0.85; transform: scale(0.99); }
 }
 
 .blob {
@@ -111,7 +112,6 @@ body {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(45px, 35px) scale(1.12); }
 }
-
 /* Переключатель режима экономии ресурсов в левом верхнем углу */
 .perf-toggle {
   position: fixed;
@@ -173,8 +173,36 @@ body {
   background: transparent;
 }
 .sidebar::-webkit-scrollbar-thumb, .sidebar-secondary::-webkit-scrollbar-thumb {
-  background: rgba(181, 95, 252, 0.3);
+  background: rgba(181, 95, 252, 0);
   border-radius: 99px;
+  transition: var(--transition-smooth);
+}
+.sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb {
+  background: rgba(181, 95, 252, 0.3);
+}
+
+.section-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 15px rgba(181, 95, 252, 0.35);
+}
+
+.section-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 .main-content {
   padding: 50px 40px;
@@ -679,7 +707,7 @@ function levelLabelText(level) {
   return labels[level] || ("Уровень " + level);
 }
 
-// Исправленный, полноценный рендеринг блоков со всеми людьми для центра и сайдбаров без потерь контента
+// Полноценный рендеринг блоков со всеми людьми для центра и сайдбаров без потерь контента
 function renderGroup(group) {
   var h = "";
   h += '<article class="group" data-search-block="true">';
@@ -691,7 +719,6 @@ function renderGroup(group) {
   h += '</div>';
   h += '<div class="people">';
   
-  // ГАРАНТИРОВАННЫЙ ЦИКЛ: теперь ники и роли людей рендерятся идеально без потерь персонажей
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
@@ -718,7 +745,7 @@ function renderCenter(center) {
   return h;
 }
 
-// Боковые колонки теперь генерируют полноценные карточки-группы со всеми людьми
+// Боковые колонки генерируют полноценные карточки-группы со всеми людьми
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) {
@@ -727,18 +754,20 @@ function populateSidebar(elementId, dataArray) {
   document.getElementById(elementId).innerHTML = h;
 }
 
-// База данных влюбленных пар
+// Расширенная база данных влюбленных пар (Вшита взаимная подсветка для двух союзов)
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
-    "EKSOD_GRAND": "Diamonita Grand"
+    "EKSOD_GRAND": "Diamonita Grand",
+    "卄乇ㄥㄥ匚卂ㄒ": "sataney",
+    "sataney": "卄乇ㄥㄥ匚卂ㄒ"
   };
   return pairs[name] || null;
 }
 
 // Функция генерации ролевых описаний для модального окна
 function generateChaosStatus(name, role) {
-  if (name === "Diamonita Grand" || name === "EKSOD_GRAND") {
+  if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") {
     return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
   }
   if (role.toLowerCase().indexOf("священник") !== -1) {
@@ -751,7 +780,7 @@ function generateChaosStatus(name, role) {
     return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках.";
   }
   if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) {
-    return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾";
+    return "Статус в хаосе: Пушистый хранитель тепла. Назнажение — генерация мурчания и требование внеочередной еды. 🐾";
   }
   return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
@@ -846,21 +875,25 @@ function render(data) {
     } else if (levelNum === 3) {
       // Ряд 1: Прямые наследники (Любимые Дочки и Любимые Сыновья)
       html += '<div class="sub-row">';
-      var bloodChildren = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") === -1; });
+      var bloodChildren = lvGroups.filter(function(g) { 
+        return g.title.indexOf("Зятья") === -1 && g.title.indexOf("Снохи") === -1; 
+      });
       for (var j = 0; j < bloodChildren.length; j++) {
         html += renderGroup(bloodChildren[j]);
       }
       html += '</div>';
 
-      // Ряд 2: Пришедшие члены семьи (Зятья) строго под ними
+      // Ряд 2: Пришедшие в семью супруги детей (Зятья и Любимые Снохи) параллельно друг другу
+      html += '<div class="sub-row">';
       var inLaws = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") !== -1; });
-      if (inLaws.length > 0) {
-        html += '<div class="sub-row">';
-        for (var j = 0; j < inLaws.length; j++) {
-          html += renderGroup(inLaws[j]);
-        }
-        html += '</div>';
+      for (var j = 0; j < inLaws.length; j++) {
+        html += renderGroup(inLaws[j]);
       }
+      var daughterInLaw = lvGroups.filter(function(g) { return g.title.indexOf("Снохи") !== -1; });
+      for (var j = 0; j < daughterInLaw.length; j++) {
+        html += renderGroup(daughterInLaw[j]);
+      }
+      html += '</div>';
 
     } else {
       // Стандартный центрированный вывод для остальных поколений (Дедушки/Бати)
@@ -1001,7 +1034,7 @@ loadFamily();
 setInterval(loadFamily, REFRESH_MS);
 
 document.addEventListener('mouseover', function(e) {
-  if(document.body.classList.contains('perf-mode')) return; // Отключаем наведение в эко-режиме
+  if(document.body.classList.contains('perf-mode')) return;
   var personCard = e.target.closest('.person');
   if (!personCard) return;
 
