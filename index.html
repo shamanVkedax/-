@@ -71,13 +71,14 @@ body {
 
 .layout-grid {
   display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(280px, 320px) 1fr;
+  grid-template-columns: minmax(290px, 340px) 1fr minmax(290px, 340px);
   min-height: 100vh;
   max-width: 1920px;
   margin: 0 auto;
 }
+/* Бархатно-изумрудные боковые колонки с независимым скроллом */
 .sidebar, .sidebar-secondary {
-  padding: 40px 20px;
+  padding: 40px 16px;
   background: rgba(3, 8, 6, 0.65);
   border-right: 1px solid rgba(16, 185, 129, 0.05);
   backdrop-filter: blur(24px);
@@ -88,17 +89,18 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px; /* Шаг между большими карточками */
 }
 
 .sidebar-secondary {
-  background: rgba(3, 8, 6, 0.4);
+  background: rgba(3, 8, 6, 0.55);
   border-right: none;
   border-left: 1px solid rgba(16, 185, 129, 0.05);
 }
 
+/* Тонкий скроллбар для сайдбаров */
 .sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 .sidebar::-webkit-scrollbar-track, .sidebar-secondary::-webkit-scrollbar-track {
   background: transparent;
@@ -109,78 +111,7 @@ body {
   transition: var(--transition-smooth);
 }
 .sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.25);
-}
-
-.section-block {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.section-title {
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--accent-1);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
-}
-
-.section-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.sidebar-card {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-outer);
-  border-radius: 12px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: var(--transition-smooth);
-}
-
-.sidebar-card:hover {
-  transform: translateX(4px);
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: var(--glow);
-  background: rgba(12, 23, 19, 0.9);
-}
-
-.avatar-small {
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.info-small h4 {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.info-small p {
-  font-size: 11px;
-  color: var(--text-muted);
+  background: rgba(16, 185, 129, 0.2);
 }
 
 .main-content {
@@ -212,7 +143,7 @@ body {
 
 h1 {
   margin: 14px 0 6px;
-  font-size: clamp(28px, 4.5vw, 48px);
+  font-size: clamp(28px, 4.5vw, 46px);
   line-height: 1.1;
   font-weight: 800;
   background: linear-gradient(135deg, #ffffff 40%, #c1dad0 75%, #a3e635 100%);
@@ -395,9 +326,9 @@ h1 {
   font-weight: 600;
 }
 
+/* Монолитный дизайн карточек-групп для гармонии всего интерфейса */
 .group {
-  flex: 1 1 290px;
-  max-width: 400px;
+  width: 100%;
   border: 1px solid var(--border-outer);
   border-radius: 18px;
   background: var(--bg-panel);
@@ -408,7 +339,7 @@ h1 {
 }
 
 .group:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: rgba(16, 185, 129, 0.15);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
@@ -465,6 +396,7 @@ h1 {
   transform: scale(0.98);
 }
 
+/* Наша фирменная неоново-розовая подсветка пар */
 .person.partner-highlighted {
   background: rgba(236, 72, 153, 0.12) !important;
   border-color: rgba(236, 72, 153, 0.6) !important;
@@ -500,7 +432,7 @@ h1 {
 }
 
 .person-role {
-  margin-top: 3px;
+  margin-top: 2px;
   color: var(--text-muted);
   font-size: 12px;
 }
@@ -521,7 +453,7 @@ h1 {
 
 @media (max-width: 1400px) {
   .layout-grid {
-    grid-template-columns: 280px 280px 1fr;
+    grid-template-columns: 300px 1fr 300px;
   }
 }
 
@@ -534,7 +466,7 @@ h1 {
     position: relative;
     border: none;
     border-bottom: 1px solid rgba(16, 185, 129, 0.04);
-    padding: 30px 20px;
+    padding: 30px 16px;
   }
   .main-content {
     padding: 40px 20px;
@@ -550,14 +482,12 @@ h1 {
   <div class="blob blob-2"></div>
 </div>
 
+<!-- Монолитная трехколоночная сетка -->
 <main class="layout-grid">
-  <!-- Левый сайдбар: Близкий круг и Питомцы -->
+  <!-- ЛЕВАЯ КОЛОНКА: Близкий круг и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
-  
-  <!-- Правый сайдбар: Инфраструктура и Окружение -->
-  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 
-  <!-- Центральная область с интерактивным древом -->
+  <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА: Древо поколений и Поиск -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Инициализация...</div>
@@ -579,6 +509,9 @@ h1 {
     <!-- Хроники хронологии -->
     <footer class="final-quote" id="footer"></footer>
   </div>
+  
+  <!-- ПРАВАЯ КОЛОНКА: Окружение и Инфраструктура (Теперь строго на своем месте) -->
+  <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 </main>
 <script>
 var JSON_FILE = "family.json";
@@ -601,7 +534,8 @@ function levelLabelText(level) {
   return labels[level] || ("Уровень " + level);
 }
 
-function renderGroup(group, tagClass, showGenTag) {
+// Универсальный рендеринг блоков для центра древа и сайдбаров
+function renderGroup(group) {
   var h = "";
   h += '<article class="group" data-search-block="true">';
   h += '<div class="group-head">';
@@ -634,31 +568,16 @@ function renderCenter(center) {
   return h;
 }
 
+// Теперь сайдбары нативно используют тот же визуальный шаблон group, что и дерево
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) {
-    var section = dataArray[i];
-    h += '<div class="section-block">';
-    h += '<div class="section-title">' + esc(section.title || "") + '</div>';
-    h += '<p class="section-desc">' + esc(section.subtitle || "") + '</p>';
-    h += '<div class="card-list">';
-    var ppl = section.people || [];
-    for (var j = 0; j < ppl.length; j++) {
-      var p = ppl[j];
-      h += '<div class="sidebar-card" data-search-block="true" data-name="' + esc(p.name) + '" data-role="' + esc(p.role) + '">';
-      h += '<div class="avatar-small">' + esc(p.icon || "💚") + '</div>';
-      h += '<div class="info-small">';
-      h += '<h4>' + esc(p.name) + '</h4>';
-      h += '<p>' + esc(p.role || "") + '</p>';
-      h += '</div>';
-      h += '</div>';
-    }
-    h += '</div>';
-    h += '</div>';
+    h += renderGroup(dataArray[i]);
   }
   document.getElementById(elementId).innerHTML = h;
 }
 
+// Декларативная база влюбленных пар
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
@@ -667,6 +586,7 @@ function getPartnerName(name) {
   return pairs[name] || null;
 }
 
+// Функция подсчета живой статистики из JSON-структуры
 function calculateStats(data) {
   var totalPeople = 0;
   var totalPets = 0;
@@ -737,8 +657,7 @@ function render(data) {
     var lvGroups = levels[lv];
     for (var j = 0; j < lvGroups.length; j++) {
       var g = lvGroups[j];
-      var showGenTag = (g.level === centerLevel);
-      html += renderGroup(g, String(levelNum), showGenTag);
+      html += renderGroup(g);
     }
     html += '</div>';
   }
@@ -780,7 +699,6 @@ function applySearchFilter() {
   var peopleCards = document.querySelectorAll('.person');
   var groupArticles = document.querySelectorAll('.group');
   var centerCard = document.querySelector('.center-card');
-  var sidebarCards = document.querySelectorAll('.sidebar-card');
 
   if (!query) {
     var items = document.querySelectorAll('.search-fade');
@@ -795,17 +713,6 @@ function applySearchFilter() {
       centerCard.classList.remove('search-fade');
     } else {
       centerCard.classList.add('search-fade');
-    }
-  }
-
-  for (var i = 0; i < sidebarCards.length; i++) {
-    var card = sidebarCards[i];
-    var sName = (card.getAttribute('data-name') || '').toLowerCase();
-    var sRole = (card.getAttribute('data-role') || '').toLowerCase();
-    if (sName.indexOf(query) !== -1 || sRole.indexOf(query) !== -1) {
-      card.classList.remove('search-fade');
-    } else {
-      card.classList.add('search-fade');
     }
   }
 
