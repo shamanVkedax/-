@@ -1033,7 +1033,6 @@ var JSON_FILE = "family.json";
 var REFRESH_MS = 30000;
 var lastJSON = "";
 
-// База данных угарных секретных статусов для рандомизатора
 var RANDOM_FACTS = [
   "Замечен в скрытном поедании ночных вкусняшек на кухне.",
   "Главный генератор хаотичных идей в общем семейном чате.",
@@ -1047,37 +1046,27 @@ var RANDOM_FACTS = [
   "Гроссмейстер диванных дискуссий и ночных кухонных переговоров."
 ];
 
-// Функция безопасного экранирования спецсимволов
 function esc(v) {
   if (!v) return "";
-  return String(v)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+  return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 function levelLabelText(level) {
-  var labels = {0: "Старшее поколение", 1: "Родители", 2: "Дети своих родителей", 4: "Племянники и племянницы", 3: "Мои Дети"};
+  var labels = {0: "Старшее поколение", 1: "Parents", 2: "Дети своих родителей", 4: "Племянники и племянницы", 3: "Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
 function renderGroup(group) {
-  var h = "";
-  h += '<article class="group" data-search-block="true">';
-  h += '<div class="group-head">';
-  h += '<h2>' + esc(group.title) + '</h2>';
+  var h = '<article class="group" data-search-block="true">';
+  h += '<div class="group-head"><h2>' + esc(group.title) + '</h2>';
   if (group.subtitle && group.subtitle.trim() !== "") {
     h += '<div class="sub">' + esc(group.subtitle) + '</div>';
   }
-  h += '</div>';
-  h += '<div class="people">';
+  h += '</div><div class="people">';
   
   var ppl = group.people || [];
   for (var i = 0; i < ppl.length; i++) {
     var p = ppl[i];
-    // Защита: если карточка в JSON полностью пустая, даем дефолтные значения
     var pName = p.name || "В ожидании...";
     var pRole = p.role || "Будущий участник экосистемы";
     var pIcon = p.icon || "💜";
@@ -1087,74 +1076,52 @@ function renderGroup(group) {
     h += '<div class="person-info">';
     h += '<div class="person-name">' + esc(pName) + '</div>';
     h += '<div class="person-role">' + esc(pRole) + '</div>';
-    h += '</div>';
-    h += '</div>';
+    h += '</div><div class="online-dot"></div></div>';
   }
-  
-  h += '</div>';
-  h += '</article>';
-  return h;
+  return h + '</div></article>';
 }
 
 function renderCenter(center) {
-  var cName = center.name || " shamanVkedax";
+  var cName = center.name || "shamanVkedax";
   var cRole = center.role || "Основатель Клана";
   var cIcon = center.icon || "💜";
 
   var h = '<div class="center-card" data-search-block="true" data-name="' + esc(cName) + '" data-role="' + esc(cRole) + '" data-icon="' + esc(cIcon) + '">';
   h += '<div class="icon">' + esc(cIcon) + '</div>';
   h += '<span class="name">' + esc(cName) + '</span>';
-  h += '<span class="role">' + esc(cRole) + '</span>';
-  h += '</div>';
+  h += '<span class="role">' + esc(cRole) + '</span></div>';
   return h;
 }
 
 function populateSidebar(elementId, dataArray) {
   var h = "";
-  for (var i = 0; i < dataArray.length; i++) {
-    h += renderGroup(dataArray[i]);
-  }
+  for (var i = 0; i < dataArray.length; i++) { h += renderGroup(dataArray[i]); }
   document.getElementById(elementId).innerHTML = h;
 }
 
 function getPartnerName(name) {
-  var pairs = {
-    "Diamonita Grand": "EKSOD_GRAND",
-    "EKSOD_GRAND": "Diamonita Grand",
-    "卄乇ㄥㄥ匚卂ㄒ": "sataney",
-    "sataney": "卄乇ㄥㄥ匚卂ㄒ",
-    "§LAGDAN§": "vera ba7a",
-    "vera ba7a": "§LAGDAN§"
-  };
+  var pairs = {"Diamonita Grand": "EKSOD_GRAND", "EKSOD_GRAND": "Diamonita Grand", "卄乇ㄥㄥ匚卂ㄒ": "sataney", "sataney": "卄乇ㄥㄥ匚卂ㄒ", "§LAGDAN§": "vera ba7a", "vera ba7a": "§LAGDAN§"};
   return pairs[name] || null;
 }
 
 function generateChaosStatus(name, role) {
   if (!name || name === "В ожидании...") return "Официальный протокол: Ячейка зарезервирована в хрониках семейной базы данных.";
-  if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") {
-    return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
-  }
-  if (name === "vera ba7a" || name === "§LAGDAN§") {
-    return "Кровные узы: Родные брат и сестра. Фундамент и вековая мудрость старшего поколения хроник хаоса.";
-  }
-  if (role.toLowerCase().indexOf("священник") !== -1) { return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен."; }
-  if (role.toLowerCase().indexOf("психотерапевт") !== -1) { return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов."; }
-  if (role.toLowerCase().indexOf("участковый") !== -1) { return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках."; }
-  if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) { return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾"; }
+  if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
+  if (name === "vera ba7a" || name === "§LAGDAN§") return "Кровные узы: Родные брат и сестра. Фундамент и вековая мудрость старшего поколения хроник хаоса.";
+  if (role.toLowerCase().indexOf("священник") !== -1) return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен.";
+  if (role.toLowerCase().indexOf("психотерапевт") !== -1) return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов.";
+  if (role.toLowerCase().indexOf("участковый") !== -1) return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках.";
+  if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾";
   return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
 
-// 🛡️ Абсолютная защита расчета RPG-стат от пустых или null-имен
 function getRPGStats(name) {
-  if (!name || name === "В ожидании...") {
-    return { chaos: 0, cozy: 100, resist: 100 };
-  }
+  if (!name || name === "В ожидании...") return { chaos: 0, cozy: 100, resist: 100 };
   var code = 0;
   for (var i = 0; i < name.length; i++) { code += name.charCodeAt(i); }
   return { chaos: (code % 45) + 55, cozy: ((code * 3) % 40) + 60, resist: ((code * 7) % 50) + 50 };
 }
 
-// 🎹 Ламповый генератор звукового эмбиента
 var audioCtx = null, ambientOsc = null, ambientGain = null;
 function toggleAmbient(btn) {
   if (!audioCtx) {
@@ -1162,8 +1129,8 @@ function toggleAmbient(btn) {
     ambientOsc = audioCtx.createOscillator();
     ambientGain = audioCtx.createGain();
     ambientOsc.type = 'sine';
-    ambientOsc.frequency.setValueAtTime(65.41, audioCtx.currentTime); // Глубокая гармоническая нота До (C2)
-    ambientGain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Очень тихий фоновый звук
+    ambientOsc.frequency.setValueAtTime(65.41, audioCtx.currentTime);
+    ambientGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
     var filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(140, audioCtx.currentTime);
@@ -1174,33 +1141,133 @@ function toggleAmbient(btn) {
     btn.textContent = "⏸️ Выключить эмбиент";
     btn.style.borderColor = "var(--accent-2)";
   } else {
-    if (audioCtx.state === 'suspended') { audioCtx.createGain(); audioCtx.resume(); btn.textContent = "⏸️ Выключить эмбиент"; } 
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); btn.textContent = "⏸️ Выключить эмбиент"; } 
     else if (audioCtx.state === 'running') { audioCtx.suspend(); btn.textContent = "🎵 Включить эмбиент"; btn.style.borderColor = "var(--border-inner)"; }
   }
 }
-</script>
-<script>
-function render(data) {
-  // Инициализация заголовков, футера и основных данных древа
-  document.title = data.title || "Семейное древо";
-  // Полный исходный код функции render, включая генерацию уровней, подсчет статистики и интерактивные аккордеоны, доступен в исходных материалах [1.1, 1.2].
-  applySearchFilter();
+
+function render(d) {
+  var h = (id, t) => { var el = document.getElementById(id); if(el) el.textContent = t || ""; };
+  document.title = d.title || "Семейное древо"; 
+  h("eyebrow", d.eyebrow); h("title", d.title); h("subtitle", d.subtitle);
+  
+  var foot = document.getElementById("footer");
+  if(foot) foot.innerHTML = (d.footer || "").replace(/💜/g, '<span class="emerald-heart">💜</span>');
+  
+  populateSidebar("sidebar", d.closePeople || []); 
+  populateSidebar("sidebar-secondary", d.secondaryPeople || []);
+  
+  var gr = d.groups || [], lv = {};
+  gr.forEach(g => { var l = g.level || 0; if(!lv[l]) lv[l] = []; lv[l].push(g); });
+  
+  var t = '<div class="tree">';
+  Object.keys(lv).sort((a,b)=>a-b).forEach((l, idx) => {
+    var n = Number(l); if (idx > 0) t += '<div class="connector" data-level-conn="'+n+'"><div class="vline"></div></div>';
+    t += '<div class="level-row" id="level-row-'+n+'"><div class="level-label" onclick="toggleLevelRow('+n+')">'+esc(levelLabelText(n))+'</div><div class="level-content">';
+    if (n === 2) {
+      t += '<div class="sub-row">'; if (d.center) t += renderCenter(d.center);
+      var w = lv[l].find(g => g.title && g.title.includes("Жена")); if (w) t += renderGroup(w);
+      t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Жена")).forEach(g => t += renderGroup(g)); t += '</div>';
+    } else if (n === 3) {
+      t += '<div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Зятья") && !g.title.includes("Снохи")).forEach(g => t += renderGroup(g));
+      t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && (g.title.includes("Зятья") || g.title.includes("Снохи"))).forEach(g => t += renderGroup(g)); t += '</div>';
+    } else { t += '<div class="sub-row">'; lv[l].forEach(g => t += renderGroup(g)); t += '</div>'; }
+    t += '</div></div>';
+  });
+  
+  var cont = document.getElementById("content");
+  if(cont) cont.innerHTML = t + '</div>';
+  
+  var pT = d.center ? 1 : 0, peT = 0, cM = 0, cN = "Нет";
+  gr.forEach(g => { 
+    var s = (g.people || []).length; pT += s; 
+    var cl = g.title ? g.title.replace(/[^\w\sа-яА-ЯёЁ]/g, '').trim() : ""; 
+    if(s > cM && cl !== "Зятья" && cl !== "Любимые Снохи") { cM = s; cName = cl; } 
+  });
+  
+  (d.closePeople || []).forEach(s => { 
+    var l = (s.people || []).length; 
+    if(s.title && (s.title.includes("питомцы") || s.title.includes("🐾"))) peT += l; else pT += l; 
+  });
+  (d.secondaryPeople || []).forEach(s => pT += (s.people || []).length);
+  
+  var kC = 0; 
+  gr.filter(g => g.level === 3 && g.title && !g.title.includes("Снохи") && !g.title.includes("Зятья")).forEach(k => kC += (k.people || []).length);
+  
+  h("stat-people", pT); h("stat-pets", peT); h("stat-stable", Math.max(12, 100 - (kC * 8)) + "%"); h("stat-clan", cN);
+  applySearchFilter(); initOnlineDots();
 }
 
-function toggleLevelRow(levelNum) {
-  var row = document.getElementById('level-row-' + levelNum);
-  if (!row) return;
-  row.classList.toggle('collapsed');
-  
-  var nextConn = document.querySelector('.connector[data-level-conn="' + (levelNum + 1) + '"]');
-  if (nextConn) {
-    nextConn.style.display = row.classList.contains('collapsed') ? 'none' : 'flex';
-  }
+function toggleLevelRow(n) {
+  var r = document.getElementById('level-row-' + n); if(!r) return; r.classList.toggle('collapsed');
+  var c = document.querySelector('.connector[data-level-conn="' + (n + 1) + '"]'); if(c) c.style.display = r.classList.contains('collapsed') ? 'none' : 'flex';
 }
-// Функции загрузки данных экосистемы, поиска, модальных окон, Стены приветов и инициализации
-loadGuestbook();
-loadFamily();
-setInterval(loadFamily, REFRESH_MS);
+function initOnlineDots() {
+  document.querySelectorAll('.online-dot').forEach(d => { var r = Math.random(); if(r < 0.35) d.classList.add('active-cozy'); else if(r < 0.65) d.classList.add('active-chaos'); });
+}
+function loadFamily() {
+  var s = document.getElementById("status");
+  fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
+    .then(r => r.text())
+    .then(t => { if(t !== lastJSON) { render(JSON.parse(t)); lastJSON = t; } s.innerHTML = '<span class="dot"></span>Экосистема активна'; })
+    .catch(e => { s.innerHTML = '<span class="dot" style="background:#f87171;"></span>Сбой'; });
+}
+function applySearchFilter() {
+  var q = document.getElementById("tree-search").value.toLowerCase().trim(), c = document.querySelector('.center-card');
+  if(!q) { document.querySelectorAll('.search-fade, .search-hide').forEach(i => i.classList.remove('search-fade', 'search-hide')); document.getElementById("search-clear-btn").style.display = "none"; return; }
+  document.getElementById("search-clear-btn").style.display = "block";
+  if(c) { var n = (c.getAttribute('data-name')||'').toLowerCase(), r = (c.getAttribute('data-role')||'').toLowerCase(); if(n.includes(q) || r.includes(q)) c.classList.remove('search-fade'); else c.classList.add('search-fade'); }
+  document.querySelectorAll('.group').forEach(g => {
+    var m = false; g.querySelectorAll('.person').forEach(p => {
+      var n = (p.getAttribute('data-name')||'').toLowerCase(), r = (p.getAttribute('data-role')||'').toLowerCase();
+      if(n.includes(q) || r.includes(q)) { p.classList.remove('search-fade'); m = true; } else p.classList.add('search-fade');
+    });
+    if(m) g.classList.remove('search-fade', 'search-hide'); else g.classList.add('search-fade');
+  });
+  document.querySelectorAll('.level-row').forEach(row => { if(row.querySelectorAll('.center-card:not(.search-fade), .group:not(.search-fade)').length === 0) row.classList.add('search-hide'); else row.classList.remove('search-hide'); });
+  document.querySelectorAll('.connector').forEach(co => { var next = document.getElementById('level-row-' + co.getAttribute('data-level-conn')); if(next && next.classList.contains('search-hide')) co.classList.add('search-hide'); else co.classList.remove('search-hide'); });
+}
+document.getElementById('search-clear-btn').addEventListener('click', () => { var i = document.getElementById("tree-search"); i.value = ""; i.focus(); applySearchFilter(); });
+var perfToggle = document.getElementById('perf-toggle');
+if(localStorage.getItem('perfMode') === 'true') { document.body.classList.add('perf-mode'); perfToggle.textContent = "🚀 Обычный режим"; }
+perfToggle.addEventListener('click', () => { var p = document.body.classList.toggle('perf-mode'); localStorage.setItem('perfMode', p); perfToggle.textContent = p ? "🚀 Обычный режим" : "⚡ Слабый ПК / Телефон"; });
+document.getElementById('audio-toggle').addEventListener('click', function() { toggleAmbient(this); });
+var modalOverlay = document.getElementById('modal-overlay');
+document.addEventListener('click', e => {
+  var t = e.target.closest('.person') || e.target.closest('.center-card'); if(!t) return;
+  var n = t.getAttribute('data-name') || "В ожидании...", r = t.getAttribute('data-role') || 'Будущий участник экосистемы', i = t.getAttribute('data-icon') || '💜';
+  document.getElementById('modal-avatar').textContent = i; document.getElementById('modal-name').textContent = n; document.getElementById('modal-role').textContent = r;
+  document.getElementById('modal-badge').textContent = generateChaosStatus(n, r); var rpg = getRPGStats(n);
+  ['chaos', 'cozy', 'resistance'].forEach(k => { var key = k === 'resistance' ? 'resist' : k; document.getElementById('rpg-bar-' + k).style.width = '0%'; document.getElementById('rpg-val-' + k).textContent = rpg[key] + "%"; setTimeout(() => { document.getElementById('rpg-bar-' + k).style.width = rpg[key] + "%"; }, 100); });
+  modalOverlay.classList.add('active');
+});
+document.getElementById('rpg-random-btn').addEventListener('click', () => { var b = document.getElementById('modal-badge'); b.style.opacity = 0; setTimeout(() => { b.textContent = RANDOM_FACTS[Math.floor(Math.random() * RANDOM_FACTS.length)]; b.style.opacity = 1; }, 200); });
+document.getElementById('modal-close').addEventListener('click', () => modalOverlay.classList.remove('active'));
+modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+document.getElementById('tree-search').addEventListener('input', applySearchFilter);
+var guestbookForm = document.getElementById('guestbook-form'), guestbookMessages = document.getElementById('guestbook-messages');
+function loadGuestbook() {
+  var msgs = JSON.parse(localStorage.getItem('family_guestbook_msgs') || '[{"name":"did1","text":"Уютный terminal получился. Батя одобряет! 👍"},{"name":"sataney","text":"Подсветка для нас с котиком — просто шикарная! 💜"}]'), h = "";
+  for(var i = msgs.length - 1; i >= 0; i--) h += '<div class="gb-msg"><div class="gb-msg-author">' + esc(msgs[i].name) + '</div><div class="gb-msg-text">' + esc(msgs[i].text) + '</div></div>';
+  guestbookMessages.innerHTML = h;
+}
+guestbookForm.addEventListener('submit', e => {
+  e.preventDefault(); var nI = document.getElementById('gb-name'), tI = document.getElementById('gb-text'), n = nI.value.trim(), t = tI.value.trim(); if(!n || !t) return;
+  var msgs = JSON.parse(localStorage.getItem('family_guestbook_msgs') || '[{"name":"did1","text":"Уютный terminal получился. Батя одобряет! 👍"},{"name":"sataney","text":"Подсветка для нас с котиком — просто шикарная! 💜"}]');
+  msgs.push({name: n, text: t}); localStorage.setItem('family_guestbook_msgs', JSON.stringify(msgs)); tI.value = ""; loadGuestbook(); if(navigator.vibrate) navigator.vibrate(30);
+});
+document.addEventListener('mouseover', e => {
+  if(document.body.classList.contains('perf-mode')) return;
+  var p = e.target.closest('.person'); if(!p) return;
+  var pN = getPartnerName(p.getAttribute('data-name')); if(!pN) return;
+  var pC = document.querySelector('.person[data-name="' + pN + '"]'); p.classList.add('partner-highlighted'); if(pC) pC.classList.add('partner-highlighted');
+});
+document.addEventListener('mouseout', e => {
+  var p = e.target.closest('.person'); if(!p) return;
+  var pN = getPartnerName(p.getAttribute('data-name')); if(!pN) return;
+  var pC = document.querySelector('.person[data-name="' + pN + '"]'); p.classList.remove('partner-highlighted'); if(pC) pC.classList.remove('partner-highlighted');
+});
+loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </script>
 </body>
 </html>
