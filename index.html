@@ -3,119 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Семейное древо — Интерактивный Холст</title>
+<title>Семейное древо — Хроники Хаоса</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
 <link rel="preconnect" href="https://googleapis.com">
 <link rel="preconnect" href="https://gstatic.com" crossorigin>
 <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-dark: #06030a;
-  --bg-panel: rgba(14, 10, 26, 0.8);
+  --bg-dark: #07040d;
+  --bg-panel: rgba(15, 11, 28, 0.85);
   --accent-1: #8b5cf6;
   --accent-2: #ec4899;
   --accent-3: #10b981;
   --text-main: #f3f1f6;
-  --text-muted: #9c91aa;
-  --border-inner: rgba(139, 92, 246, 0.45);
+  --text-muted: #a79cb5;
+  --border-inner: rgba(139, 92, 246, 0.5);
   --border-outer: rgba(255, 255, 255, 0.04);
-  --glow: 0 0 20px rgba(139, 92, 246, 0.2);
+  --glow: 0 0 20px rgba(139, 92, 246, 0.25);
   --glow-partner: 0 0 25px rgba(236, 72, 153, 0.5);
-  --card-radius: 16px;
-  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --line-grad: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.35), transparent);
+  --card-radius: 14px;
+  --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* { 
-  box-sizing: border-box; 
-  margin: 0; 
-  padding: 0; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   color: var(--text-main);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background: var(--bg-dark);
-  overflow: hidden;
+  background: #000;
+  background-attachment: fixed;
+  overflow-x: hidden;
   position: relative;
 }
 
-/* Сетка чертежного холста на фоне */
+/* Премиальная чертежная сетка с неоновым свечением */
 .bg-canvas {
   position: fixed;
   inset: 0;
   z-index: -1;
   background-color: #06030a;
   background-image: 
-    radial-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 0),
-    radial-gradient(rgba(236, 72, 153, 0.04) 1px, transparent 0);
-  background-size: 24px 24px;
-  background-position: 0 0, 12px 12px;
+    radial-gradient(rgba(139, 92, 246, 0.07) 1px, transparent 0),
+    radial-gradient(rgba(236, 72, 153, 0.03) 1px, transparent 0);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
 }
 
-/* Декоративные размытые неоновые сферы */
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(160px);
-  opacity: 0.12;
+  filter: blur(150px);
+  opacity: 0.15;
   pointer-events: none;
+  animation: floatBlobs 25s infinite alternate ease-in-out;
 }
-.blob-1 { top: -10%; left: 20%; width: 600px; height: 600px; background: var(--accent-1); }
-.blob-2 { bottom: -10%; right: 20%; width: 600px; height: 600px; background: var(--accent-2); }
+.blob-1 { top: 10%; left: 5%; width: 500px; height: 500px; background: var(--accent-1); }
+.blob-2 { bottom: 10%; right: 5%; width: 550px; height: 550px; background: var(--accent-2); animation-delay: -6s; }
+
+@keyframes floatBlobs {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, 30px) scale(1.1); }
+}
 .layout-grid {
   display: grid;
-  grid-template-columns: 340px 1fr 340px;
-  height: 100vh;
-  max-width: 100vw;
+  grid-template-columns: 320px 320px 1fr;
+  min-height: 100vh;
+  max-width: 1920px;
   margin: 0 auto;
-  position: relative;
-  overflow: hidden;
 }
 
-/* Фиксированные сайдбары по краям экрана */
+/* Стабильная фиксация сайдбаров с мягким размытием */
 .sidebar, .sidebar-secondary {
-  padding: 40px 24px;
-  background: rgba(4, 2, 8, 0.7);
+  padding: 40px 20px;
+  background: rgba(4, 2, 8, 0.5);
   border-right: 1px solid rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   overflow-y: auto;
+  position: sticky;
+  top: 0;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 36px;
-  z-index: 10;
+  gap: 32px;
 }
 
 .sidebar-secondary {
+  background: rgba(4, 2, 8, 0.3);
   border-right: none;
   border-left: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(4, 2, 8, 0.55);
 }
 
-/* Изящный скрывающийся скроллбар панелей */
-.sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar, .canvas-viewport::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Премиальный тонкий скроллбар */
+.sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar {
+  width: 5px;
 }
-.sidebar::-webkit-scrollbar-track, .sidebar-secondary::-webkit-scrollbar-track, .canvas-viewport::-webkit-scrollbar-track {
+.sidebar::-webkit-scrollbar-track, .sidebar-secondary::-webkit-scrollbar-track {
   background: transparent;
 }
-.sidebar::-webkit-scrollbar-thumb, .sidebar-secondary::-webkit-scrollbar-thumb, .canvas-viewport::-webkit-scrollbar-thumb {
+.sidebar::-webkit-scrollbar-thumb, .sidebar-secondary::-webkit-scrollbar-thumb {
   background: rgba(139, 92, 246, 0);
   border-radius: 99px;
   transition: var(--transition-smooth);
 }
-.sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb, .canvas-viewport:hover::-webkit-scrollbar-thumb {
+.sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb {
   background: rgba(139, 92, 246, 0.3);
 }
 
 .section-block {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .section-title {
@@ -127,29 +128,29 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  text-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+  text-shadow: 0 0 12px rgba(236, 72, 153, 0.35);
 }
 
 .section-desc {
   font-size: 12px;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .sidebar-card {
   background: var(--bg-panel);
   border: 1px solid var(--border-outer);
-  border-radius: var(--card-radius);
-  padding: 14px;
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   transition: var(--transition-smooth);
 }
 
@@ -157,17 +158,17 @@ body {
   transform: translateX(4px);
   border-color: rgba(139, 92, 246, 0.35);
   box-shadow: var(--glow);
-  background: rgba(20, 14, 38, 0.9);
+  background: rgba(22, 16, 41, 0.9);
 }
 
 .avatar-small {
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 18px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -179,69 +180,60 @@ body {
 }
 
 .info-small p {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-top: 1px;
-}
-
-/* Центральная интерактивная область холста */
-.canvas-viewport {
-  height: 100vh;
-  overflow: auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
 }
 
 .main-content {
-  padding: 60px 80px;
-  min-width: max-content;
+  padding: 50px 60px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .hero {
-  margin-bottom: 54px;
-  max-width: 650px;
-  position: sticky;
-  left: 80px;
+  text-align: center;
+  margin-bottom: 48px;
+  width: 100%;
 }
 
 .eyebrow {
   display: inline-block;
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 999px;
   color: #fff;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
   border: 1px solid rgba(139, 92, 246, 0.25);
   font-size: 11px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
 }
 
 h1 {
-  margin: 16px 0 8px;
-  font-size: 42px;
+  margin: 14px 0 6px;
+  font-size: clamp(28px, 4.5vw, 52px);
+  line-height: 1.1;
   font-weight: 800;
-  letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #ffffff 40%, #ffd6eb 100%);
+  background: linear-gradient(135deg, #ffffff 40%, #e2d9f3 75%, #ffd6eb 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  text-shadow: 0 0 25px rgba(139, 92, 246, 0.15);
 }
 
 .subtitle {
+  max-width: 600px;
+  margin: 0 auto 16px;
   color: var(--text-muted);
   font-size: 15px;
   line-height: 1.6;
 }
 
 .status {
-  margin-top: 14px;
+  margin: 12px auto 0;
   width: fit-content;
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 999px;
   color: #fff;
   background: rgba(16, 185, 129, 0.05);
@@ -254,8 +246,9 @@ h1 {
 }
 
 .status .dot {
-  width: 8px;
-  height: 8px;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--accent-3);
   box-shadow: 0 0 10px var(--accent-3);
@@ -267,58 +260,61 @@ h1 {
   50% { opacity: 0.4; }
 }
 
-/* Древо: Горизонтальные поколения (Слева направо) */
 .tree {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 48px;
-  padding-bottom: 40px;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
-.level-column {
+.level-row {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 24px;
-  width: 380px;
+  width: 100%;
   position: relative;
+  margin-bottom: 32px;
 }
 
 .level-label {
-  font-size: 12px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-muted);
-  opacity: 0.7;
-  padding-left: 4px;
-  border-left: 2px solid var(--accent-1);
+  opacity: 0.75;
 }
 
-/* Измененный горизонтальный коннектор между поколениями */
-.connector-h {
+.connector {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 100%;
+  width: 100%;
+  padding: 10px 0;
   position: relative;
 }
-.connector-h .hline {
-  width: 48px;
-  height: 2px;
-  background: linear-gradient(to right, rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.15));
-  margin-top: 40px;
+
+.connector .vline {
+  width: 2px;
+  height: 36px;
+  background: var(--line-grad);
 }
 
 .center-card {
-  width: 100%;
-  padding: 28px 24px;
-  border-radius: 22px;
+  min-width: min(320px, 100%);
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: 20px;
   border: 1px solid var(--border-inner);
   background: rgba(18, 12, 36, 0.9);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), var(--glow);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45), var(--glow);
   position: relative;
+  flex: 1 1 320px;
+  max-width: 400px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: var(--transition-smooth);
@@ -326,33 +322,36 @@ h1 {
 
 .center-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55), 0 0 25px rgba(139, 92, 246, 0.4);
+  border-color: #a78bfa;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55), 0 0 25px rgba(139, 92, 246, 0.45);
 }
 
 .center-card::before {
   content: '';
   position: absolute;
   inset: -1px;
-  border-radius: 22px;
+  border-radius: 20px;
   background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
   z-index: -1;
   opacity: 0.25;
 }
 
 .center-card .icon {
-  font-size: 36px;
+  font-size: 34px;
+  line-height: 1;
   margin-bottom: 10px;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
 }
 
 .center-card .name {
   display: block;
   font-size: 24px;
   font-weight: 800;
-  background: linear-gradient(135deg, #fff 0%, #d8cff0 100%);
+  background: linear-gradient(135deg, #fff 0%, #c4b5e0 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  line-height: 1.2;
 }
 
 .center-card .role {
@@ -364,7 +363,8 @@ h1 {
 }
 
 .group {
-  width: 100%;
+  flex: 1 1 320px;
+  max-width: 400px;
   border: 1px solid var(--border-outer);
   border-radius: 18px;
   background: var(--bg-panel);
@@ -375,9 +375,9 @@ h1 {
 }
 
 .group:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .group-head {
@@ -389,13 +389,16 @@ h1 {
 .group-head h2 {
   font-size: 15px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: #fff;
 }
 
 .group-head .sub {
   margin-top: 4px;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -423,12 +426,12 @@ h1 {
   transform: translateX(4px);
 }
 
-/* Неприкосновенный эффект взаимной неоновой подсветки влюбленных */
+/* Святая святых: Наша неприкосновенная логика неоновой подсветки влюбленных */
 .person.partner-highlighted {
   background: rgba(236, 72, 153, 0.1) !important;
   border-color: rgba(236, 72, 153, 0.55) !important;
   box-shadow: var(--glow-partner) !important;
-  transform: scale(1.025) translateX(4px);
+  transform: scale(1.025) translateY(-1px);
 }
 
 .avatar {
@@ -452,6 +455,7 @@ h1 {
   font-weight: 600;
   font-size: 14px;
   overflow-wrap: anywhere;
+  line-height: 1.3;
   color: #fff;
 }
 
@@ -462,65 +466,57 @@ h1 {
 }
 
 .final-quote {
-  margin-top: 50px;
+  margin-top: 60px;
+  text-align: center;
   color: var(--text-muted);
   font-size: 14px;
   line-height: 1.6;
   max-width: 600px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-  position: sticky;
-  left: 80px;
 }
 
-.heart { color: #a855f7; display: inline-block; }
-
 @media (max-width: 1200px) {
-  .layout-grid { grid-template-columns: 1fr; height: auto; overflow: auto; }
-  .sidebar, .sidebar-secondary { height: auto; position: relative; border: none; backdrop-filter: none; }
-  .canvas-viewport { height: auto; overflow: visible; }
-  .main-content { padding: 40px 20px; min-width: 100%; }
-  .hero, .final-quote { position: relative; left: 0; }
-  .tree { flex-direction: column; width: 100%; gap: 32px; }
-  .level-column { width: 100%; }
-  .connector-h { display: none; }
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar, .sidebar-secondary {
+    height: auto;
+    position: relative;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- Интерактивная чертежная сетка и неоновый фон -->
+<!-- Динамические неоновые сферы и сетка на фоне приложения -->
 <div class="bg-canvas">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
 </div>
 
 <main class="layout-grid">
-  <!-- Левая фиксированная панель: Близкий круг и Питомцы -->
+  <!-- Левый стабильный сайдбар: Близкий круг и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
   
-  <!-- Центральная область холста с независимой прокруткой -->
-  <div class="canvas-viewport">
-    <div class="main-content">
-      
-      <header class="hero">
-        <div class="eyebrow" id="eyebrow">Интеграция систем...</div>
-        <h1 id="title">Семейное древо</h1>
-        <p class="subtitle" id="subtitle"></p>
-        <div class="status" id="status"><span class="dot"></span>Развертывание холста family.json...</div>
-      </header>
-
-      <!-- Контейнер для динамической горизонтальной генерации древа -->
-      <section id="content"></section>
-      
-      <!-- Семейные хроники -->
-      <footer class="final-quote" id="footer"></footer>
-      
-    </div>
-  </div>
-  
-  <!-- Правая фиксированная панель: Окружение и Инфраструктура -->
+  <!-- Правый стабильный сайдбар: Окружение и Инфраструктура -->
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
+
+  <!-- Центральная область с вертикальным древом поколений -->
+  <div class="main-content">
+    <header class="hero">
+      <div class="eyebrow" id="eyebrow">Синхронизация...</div>
+      <h1 id="title">Семейное древо</h1>
+      <p class="subtitle" id="subtitle"></p>
+      <div class="status" id="status"><span class="dot"></span>Подключение к family.json...</div>
+    </header>
+
+    <!-- Секция для динамической генерации древа -->
+    <section id="content"></section>
+    
+    <!-- Хроники тепла -->
+    <footer class="final-quote" id="footer"></footer>
+  </div>
 </main>
 <script>
 var JSON_FILE = "family.json";
@@ -635,9 +631,9 @@ function render(data) {
     var lv = sortedLevels[idx];
     var levelNum = Number(lv);
     if (idx > 0) {
-      html += '<div class="connector-h"><div class="hline"></div></div>';
+      html += '<div class="connector"><div class="vline"></div></div>';
     }
-    html += '<div class="level-column">';
+    html += '<div class="level-row">';
     html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
     if (levels[lv]._hasCenter) {
       html += renderCenter(center);
@@ -698,7 +694,7 @@ function getPartnerName(name) {
   return pairs[name] || null;
 }
 
-// Слушатель событий мыши на холсте
+// Слушатель событий мыши
 document.addEventListener('mouseover', function(e) {
   var personCard = e.target.closest('.person');
   if (!personCard) return;
