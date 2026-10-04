@@ -356,6 +356,7 @@ h1 {
   font-weight: 600;
 }
 
+/* Исправлено: убран overflow: hidden, из-за которого прятались люди в сайдбарах */
 .group {
   flex: 1 1 290px;
   max-width: 440px;
@@ -364,7 +365,6 @@ h1 {
   background: var(--bg-panel);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  overflow: hidden;
   transition: var(--transition-smooth);
 }
 
@@ -802,7 +802,7 @@ function render(data) {
       html += '</div>';
 
     } else if (levelNum === 3) {
-      // Ряд 1: Прямые наследники (Любимые Дочки и Любимые Сыновья)
+      // Ряд 1: Пнямые наследники (Любимые Дочки и Любимые Сыновья)
       html += '<div class="sub-row">';
       var bloodChildren = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") === -1; });
       for (var j = 0; j < bloodChildren.length; j++) {
