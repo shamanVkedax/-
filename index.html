@@ -10,7 +10,7 @@
 <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-dark: #07030f;
+  --bg-dark: #05020a;
   --bg-panel: rgba(17, 11, 31, 0.88);
   --accent-1: #b55ffc; /* Аметистовая орхидея */
   --accent-2: #ec4899; /* Розовый неон для пар */
@@ -26,6 +26,41 @@
   --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Стили для полного отключения анимаций на слабом ПК */
+body.perf-mode {
+  --glow: none !important;
+  --glow-partner: none !important;
+  --transition-smooth: none !important;
+}
+body.perf-mode .blob {
+  display: none !important;
+}
+body.perf-mode .bg-canvas {
+  animation: none !important;
+  opacity: 0.5 !important;
+}
+body.perf-mode .sidebar, 
+body.perf-mode .sidebar-secondary, 
+body.perf-mode .group, 
+body.perf-mode .center-card, 
+body.perf-mode .search-input {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #110b1f !important;
+}
+body.perf-mode .person:hover {
+  transform: none !important;
+}
+body.perf-mode .center-card:hover, 
+body.perf-mode .group:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: var(--border-inner) !important;
+}
+body.perf-mode .modal-avatar {
+  animation: none !important;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -38,18 +73,26 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-
+/* Уютный космический хаос на фоне */
 .bg-canvas {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background-color: #07030f;
+  background-color: var(--bg-dark);
   background-image: 
-    radial-gradient(rgba(181, 95, 252, 0.08) 1px, transparent 0),
-    radial-gradient(rgba(236, 72, 153, 0.02) 1px, transparent 0);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
+    radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0),
+    radial-gradient(rgba(181, 95, 252, 0.12) 2px, transparent 0),
+    radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 0);
+  background-size: 40px 40px, 90px 90px, 130px 130px;
+  background-position: 0 0, 20px 20px, 65px 65px;
   pointer-events: none;
+  animation: spaceGlow 20s infinite alternate ease-in-out;
+}
+
+@keyframes spaceGlow {
+  0% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0.9; transform: scale(0.99); }
 }
 
 .blob {
@@ -69,6 +112,31 @@ body {
   100% { transform: translate(45px, 35px) scale(1.12); }
 }
 
+/* Переключатель режима экономии ресурсов в левом верхнем углу */
+.perf-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1500;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-inner);
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--glow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition-smooth);
+}
+.perf-toggle:hover {
+  background: var(--accent-1);
+  transform: translateY(-2px);
+}
+
 .layout-grid {
   display: grid;
   grid-template-columns: minmax(300px, 350px) 1fr minmax(300px, 350px);
@@ -76,6 +144,7 @@ body {
   max-width: 1920px;
   margin: 0 auto;
 }
+
 .sidebar, .sidebar-secondary {
   padding: 40px 18px;
   background: rgba(5, 3, 13, 0.7);
@@ -107,31 +176,6 @@ body {
   background: rgba(181, 95, 252, 0.3);
   border-radius: 99px;
 }
-
-.section-block {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.section-title {
-  font-size: 15px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--accent-1);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-shadow: 0 0 15px rgba(181, 95, 252, 0.35);
-}
-
-.section-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
 .main-content {
   padding: 50px 40px;
   display: flex;
@@ -213,7 +257,7 @@ h1 {
 .status {
   margin: 14px auto 0;
   width: fit-content;
-  padding: 6px 14px;
+  padding: 6px 16px;
   border-radius: 999px;
   color: #fff;
   background: rgba(181, 95, 252, 0.05);
@@ -247,6 +291,7 @@ h1 {
   align-items: center;
   width: 100%;
 }
+
 .level-row {
   display: flex;
   flex-direction: column;
@@ -269,7 +314,6 @@ h1 {
   opacity: 0.75;
 }
 
-/* Гибкие подряды для умного деления пар и родственников */
 .sub-row {
   display: flex;
   flex-wrap: wrap;
@@ -356,7 +400,6 @@ h1 {
   font-weight: 600;
 }
 
-/* Исправлено: убран overflow: hidden, из-за которого прятались люди в сайдбарах */
 .group {
   flex: 1 1 290px;
   max-width: 440px;
@@ -467,7 +510,6 @@ h1 {
   filter: none !important;
 }
 
-/* Модальное окно */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -568,13 +610,13 @@ h1 {
 </head>
 <body>
 
-<!-- Динамический кибер-аметистовый фон -->
+<button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
+
 <div class="bg-canvas">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
 </div>
 
-<!-- Монолитная трехколоночная сетка -->
 <main class="layout-grid">
   <!-- ЛЕВАЯ КОЛОНКА: Особые люди и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
@@ -610,9 +652,9 @@ h1 {
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-card">
     <div class="modal-avatar" id="modal-avatar">👤</div>
-    <div class="modal-name" id="modal-name">Имя Персонажа</div>
-    <div class="modal-role" id="modal-role">Роль в экосистеме</div>
-    <div class="modal-badge" id="modal-badge">Статус в хаосе семьи...</div>
+    <div class="modal-name" id="modal-name">Имя</div>
+    <div class="modal-role" id="modal-role">Роль</div>
+    <div class="modal-badge" id="modal-badge">Статус</div>
     <button class="modal-close" id="modal-close">Закрыть протокол</button>
   </div>
 </div>
@@ -911,7 +953,18 @@ function applySearchFilter() {
   }
 }
 
-// ЛОГИКА ДИНАМИЧЕСКИХ МОДАЛЬНЫХ ОКОН
+// Логика переключения режима производительности
+var perfToggle = document.getElementById('perf-toggle');
+if (localStorage.getItem('perfMode') === 'true') {
+  document.body.classList.add('perf-mode');
+  perfToggle.textContent = "🚀 Обычный режим";
+}
+perfToggle.addEventListener('click', function() {
+  var isPerf = document.body.classList.toggle('perf-mode');
+  localStorage.setItem('perfMode', isPerf);
+  perfToggle.textContent = isPerf ? "🚀 Обычный режим" : "⚡ Слабый ПК / Телефон";
+});
+
 var modalOverlay = document.getElementById('modal-overlay');
 var modalAvatar = document.getElementById('modal-avatar');
 var modalName = document.getElementById('modal-name');
@@ -948,6 +1001,7 @@ loadFamily();
 setInterval(loadFamily, REFRESH_MS);
 
 document.addEventListener('mouseover', function(e) {
+  if(document.body.classList.contains('perf-mode')) return; // Отключаем наведение в эко-режиме
   var personCard = e.target.closest('.person');
   if (!personCard) return;
 
