@@ -13,7 +13,7 @@
   --bg-dark: #07030f;
   --bg-panel: rgba(17, 11, 31, 0.88);
   --accent-1: #b55ffc; /* Аметистовая орхидея */
-  --accent-2: #ec4899; /* Розовый неон для влюбленных пар */
+  --accent-2: #ec4899; /* Розовый неон для пар */
   --accent-3: #475569;
   --text-main: #fcfaff;
   --text-muted: #b4abbf;
@@ -39,7 +39,6 @@ body {
   position: relative;
 }
 
-/* Обновленная кибер-аметистовая чертежная сетка */
 .bg-canvas {
   position: fixed;
   inset: 0;
@@ -99,7 +98,6 @@ body {
   border-left: 1px solid rgba(181, 95, 252, 0.06);
 }
 
-/* Тонкий скрывающийся скроллбар */
 .sidebar::-webkit-scrollbar, .sidebar-secondary::-webkit-scrollbar {
   width: 4px;
 }
@@ -107,12 +105,8 @@ body {
   background: transparent;
 }
 .sidebar::-webkit-scrollbar-thumb, .sidebar-secondary::-webkit-scrollbar-thumb {
-  background: rgba(181, 95, 252, 0);
-  border-radius: 99px;
-  transition: var(--transition-smooth);
-}
-.sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb {
   background: rgba(181, 95, 252, 0.3);
+  border-radius: 99px;
 }
 
 .section-block {
@@ -122,7 +116,7 @@ body {
 }
 
 .section-title {
-  font-size: 15px; /* Увеличено */
+  font-size: 15px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -134,7 +128,7 @@ body {
 }
 
 .section-desc {
-  font-size: 13px; /* Увеличено */
+  font-size: 13px;
   color: var(--text-muted);
   line-height: 1.5;
 }
@@ -160,7 +154,7 @@ body {
   color: #fff;
   background: linear-gradient(135deg, rgba(181, 95, 252, 0.15), rgba(236, 72, 153, 0.15));
   border: 1px solid rgba(181, 95, 252, 0.25);
-  font-size: 12px; /* Увеличено */
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
@@ -168,7 +162,7 @@ body {
 
 h1 {
   margin: 16px 0 8px;
-  font-size: clamp(32px, 4.5vw, 52px); /* Увеличено */
+  font-size: clamp(32px, 4.5vw, 52px);
   line-height: 1.1;
   font-weight: 800;
   background: linear-gradient(135deg, #ffffff 40%, #decafc 75%, #ec4899 100%);
@@ -182,7 +176,7 @@ h1 {
   max-width: 640px;
   margin: 0 auto 18px;
   color: var(--text-muted);
-  font-size: 16px; /* Увеличено */
+  font-size: 16px;
   line-height: 1.6;
 }
 
@@ -201,7 +195,7 @@ h1 {
   border: 1px solid rgba(181, 95, 252, 0.25);
   color: #fff;
   font-family: inherit;
-  font-size: 15px; /* Увеличено */
+  font-size: 15px;
   outline: none;
   transition: var(--transition-smooth);
   backdrop-filter: blur(10px);
@@ -220,11 +214,11 @@ h1 {
 .status {
   margin: 14px auto 0;
   width: fit-content;
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 999px;
   color: #fff;
   background: rgba(181, 95, 252, 0.05);
-  font-size: 12px; /* Увеличено */
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.3px;
   border: 1px solid rgba(181, 95, 252, 0.2);
@@ -254,16 +248,12 @@ h1 {
   align-items: center;
   width: 100%;
 }
-
 .level-row {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 28px;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  max-width: 950px;
-  position: relative;
+  max-width: 1000px;
   margin-bottom: 36px;
   transition: var(--transition-smooth);
 }
@@ -271,13 +261,27 @@ h1 {
 .level-label {
   width: 100%;
   text-align: center;
-  margin-bottom: 14px;
-  font-size: 14px; /* Увеличено */
+  margin-bottom: 16px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-muted);
   opacity: 0.75;
+}
+
+/* Новые гибкие подряды для умного деления пар и родственников */
+.sub-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: start;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+.sub-row:last-child {
+  margin-bottom: 0;
 }
 
 .connector {
@@ -286,7 +290,6 @@ h1 {
   align-items: center;
   width: 100%;
   padding: 12px 0;
-  position: relative;
 }
 
 .connector .vline {
@@ -313,7 +316,7 @@ h1 {
 }
 
 .center-card:hover {
-  transform: translateY(-5px) scale(1.01);
+  transform: translateY(-5px) scale(1.02);
   border-color: #c084fc;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55), 0 0 25px rgba(181, 95, 252, 0.5);
 }
@@ -329,7 +332,7 @@ h1 {
 }
 
 .center-card .icon {
-  font-size: 38px; /* Увеличено */
+  font-size: 38px;
   line-height: 1;
   margin-bottom: 12px;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
@@ -337,7 +340,7 @@ h1 {
 
 .center-card .name {
   display: block;
-  font-size: 26px; /* Увеличено */
+  font-size: 26px;
   font-weight: 800;
   background: linear-gradient(135deg, #fff 0%, #e9d5ff 100%);
   -webkit-background-clip: text;
@@ -350,7 +353,7 @@ h1 {
   display: block;
   color: var(--accent-1);
   margin-top: 8px;
-  font-size: 14px; /* Увеличено */
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -379,7 +382,7 @@ h1 {
 }
 
 .group-head h2 {
-  font-size: 17px; /* Увеличено */
+  font-size: 17px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -390,7 +393,7 @@ h1 {
 .group-head .sub {
   margin-top: 6px;
   color: var(--text-muted);
-  font-size: 14px; /* Увеличено */
+  font-size: 14px;
   line-height: 1.4;
 }
 
@@ -420,13 +423,13 @@ h1 {
 }
 
 .avatar {
-  flex: 0 0 42px; /* Увеличено */
+  flex: 0 0 42px;
   width: 42px;
   height: 42px;
   display: grid;
   place-items: center;
   border-radius: 12px;
-  font-size: 22px; /* Увеличено */
+  font-size: 22px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -438,7 +441,7 @@ h1 {
 
 .person-name {
   font-weight: 600;
-  font-size: 16px; /* Увеличено */
+  font-size: 16px;
   overflow-wrap: anywhere;
   line-height: 1.3;
   color: #fff;
@@ -447,10 +450,25 @@ h1 {
 .person-role {
   margin-top: 3px;
   color: var(--text-muted);
-  font-size: 13px; /* Увеличено */
+  font-size: 13px;
 }
 
-/* СТИЛИ ИНТЕРАКТИВНОГО МОДАЛЬНОГО ОКНА */
+.person.search-fade, .group.search-fade, .center-card.search-fade {
+  opacity: 0.15;
+  filter: blur(1px) grayscale(0.5);
+  transform: scale(0.98);
+}
+
+.person.partner-highlighted {
+  background: rgba(236, 72, 153, 0.12) !important;
+  border-color: rgba(236, 72, 153, 0.6) !important;
+  box-shadow: var(--glow-partner) !important;
+  transform: scale(1.03) translateY(-1px) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* Модальное окно */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -540,6 +558,13 @@ h1 {
   background: var(--accent-1);
   box-shadow: var(--glow);
 }
+
+@media (max-width: 1200px) {
+  .layout-grid { grid-template-columns: 1fr; }
+  .sidebar, .sidebar-secondary { height: auto; position: relative; border: none; border-bottom: 1px solid rgba(16, 185, 129, 0.04); padding: 30px 16px; }
+  .main-content { padding: 40px 20px; }
+  .sub-row { flex-direction: column; align-items: center; }
+}
 </style>
 </head>
 <body>
@@ -552,11 +577,10 @@ h1 {
 
 <!-- Монолитная трехколоночная сетка -->
 <main class="layout-grid">
-  
-  <!-- 1. ЛЕВАЯ КОЛОНКА: Особые люди и Питомцы -->
+  <!-- ЛЕВАЯ КОЛОНКА: Особые люди и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
 
-  <!-- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА: Шапка, Поиск и Древо поколений -->
+  <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА: Шапка, Поиск и Умное древо поколений -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Инициализация...</div>
@@ -572,19 +596,18 @@ h1 {
       <div class="status" id="status"><span class="dot"></span>Анализ семейной базы данных...</div>
     </header>
 
-    <!-- Сюда JavaScript выведет сгруппированные поколения -->
+    <!-- Сюда JavaScript выведет сгруппированные по подрядам поколения -->
     <section id="content"></section>
     
     <!-- Хроники хронологии -->
     <footer class="final-quote" id="footer"></footer>
   </div>
   
-  <!-- 3. ПРАВАЯ КОЛОНКА: Инфраструктура и Окружение -->
+  <!-- ПРАВАЯ КОЛОНКА: Инфраструктура и Окружение -->
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
-
 </main>
 
-<!-- Футуристичное интерактивное модальное окно -->
+<!-- Интерактивное модальное окно -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-card">
     <div class="modal-avatar" id="modal-avatar">👤</div>
@@ -615,13 +638,12 @@ function levelLabelText(level) {
   return labels[level] || ("Уровень " + level);
 }
 
-// Универсальный рендеринг блоков (Исправлен баг пустых отступов)
+// Универсальный рендеринг блоков для центра древа и сайдбаров
 function renderGroup(group) {
   var h = "";
   h += '<article class="group" data-search-block="true">';
   h += '<div class="group-head">';
   h += '<h2>' + esc(group.title) + '</h2>';
-  // Блок рендерится только если subtitle реально существует в JSON, убирая пустые дыры
   if (group.subtitle && group.subtitle.trim() !== "") {
     h += '<div class="sub">' + esc(group.subtitle) + '</div>';
   }
@@ -660,7 +682,7 @@ function populateSidebar(elementId, dataArray) {
   document.getElementById(elementId).innerHTML = h;
 }
 
-// База данных влюбленных пар
+// Декларативная база влюбленных пар
 function getPartnerName(name) {
   var pairs = {
     "Diamonita Grand": "EKSOD_GRAND",
@@ -751,16 +773,59 @@ function render(data) {
     if (idx > 0) {
       html += '<div class="connector"><div class="vline"></div></div>';
     }
+    
     html += '<div class="level-row">';
     html += '<div class="level-label">' + esc(levelLabelText(levelNum)) + '</div>';
-    if (levels[lv]._hasCenter) {
-      html += renderCenter(center);
+
+    var lvGroups = levels[lv] || [];
+    
+    // Новая двухрядная архитектура распределения родственников внутри уровней
+    if (levelNum === 2) {
+      // Ряд 1: Главная пара ядра семьи (shamanVkedax + Любимая Жена)
+      html += '<div class="sub-row">';
+      if (levels[lv]._hasCenter) {
+        html += renderCenter(center);
+      }
+      var wifeGroup = lvGroups.find(function(g) { return g.title.indexOf("Жена") !== -1; });
+      if (wifeGroup) html += renderGroup(wifeGroup);
+      html += '</div>';
+
+      // Ряд 2: Кровные Братья и Сестры строго под ними
+      html += '<div class="sub-row">';
+      var otherGroups2 = lvGroups.filter(function(g) { return g.title.indexOf("Жена") === -1; });
+      for (var j = 0; j < otherGroups2.length; j++) {
+        html += renderGroup(otherGroups2[j]);
+      }
+      html += '</div>';
+
+    } else if (levelNum === 3) {
+      // Ряд 1: Прямые наследники (Любимые Дочки и Любимые Сыновья)
+      html += '<div class="sub-row">';
+      var bloodChildren = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") === -1; });
+      for (var j = 0; j < bloodChildren.length; j++) {
+        html += renderGroup(bloodChildren[j]);
+      }
+      html += '</div>';
+
+      // Ряд 2: Пришедшие члены семьи (Зятья) строго под ними
+      var inLaws = lvGroups.filter(function(g) { return g.title.indexOf("Зятья") !== -1; });
+      if (inLaws.length > 0) {
+        html += '<div class="sub-row">';
+        for (var j = 0; j < inLaws.length; j++) {
+          html += renderGroup(inLaws[j]);
+        }
+        html += '</div>';
+      }
+
+    } else {
+      // Стандартный классический центрированный вывод для остальных поколений (Дедушки/Мамы)
+      html += '<div class="sub-row">';
+      for (var j = 0; j < lvGroups.length; j++) {
+        html += renderGroup(lvGroups[j]);
+      }
+      html += '</div>';
     }
-    var lvGroups = levels[lv];
-    for (var j = 0; j < lvGroups.length; j++) {
-      var g = lvGroups[j];
-      html += renderGroup(g);
-    }
+
     html += '</div>';
   }
   html += '</div>';
@@ -877,7 +942,7 @@ modalOverlay.addEventListener('click', function(e) {
 document.getElementById('tree-search').addEventListener('input', applySearchFilter);
 
 loadFamily();
-setInterval(loadFamily, REFRESH_MS);
+setInterval(loadFamily, RERESH_MS);
 
 document.addEventListener('mouseover', function(e) {
   var personCard = e.target.closest('.person');
