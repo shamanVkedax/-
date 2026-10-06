@@ -143,7 +143,8 @@
       "subtitle": "Следят, чтобы хаос не переходил границы",
       "people": [
         {"icon": "👮", "name": "Noki_Jodo", "role": "Невский участковый"},
-        {"icon": "✨", "name": "Furry_foxy7", "role": "Всезнающий душнила"}
+        {"icon": "✨", "name": "Furry_foxy7", "role": "Всезнающий душнила"},
+        {"icon": "🦊", "name": "-Ghostik-", "role": "Товарищь майор"}
       ]
     },
     {
@@ -152,8 +153,7 @@
       "people": [
         {"icon": "🌟", "name": "Velens 5b31", "role": "Лучшая подруга"},
         {"icon": "🦊", "name": "Foxyk_Lishton", "role": "Лучшая подруга"},
-        {"icon": "🌸", "name": "Aiserin", "role": "Лучшая подруга"},
-        {"icon": "🦊", "name": "-Ghostik-", "role": "Товарищь майор"}
+        {"icon": "🌸", "name": "Aiserin", "role": "Лучшая подруга"}
       ]
     },
     {
