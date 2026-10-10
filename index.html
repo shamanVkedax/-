@@ -25,7 +25,6 @@
   --card-radius: 16px;
   --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 /* Стили для полной заморозки эффектов на слабом ПК или телефоне */
 body.perf-mode {
   --glow: none !important;
@@ -80,6 +79,7 @@ body {
   overflow-x: hidden;
   position: relative;
 }
+
 /* Новая технологичная неоновая сетка из лазерных линий */
 .bg-canvas {
   position: fixed;
@@ -117,7 +117,6 @@ body {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(40px, 30px) scale(1.1); }
 }
-
 /* Контейнер для кнопок управления в верхнем левом углу */
 .controls-container {
   position: fixed;
@@ -264,7 +263,6 @@ h1 {
   line-height: 1.6;
 }
 
-/* 📊 Живой виджет «Глава Хаоса» и умная аналитика */
 .analytics-widget {
   width: 100%;
   max-width: 580px;
@@ -310,7 +308,7 @@ h1 {
 
 .search-input {
   width: 100%;
-  padding: 14px 45px 14px 18px; /* Освободили место под крестик справа */
+  padding: 14px 45px 14px 18px;
   border-radius: 12px;
   background: rgba(11, 7, 24, 0.6);
   border: 1px solid rgba(181, 95, 252, 0.25);
@@ -328,7 +326,6 @@ h1 {
   background: rgba(11, 7, 24, 0.85);
 }
 
-/* ✖️ Кнопка быстрой очистки поиска */
 .search-clear-btn {
   position: absolute;
   right: 14px;
@@ -339,7 +336,7 @@ h1 {
   color: var(--text-muted);
   font-size: 18px;
   cursor: pointer;
-  display: none; /* Появится через JS только при вводе текста */
+  display: none;
   transition: var(--transition-smooth);
 }
 
@@ -347,6 +344,7 @@ h1 {
   color: var(--accent-2);
   text-shadow: 0 0 10px var(--accent-2);
 }
+
 .status {
   margin: 14px auto 0;
   width: fit-content;
@@ -385,7 +383,6 @@ h1 {
   width: 100%;
 }
 
-/* 🗂️ Сворачиваемые заголовки уровней (Аккордеон) */
 .level-row {
   display: flex;
   flex-direction: column;
@@ -467,7 +464,6 @@ h1 {
   height: 40px;
   background: var(--line-grad);
 }
-
 .center-card {
   min-width: min(300px, 100%);
   text-align: center;
@@ -526,6 +522,7 @@ h1 {
   font-size: 14px;
   font-weight: 600;
 }
+
 .group {
   flex: 1 1 290px;
   max-width: 440px;
@@ -641,7 +638,6 @@ h1 {
   filter: none !important;
 }
 
-/* 🃏 Карточки персонажей в стиле RPG-кликеров */
 .rpg-stats {
   display: flex;
   flex-direction: column;
@@ -703,7 +699,6 @@ h1 {
   box-shadow: var(--glow);
 }
 
-/* 📜 Интерактивная Стена приветов */
 .guestbook-section {
   width: 100%;
   max-width: 580px;
@@ -912,16 +907,56 @@ h1 {
   box-shadow: var(--glow);
 }
 
+/* ==========================================================================
+   ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ВКЛЮЧАЕТСЯ АВТОМАТИЧЕСКИ НА СМАРТФОНАХ)
+   ========================================================================== */
 @media (max-width: 1200px) {
-  .layout-grid { grid-template-columns: 1fr; }
-  .sidebar, .sidebar-secondary { height: auto; position: relative; border: none; border-bottom: 1px solid rgba(16, 185, 129, 0.04); padding: 30px 16px; }
-  .main-content { padding: 40px 20px; }
-  .sub-row { flex-direction: column; align-items: center; }
+  .layout-grid { 
+    grid-template-columns: 1fr !important; 
+  }
+  .sidebar, .sidebar-secondary { 
+    height: auto !important; 
+    position: relative !important; 
+    border: none !important; 
+    border-bottom: 1px solid rgba(181, 95, 252, 0.15) !important; 
+    padding: 30px 16px !important; 
+  }
+  .sidebar-secondary {
+    border-top: 1px solid rgba(181, 95, 252, 0.15) !important;
+    border-bottom: none !important;
+  }
+  .main-content { 
+    padding: 40px 16px !important; 
+  }
+  .sub-row { 
+    flex-direction: column !important; 
+    align-items: center !important; 
+    width: 100% !important; 
+    gap: 16px !important; 
+  }
+  .center-card, .group { 
+    width: 100% !important; 
+    max-width: 100% !important; 
+  }
+  .analytics-widget { 
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px !important; 
+  }
+  .guestbook-input-row { 
+    grid-template-columns: 1fr !important; 
+    gap: 8px !important; 
+  }
+  .controls-container {
+    top: 10px;
+    left: 10px;
+  }
+  .connector .vline {
+    height: 25px !important;
+  }
 }
 </style>
 </head>
 <body>
-
 <!-- Контейнер глобального управления экосистемой -->
 <div class="controls-container">
   <button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
@@ -971,7 +1006,6 @@ h1 {
 
       <div class="status" id="status"><span class="dot"></span>Анализ семейной базы данных...</div>
     </header>
-
     <!-- Сюда выводится дерево по подрядам со спойлерами поколений -->
     <section id="content"></section>
     
@@ -1051,7 +1085,7 @@ function esc(v) {
 }
 
 function levelLabelText(level) {
-  var labels = {0: "Старшее поколение", 1: "Parents", 2: "Дети своих родителей", 4: "Племянники и племянницы", 3: "Мои Дети"};
+  var labels = {0: "Старшее поколение", 1: "Родители", 2: "Дети своих родителей", 4: "Племянники и племянницы", 3: "Мои Дети"};
   return labels[level] || ("Уровень " + level);
 }
 
@@ -1099,7 +1133,7 @@ function populateSidebar(elementId, dataArray) {
 }
 
 function getPartnerName(name) {
-  var pairs = {"Diamonita Grand": "EKSOD_GRAND", "EKSOD_GRAND": "Diamonita Grand", "": "", "": "", "§LAGDAN§": "vera ba7a", "vera ba7a": "§LAGDAN§"};
+  var pairs = {"Diamonita Grand": "EKSOD_GRAND", "EKSOD_GRAND": "Diamonita Grand", "§LAGDAN§": "vera ba7a", "vera ba7a": "§LAGDAN§"};
   return pairs[name] || null;
 }
 
@@ -1111,7 +1145,7 @@ function generateChaosStatus(name, role) {
   if (role.toLowerCase().indexOf("психотерапевт") !== -1) return "Влияние на экосистему: Восстанавливает ментальное здоровье семьи после затяжных бытовых штормов.";
   if (role.toLowerCase().indexOf("участковый") !== -1) return "Влияние на экосистему: Контролирует соблюдение границ комендантского часа и уровень шума в хрониках.";
   if (role.toLowerCase().indexOf("кот") !== -1 || role.toLowerCase().indexOf("песель") !== -1 || role.toLowerCase().indexOf("собака") !== -1) return "Статус в хаосе: Пушистый хранитель тепла. Назначение — генерация мурчания и требование внеочередной еды. 🐾";
-  return "Официальный протокол: Активный участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
+  return "Официальный протокол: Active участник семейной вселенной. Создает неповторимый баланс уюта и драйва.";
 }
 
 function getRPGStats(name) {
@@ -1120,31 +1154,6 @@ function getRPGStats(name) {
   for (var i = 0; i < name.length; i++) { code += name.charCodeAt(i); }
   return { chaos: (code % 45) + 55, cozy: ((code * 3) % 40) + 60, resist: ((code * 7) % 50) + 50 };
 }
-
-var audioCtx = null, ambientOsc = null, ambientGain = null;
-function toggleAmbient(btn) {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    ambientOsc = audioCtx.createOscillator();
-    ambientGain = audioCtx.createGain();
-    ambientOsc.type = 'sine';
-    ambientOsc.frequency.setValueAtTime(65.41, audioCtx.currentTime);
-    ambientGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-    var filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
-    ambientOsc.connect(filter);
-    filter.connect(ambientGain);
-    ambientGain.connect(audioCtx.destination);
-    ambientOsc.start();
-    btn.textContent = "⏸️ Выключить эмбиент";
-    btn.style.borderColor = "var(--accent-2)";
-  } else {
-    if (audioCtx.state === 'suspended') { audioCtx.resume(); btn.textContent = "⏸️ Выключить эмбиент"; } 
-    else if (audioCtx.state === 'running') { audioCtx.suspend(); btn.textContent = "🎵 Включить эмбиент"; btn.style.borderColor = "var(--border-inner)"; }
-  }
-}
-
 function render(d) {
   var h = (id, t) => { var el = document.getElementById(id); if(el) el.textContent = t || ""; };
   document.title = d.title || "Семейное древо"; 
@@ -1177,7 +1186,7 @@ function render(d) {
   var cont = document.getElementById("content");
   if(cont) cont.innerHTML = t + '</div>';
   
-  var pT = d.center ? 1 : 0, peT = 0, cM = 0, cN = "Нет";
+  var pT = d.center ? 1 : 0, peT = 0, cM = 0, cName = "shamanVkedax";
   gr.forEach(g => { 
     var s = (g.people || []).length; pT += s; 
     var cl = g.title ? g.title.replace(/[^\w\sа-яА-ЯёЁ]/g, '').trim() : ""; 
@@ -1193,7 +1202,7 @@ function render(d) {
   var kC = 0; 
   gr.filter(g => g.level === 3 && g.title && !g.title.includes("Снохи") && !g.title.includes("Зятья")).forEach(k => kC += (k.people || []).length);
   
-  h("stat-people", pT); h("stat-pets", peT); h("stat-stable", Math.max(12, 100 - (kC * 8)) + "%"); h("stat-clan", cN);
+  h("stat-people", pT); h("stat-pets", peT); h("stat-stable", Math.max(12, 100 - (kC * 8)) + "%"); h("stat-clan", cName);
   applySearchFilter(); initOnlineDots();
 }
 
@@ -1227,7 +1236,11 @@ function applySearchFilter() {
     if(m) g.classList.remove('search-fade', 'search-hide'); else g.classList.add('search-fade');
   });
   document.querySelectorAll('.level-row').forEach(row => { if(row.querySelectorAll('.center-card:not(.search-fade), .group:not(.search-fade)').length === 0) row.classList.add('search-hide'); else row.classList.remove('search-hide'); });
-  document.querySelectorAll('.connector').forEach(co => { var next = document.getElementById('level-row-' + co.getAttribute('data-level-conn')); if(next && next.classList.contains('search-hide')) co.classList.add('search-hide'); else co.classList.remove('search-hide'); });
+  document.querySelectorAll('.connector').forEach(co => { 
+    var next = document.getElementById('level-row-' + co.getAttribute('data-level-conn')); 
+    if(next && next.classList.contains('search-hide')) co.classList.add('search-hide'); 
+    else co.classList.remove('search-hide'); 
+  });
 }
 
 document.getElementById('search-clear-btn').addEventListener('click', () => { var i = document.getElementById("tree-search"); i.value = ""; i.focus(); applySearchFilter(); });
