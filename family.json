@@ -46,7 +46,7 @@
       "subtitle": "Братская банда",
       "level": 2,
       "people": [
-        {"icon": "⚔%EF%B8%8F", "name": "John․Wick f3fd", "role": "Брат"},
+        {"icon": "⚔️", "name": "John․Wick f3fd", "role": "Брат"},
         {"icon": "💥", "name": "KILLAСБЭУМОЁВСЕ b521", "role": "Брат"},
         {"icon": "🎮", "name": "Jana dcee", "role": "Брат"},
         {"icon": "🧟", "name": "Andrey_Zombie", "role": "Брат"}
@@ -116,7 +116,7 @@
       "title": "🎶 Особые люди",
       "subtitle": "Те, кто задаёт настроение",
       "people": [
-        {"icon": "❤%EF%B8%8F", "name": "bekap_1", "role": "Маленький фембойчик"},
+        {"icon": "❤", "name": "bekap_1", "role": "Маленький фембойчик"},
         {"icon": "🐝", "name": "LLlmel`", "role": "Шмель домашний, ручной"}
       ]
     },
