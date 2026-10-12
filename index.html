@@ -1118,11 +1118,13 @@ function renderGroup(group) {
 function renderWifeCard(group) {
   if (!group || !group.people || group.people.length === 0) return "";
   
+  // ИСПРАВЛЕНО: Добавлен индекс, чтобы взять конкретного человека из базы
   var p = group.people[0]; 
   var wName = p.name || "tatiana_lo";
   var wRole = p.role || "Любимая жена";
   var wIcon = p.icon || "👑";
 
+  // Генерируем большую центрированную VIP-карточку
   var h = '<div class="wife-card" data-search-block="true" data-name="' + esc(wName) + '" data-role="' + esc(wRole) + '" data-icon="' + esc(wIcon) + '">';
   h += '<div class="icon">' + esc(wIcon) + '</div>';
   h += '<span class="name">' + esc(wName) + '</span>';
