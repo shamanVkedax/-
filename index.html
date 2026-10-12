@@ -1139,7 +1139,7 @@ function getPartnerName(name) {
 
 function generateChaosStatus(name, role) {
   if (!name || name === "В ожидании...") return "Официальный протокол: Ячейка зарезервирована в хрониках семейной базы данных.";
-  if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "sataney" || name === "卄乇ㄥㄥ匚卂ㄒ") return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
+  if (name === "Diamonita Grand" || name === "EKSOD_GRAND" || name === "" || name === "") return "Особый статус: Взаимное притяжение сердец. Нарушение законов хаоса ради абсолютного уюта. 💜";
   if (name === "vera ba7a" || name === "§LAGDAN§") return "Кровные узы: Родные брат и сестра. Фундамент и вековая мудрость старшего поколения хроник хаоса.";
   if (name === "tatiana_lo") return "Официальный протокол: Самая ценная и редкая находка в этой вселенной. Уровень очарования и милоты превышает все допустимые нормы.";
   if (role.toLowerCase().indexOf("священник") !== -1) return "Влияние на экосистему: Регулярно отпускает грехи семейного хаоса. Духовный щит дома укреплен.";
@@ -1175,7 +1175,8 @@ function render(d) {
     t += '<div class="level-row" id="level-row-'+n+'"><div class="level-label" onclick="toggleLevelRow('+n+')">'+esc(levelLabelText(n))+'</div><div class="level-content">';
     if (n === 2) {
       t += '<div class="sub-row">'; if (d.center) t += renderCenter(d.center);
-      var w = lv[l].find(g => g.title && g.title.includes("Жена")); if (w) t += renderGroup(w);
+      // ВОТ ЭТА СТРОКА ИЗМЕНЕНА: вместо renderGroup(w) теперь renderWifeCard(w)
+      var w = lv[l].find(g => g.title && g.title.includes("Жена")); if (w) t += renderWifeCard(w);
       t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Жена")).forEach(g => t += renderGroup(g)); t += '</div>';
     } else if (n === 3) {
       t += '<div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Зятья") && !g.title.includes("Снохи")).forEach(g => t += renderGroup(g));
