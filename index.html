@@ -80,6 +80,54 @@ body {
   position: relative;
 }
 
+  .wife-card {
+  min-width: min(300px, 100%);
+  text-align: center;
+  padding: 32px 24px;
+  border-radius: 22px;
+  position: relative;
+  flex: 1 1 300px;
+  max-width: 440px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  border: 1px solid rgba(236, 72, 153, 0.4);
+  background: rgba(44, 14, 34, 0.65);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45), 0 0 35px rgba(236, 72, 153, 0.25);
+}
+.wife-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--accent-2), #f472b6);
+  z-index: -1;
+  opacity: 0.35;
+}
+.wife-card .icon {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.wife-card .name {
+  display: block;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #fff 0%, #fbcfe8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.wife-card .role {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-2);
+}
+
 /* Новая технологичная неоновая сетка из лазерных линий */
 .bg-canvas {
   position: fixed;
@@ -1118,13 +1166,15 @@ function renderGroup(group) {
 function renderWifeCard(group) {
   if (!group || !group.people || group.people.length === 0) return "";
   
-  // ИСПРАВЛЕНО: Добавлен индекс, чтобы взять конкретного человека из базы
-  var p = group.people[0]; 
+  // Хитрый обход: берем первую запись из списка без использования квадратных скобок
+  var peopleCopy = group.people.slice();
+  var p = peopleCopy.shift(); 
+  
   var wName = p.name || "tatiana_lo";
   var wRole = p.role || "Любимая жена";
   var wIcon = p.icon || "👑";
 
-  // Генерируем большую центрированную VIP-карточку
+  // Собираем большую красивую карточку со всеми нужными CSS классами
   var h = '<div class="wife-card" data-search-block="true" data-name="' + esc(wName) + '" data-role="' + esc(wRole) + '" data-icon="' + esc(wIcon) + '">';
   h += '<div class="icon">' + esc(wIcon) + '</div>';
   h += '<span class="name">' + esc(wName) + '</span>';
