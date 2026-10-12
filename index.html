@@ -1178,18 +1178,9 @@ function render(d) {
       if (d.center) t += renderCenter(d.center);
       
       // ИСПРАВЛЕННЫЙ ВАРИАНТ: Обычная функция для поиска объекта Жены в массиве
-      var w = lv[l].find(function(g) { 
-        return g.title && g.title.indexOf("Жена") !== -1; 
-      }); 
-      if (w) t += renderWifeCard(w);
-      
-      t += '</div><div class="sub-row">'; 
-      lv[l].filter(function(g) { 
-        return g.title && g.title.indexOf("Жена") === -1; 
-      }).forEach(function(g) { 
-        t += renderGroup(g); 
-      }); 
-      t += '</div>';
+     t += '<div class="sub-row">'; if (d.center) t += renderCenter(d.center);
+      var w = lv[l].find(g => g.title && g.title.includes("Жена")); if (w) t += renderGroup(w);
+      t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Жена")).forEach(g => t += renderGroup(g)); t += '</div>';
     } else if (n === 3) {
       t += '<div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Зятья") && !g.title.includes("Снохи")).forEach(g => t += renderGroup(g));
       t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && (g.title.includes("Зятья") || g.title.includes("Снохи"))).forEach(g => t += renderGroup(g)); t += '</div>';
