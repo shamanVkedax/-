@@ -1320,7 +1320,9 @@ perfToggle.addEventListener('click', () => { var p = document.body.classList.tog
 
 var modalOverlay = document.getElementById('modal-overlay');
 document.addEventListener('click', e => {
-  var t = e.target.closest('.person') || e.target.closest('.center-card'); if(!t) return;
+  // ИСПРАВЛЕНО: Теперь клик видит и карточку жены (.wife-card)
+  var t = e.target.closest('.person') || e.target.closest('.center-card') || e.target.closest('.wife-card'); if(!t) return;
+  
   var n = t.getAttribute('data-name') || "В ожидании...", r = t.getAttribute('data-role') || 'Будущий участник экосистемы', i = t.getAttribute('data-icon') || '💜';
   document.getElementById('modal-avatar').textContent = i; document.getElementById('modal-name').textContent = n; document.getElementById('modal-role').textContent = r;
   document.getElementById('modal-badge').textContent = generateChaosStatus(n, r); var rpg = getRPGStats(n);
