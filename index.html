@@ -41,8 +41,7 @@ body.perf-mode .bg-canvas {
 body.perf-mode .sidebar, 
 body.perf-mode .sidebar-secondary, 
 body.perf-mode .group, 
-body.perf-mode .center-card,
-body.perf-mode .wife-card,
+body.perf-mode .center-card, 
 body.perf-mode .search-input,
 body.perf-mode .analytics-widget,
 body.perf-mode .guestbook-section {
@@ -54,7 +53,6 @@ body.perf-mode .person:hover {
   transform: none !important;
 }
 body.perf-mode .center-card:hover, 
-body.perf-mode .wife-card:hover, 
 body.perf-mode .group:hover {
   transform: none !important;
   box-shadow: none !important;
@@ -81,7 +79,8 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-/* Технологичная неоновая сетка из лазерных линий */
+
+/* Новая технологичная неоновая сетка из лазерных линий */
 .bg-canvas {
   position: fixed;
   inset: 0;
@@ -118,7 +117,6 @@ body {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(40px, 30px) scale(1.1); }
 }
-
 /* Контейнер для кнопок управления в верхнем левом углу */
 .controls-container {
   position: fixed;
@@ -130,7 +128,7 @@ body {
   gap: 10px;
 }
 
-.perf-toggle {
+.perf-toggle, .audio-toggle {
   background: var(--bg-panel);
   border: 1px solid var(--border-inner);
   color: var(--text-main);
@@ -146,7 +144,7 @@ body {
   transition: var(--transition-smooth);
 }
 
-.perf-toggle:hover {
+.perf-toggle:hover, .audio-toggle:hover {
   background: var(--accent-1);
   transform: translateY(-2px);
 }
@@ -193,6 +191,30 @@ body {
 }
 .sidebar:hover::-webkit-scrollbar-thumb, .sidebar-secondary:hover::-webkit-scrollbar-thumb {
   background: rgba(181, 95, 252, 0.35);
+}
+
+.section-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 15px rgba(181, 95, 252, 0.35);
+}
+
+.section-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 .main-content {
   padding: 50px 40px;
@@ -354,35 +376,6 @@ h1 {
   50% { opacity: 0.4; }
 }
 
-.online-dot {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: transparent;
-  transition: var(--transition-smooth);
-}
-
-.online-dot.active-cozy {
-  background: #34d399;
-  box-shadow: 0 0 10px #34d399, 0 0 20px rgba(52, 211, 153, 0.4);
-}
-
-.online-dot.active-chaos {
-  background: var(--accent-1);
-  box-shadow: 0 0 10px var(--accent-1), 0 0 20px rgba(181, 95, 252, 0.4);
-}
-
-.online-dot.active-cozy, .online-dot.active-chaos {
-  animation: onlinePulse 2.5s infinite ease-in-out;
-}
-
-@keyframes onlinePulse {
-  0%, 100% { opacity: 0.8; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
 .tree {
   display: flex;
   flex-direction: column;
@@ -471,13 +464,14 @@ h1 {
   height: 40px;
   background: var(--line-grad);
 }
-
-/* Базовый VIP-каркас для центральных карточек пары */
-.center-card, .wife-card {
+.center-card {
   min-width: min(300px, 100%);
   text-align: center;
   padding: 32px 24px;
   border-radius: 22px;
+  border: 1px solid var(--border-inner);
+  background: rgba(26, 17, 54, 0.8);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45), var(--glow);
   position: relative;
   flex: 1 1 300px;
   max-width: 440px;
@@ -485,13 +479,6 @@ h1 {
   -webkit-backdrop-filter: blur(20px);
   transition: var(--transition-smooth);
   cursor: pointer;
-}
-
-/* Индивидуальный дизайн для shamanVkedax */
-.center-card {
-  border: 1px solid var(--border-inner);
-  background: rgba(26, 17, 54, 0.8);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45), var(--glow);
 }
 
 .center-card:hover {
@@ -510,66 +497,32 @@ h1 {
   opacity: 0.3;
 }
 
-/* Новый индивидуальный дизайн для Любимой Жены (tatiana_lo) в стиле центральной карточки */
-.wife-card {
-  border: 1px solid rgba(236, 72, 153, 0.4);
-  background: rgba(44, 14, 34, 0.65);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45), 0 0 35px rgba(236, 72, 153, 0.25);
-}
-
-.wife-card:hover {
-  transform: translateY(-5px scale(1.02);
-  border-color: #f472b6;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55), 0 0 25px rgba(236, 72, 153, 0.6);
-}
-
-.wife-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, var(--accent-2), #f472b6);
-  z-index: -1;
-  opacity: 0.35;
-}
-
-.center-card .icon, .wife-card .icon {
+.center-card .icon {
   font-size: 38px;
   line-height: 1;
   margin-bottom: 12px;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
 }
 
-.center-card .name, .wife-card .name {
+.center-card .name {
   display: block;
   font-size: 26px;
   font-weight: 800;
-  line-height: 1.2;
-}
-
-.center-card .name {
   background: linear-gradient(135deg, #fff 0%, #e9d5ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  line-height: 1.2;
 }
 
-.wife-card .name {
-  background: linear-gradient(135deg, #fff 0%, #fbcfe8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.center-card .role, .wife-card .role {
+.center-card .role {
   display: block;
+  color: var(--accent-1);
   margin-top: 8px;
   font-size: 14px;
   font-weight: 600;
 }
 
-.center-card .role { color: var(--accent-1); }
-.wife-card .role { color: var(--accent-2); }
 .group {
   flex: 1 1 290px;
   max-width: 440px;
@@ -666,8 +619,7 @@ h1 {
   font-size: 13px;
 }
 
-/* Эффекты динамической фильтрации поиска */
-.person.search-fade, .group.search-fade, .center-card.search-fade, .wife-card.search-fade {
+.person.search-fade, .group.search-fade, .center-card.search-fade {
   opacity: 0.15;
   filter: blur(1px) grayscale(0.5);
   transform: scale(0.98);
@@ -677,8 +629,7 @@ h1 {
   display: none !important;
 }
 
-/* Романтическая парная подсветка */
-.person.partner-highlighted, .wife-card.partner-highlighted, .center-card.partner-highlighted {
+.person.partner-highlighted {
   background: rgba(236, 72, 153, 0.12) !important;
   border-color: rgba(236, 72, 153, 0.6) !important;
   box-shadow: var(--glow-partner) !important;
@@ -687,7 +638,6 @@ h1 {
   filter: none !important;
 }
 
-/* RPG полосы прокачки характеристик */
 .rpg-stats {
   display: flex;
   flex-direction: column;
@@ -729,6 +679,7 @@ h1 {
 .bar-chaos { background: linear-gradient(90deg, #b55ffc, #ec4899); }
 .bar-cozy { background: linear-gradient(90deg, #34d399, #059669); }
 .bar-resistance { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+
 .rpg-random-btn {
   width: 100%;
   margin-top: 14px;
@@ -795,7 +746,9 @@ h1 {
   outline: none;
 }
 
-.gb-input:focus { border-color: var(--accent-1); }
+.gb-input:focus {
+  border-color: var(--accent-1);
+}
 
 .gb-btn {
   background: var(--accent-1);
@@ -823,8 +776,14 @@ h1 {
   padding-right: 4px;
 }
 
-.guestbook-messages::-webkit-scrollbar { width: 4px; }
-.guestbook-messages::-webkit-scrollbar-thumb { background: rgba(181, 95, 252, 0.3); border-radius: 99px; }
+.guestbook-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.guestbook-messages::-webkit-scrollbar-thumb {
+  background: rgba(181, 95, 252, 0.3);
+  border-radius: 99px;
+}
 
 .gb-msg {
   padding: 10px 14px;
@@ -841,7 +800,9 @@ h1 {
   margin-bottom: 2px;
 }
 
-.gb-msg-text { color: var(--text-main); }
+.gb-msg-text {
+  color: var(--text-main);
+}
 
 .final-quote {
   max-width: 640px;
@@ -850,12 +811,6 @@ h1 {
   font-size: 13px;
   line-height: 1.6;
   margin-top: 20px;
-}
-
-.emerald-heart {
-  color: var(--accent-1);
-  text-shadow: 0 0 10px var(--accent-1);
-  display: inline-block;
 }
 
 .modal-overlay {
@@ -873,7 +828,10 @@ h1 {
   transition: opacity 0.25s ease;
 }
 
-.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
 .modal-card {
   background: var(--bg-panel);
@@ -888,7 +846,9 @@ h1 {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.modal-overlay.active .modal-card { transform: scale(1); }
+.modal-overlay.active .modal-card {
+  transform: scale(1);
+}
 
 .modal-avatar {
   font-size: 64px;
@@ -897,10 +857,23 @@ h1 {
   animation: bounceEmoji 2s infinite alternate ease-in-out;
 }
 
-@keyframes bounceEmoji { to { transform: translateY(-8px); } }
+@keyframes bounceEmoji {
+  to { transform: translateY(-8px); }
+}
 
-.modal-name { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-.modal-role { font-size: 15px; color: var(--accent-1); font-weight: 600; margin-bottom: 16px; }
+.modal-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.modal-role {
+  font-size: 15px;
+  color: var(--accent-1);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
 
 .modal-badge {
   background: rgba(255, 255, 255, 0.02);
@@ -914,7 +887,6 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s ease;
 }
 
 .modal-close {
@@ -935,8 +907,13 @@ h1 {
   box-shadow: var(--glow);
 }
 
+/* ==========================================================================
+   ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ВКЛЮЧАЕТСЯ АВТОМАТИЧЕСКИ НА СМАРТФОНАХ)
+   ========================================================================== */
 @media (max-width: 1200px) {
-  .layout-grid { grid-template-columns: 1fr !important; }
+  .layout-grid { 
+    grid-template-columns: 1fr !important; 
+  }
   .sidebar, .sidebar-secondary { 
     height: auto !important; 
     position: relative !important; 
@@ -944,18 +921,43 @@ h1 {
     border-bottom: 1px solid rgba(181, 95, 252, 0.15) !important; 
     padding: 30px 16px !important; 
   }
-  .sidebar-secondary { border-top: 1px solid rgba(181, 95, 252, 0.15) !important; border-bottom: none !important; }
-  .main-content { padding: 40px 16px !important; }
-  .sub-row { flex-direction: column !important; align-items: center !important; width: 100% !important; gap: 16px !important; }
-  .center-card, .wife-card, .group { width: 100% !important; max-width: 100% !important; }
-  .analytics-widget { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
-  .guestbook-input-row { grid-template-columns: 1fr !important; gap: 8px !important; }
-  .controls-container { top: 10px; left: 10px; }
-  .connector .vline { height: 25px !important; }
+  .sidebar-secondary {
+    border-top: 1px solid rgba(181, 95, 252, 0.15) !important;
+    border-bottom: none !important;
+  }
+  .main-content { 
+    padding: 40px 16px !important; 
+  }
+  .sub-row { 
+    flex-direction: column !important; 
+    align-items: center !important; 
+    width: 100% !important; 
+    gap: 16px !important; 
+  }
+  .center-card, .group { 
+    width: 100% !important; 
+    max-width: 100% !important; 
+  }
+  .analytics-widget { 
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px !important; 
+  }
+  .guestbook-input-row { 
+    grid-template-columns: 1fr !important; 
+    gap: 8px !important; 
+  }
+  .controls-container {
+    top: 10px;
+    left: 10px;
+  }
+  .connector .vline {
+    height: 25px !important;
+  }
 }
 </style>
 </head>
 <body>
+<!-- Контейнер глобального управления экосистемой -->
 <div class="controls-container">
   <button class="perf-toggle" id="perf-toggle">⚡ Слабый ПК / Телефон</button>
 </div>
@@ -966,14 +968,17 @@ h1 {
 </div>
 
 <main class="layout-grid">
+  <!-- ЛЕВАЯ КОЛОНКА: Особые люди и Питомцы -->
   <aside class="sidebar" id="sidebar"></aside>
 
+  <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА: Шапка, Умная Аналитика и Древо -->
   <div class="main-content">
     <header class="hero">
       <div class="eyebrow" id="eyebrow">Инициализация...</div>
       <h1 id="title">Семейное древо</h1>
       <p class="subtitle" id="subtitle"></p>
       
+      <!-- Живой виджет умной аналитики хаоса -->
       <div class="analytics-widget" id="analytics-widget">
         <div class="analytics-item">
           <span class="analytics-label">Всего родных</span>
@@ -993,6 +998,7 @@ h1 {
         </div>
       </div>
 
+      <!-- Интерактивная строка поиска со встроенным крестиком очистки -->
       <div class="search-container">
         <input type="text" id="tree-search" class="search-input" placeholder="Поиск по имени или роли...">
         <button class="search-clear-btn" id="search-clear-btn">✕</button>
@@ -1000,8 +1006,10 @@ h1 {
 
       <div class="status" id="status"><span class="dot"></span>Анализ семейной базы данных...</div>
     </header>
+    <!-- Сюда выводится дерево по подрядам со спойлерами поколений -->
     <section id="content"></section>
     
+    <!-- 📜 ИНТЕРАКТИВНАЯ СТЕНА ПРИВЕТОВ (КНИГА ОТЗЫВОВ КЛАНА) -->
     <section class="guestbook-section">
       <h3>💬 Хроники Посетителей</h3>
       <form class="guestbook-form" id="guestbook-form" onsubmit="return false;">
@@ -1011,21 +1019,26 @@ h1 {
         </div>
         <button type="submit" class="gb-btn">Нагнать уюта на стену ✨</button>
       </form>
-      <div class="guestbook-messages" id="guestbook-messages"></div>
+      <div class="guestbook-messages" id="guestbook-messages">
+        <!-- Сообщения будут подгружаться локально через JS -->
+      </div>
     </section>
     
     <footer class="final-quote" id="footer"></footer>
   </div>
   
+  <!-- ПРАВАЯ КОЛОНКА: Окружение и Подруги -->
   <aside class="sidebar-secondary" id="sidebar-secondary"></aside>
 </main>
 
+<!-- Обновленное RPG модальное окно -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-card" id="modal-card">
     <div class="modal-avatar" id="modal-avatar">👤</div>
     <div class="modal-name" id="modal-name">Имя</div>
     <div class="modal-role" id="modal-role">Role</div>
     
+    <!-- RPG Полосы Прокачки Характеристики -->
     <div class="rpg-stats">
       <div class="rpg-stat-row">
         <div class="rpg-stat-header"><span>Урон хаосом</span><span id="rpg-val-chaos">0%</span></div>
@@ -1041,13 +1054,13 @@ h1 {
       </div>
     </div>
 
+    <!-- Интерактивный Рандомизатор Секретных Фактов -->
     <div class="modal-badge" id="modal-badge">Загрузка протокола хаоса...</div>
     <button class="rpg-random-btn" id="rpg-random-btn">🎲 Сгенерировать случайный факт</button>
     <br>
     <button class="modal-close" id="modal-close">Закрыть профиль</button>
   </div>
 </div>
-
 <script>
 var JSON_FILE = "family.json";
 var REFRESH_MS = 30000;
@@ -1066,15 +1079,9 @@ var RANDOM_FACTS = [
   "Гроссмейстер диванных дискуссий и ночных кухонных переговоров."
 ];
 
-/* Безопасное XSS экранирование с защитой от обхода кавычек и апострофов */
 function esc(v) {
   if (!v) return "";
-  return String(v)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 function levelLabelText(level) {
@@ -1133,24 +1140,15 @@ function renderWifeCard(group) {
   h += '<span class="role">' + esc(wRole) + '</span></div>';
   return h;
 }
+
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) { h += renderGroup(dataArray[i]); }
-  var el = document.getElementById(elementId);
-  if (el) el.innerHTML = h;
+  document.getElementById(elementId).innerHTML = h;
 }
 
 function getPartnerName(name) {
-  var pairs = {
-    "Diamonita Grand": "EKSOD_GRAND", 
-    "EKSOD_GRAND": "Diamonita Grand", 
-    "§LAGDAN§": "vera ba7a", 
-    "vera ba7a": "§LAGDAN§", 
-    "shamanVkedax": "tatiana_lo", 
-    "tatiana_lo": "shamanVkedax",
-    "sataney": "卄乇ㄥㄥ匚卂ㄒ",
-    "卄乇ㄥㄥ匚卂ㄒ": "sataney"
-  };
+  var pairs = {"Diamonita Grand": "EKSOD_GRAND", "EKSOD_GRAND": "Diamonita Grand", "§LAGDAN§": "vera ba7a", "vera ba7a": "§LAGDAN§", "shamanVkedax": "tatiana_lo", "tatiana_lo": "shamanVkedax"};
   return pairs[name] || null;
 }
 
@@ -1190,26 +1188,14 @@ function render(d) {
   Object.keys(lv).sort((a,b)=>a-b).forEach((l, idx) => {
     var n = Number(l); if (idx > 0) t += '<div class="connector" data-level-conn="'+n+'"><div class="vline"></div></div>';
     t += '<div class="level-row" id="level-row-'+n+'"><div class="level-label" onclick="toggleLevelRow('+n+')">'+esc(levelLabelText(n))+'</div><div class="level-content">';
-    
     if (n === 2) {
-      t += '<div class="sub-row">'; 
-      if (d.center) t += renderCenter(d.center);
-      var w = lv[l].find(g => g.title && g.title.includes("Жена")); 
-      if (w) t += renderWifeCard(w);
-      t += '</div><div class="sub-row">'; 
-      lv[l].filter(g => g.title && !g.title.includes("Жена")).forEach(g => t += renderGroup(g)); 
-      t += '</div>';
+      t += '<div class="sub-row">'; if (d.center) t += renderCenter(d.center);
+      var w = lv[l].find(g => g.title && g.title.includes("Жена")); if (w) t += renderGroup(w);
+      t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Жена")).forEach(g => t += renderGroup(g)); t += '</div>';
     } else if (n === 3) {
-      t += '<div class="sub-row">'; 
-      lv[l].filter(g => g.title && !g.title.includes("Зятья") && !g.title.includes("Снохи")).forEach(g => t += renderGroup(g));
-      t += '</div><div class="sub-row">'; 
-      lv[l].filter(g => g.title && (g.title.includes("Зятья") || g.title.includes("Снохи"))).forEach(g => t += renderGroup(g)); 
-      t += '</div>';
-    } else { 
-      t += '<div class="sub-row">'; 
-      lv[l].forEach(g => t += renderGroup(g)); 
-      t += '</div>'; 
-    }
+      t += '<div class="sub-row">'; lv[l].filter(g => g.title && !g.title.includes("Зятья") && !g.title.includes("Снохи")).forEach(g => t += renderGroup(g));
+      t += '</div><div class="sub-row">'; lv[l].filter(g => g.title && (g.title.includes("Зятья") || g.title.includes("Снохи"))).forEach(g => t += renderGroup(g)); t += '</div>';
+    } else { t += '<div class="sub-row">'; lv[l].forEach(g => t += renderGroup(g)); t += '</div>'; }
     t += '</div></div>';
   });
   
@@ -1228,7 +1214,7 @@ function render(d) {
     if(s.title && (s.title.includes("питомцы") || s.title.includes("🐾"))) peT += l; else pT += l; 
   });
   (d.secondaryPeople || []).forEach(s => pT += (s.people || []).length);
-
+  
   var kC = 0; 
   gr.filter(g => g.level === 3 && g.title && !g.title.includes("Снохи") && !g.title.includes("Зятья")).forEach(k => kC += (k.people || []).length);
   
@@ -1244,38 +1230,20 @@ function toggleLevelRow(n) {
 function initOnlineDots() {
   document.querySelectorAll('.online-dot').forEach(d => { var r = Math.random(); if(r < 0.35) d.classList.add('active-cozy'); else if(r < 0.65) d.classList.add('active-chaos'); });
 }
+
 function loadFamily() {
   var s = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
-    .then(r => r.json())
-    .then(data => { 
-      var t = JSON.stringify(data);
-      if(t !== lastJSON) { render(data); lastJSON = t; } 
-      if(s) s.innerHTML = '<span class="dot"></span>Экосистема активна'; 
-    })
-    .catch(e => { if(s) s.innerHTML = '<span class="dot" style="background:#f87171;"></span>Сбой'; });
+    .then(r => r.text())
+    .then(t => { if(t !== lastJSON) { render(JSON.parse(t)); lastJSON = t; } s.innerHTML = '<span class="dot"></span>Экосистема активна'; })
+    .catch(e => { s.innerHTML = '<span class="dot" style="background:#f87171;"></span>Сбой'; });
 }
 
 function applySearchFilter() {
-  var q = document.getElementById("tree-search").value.toLowerCase().trim();
-  var center = document.querySelector('.center-card');
-  var wife = document.querySelector('.wife-card');
-  
-  if(!q) { 
-    document.querySelectorAll('.search-fade, .search-hide').forEach(i => i.classList.remove('search-fade', 'search-hide')); 
-    document.getElementById("search-clear-btn").style.display = "none"; 
-    return; 
-  }
+  var q = document.getElementById("tree-search").value.toLowerCase().trim(), c = document.querySelector('.center-card');
+  if(!q) { document.querySelectorAll('.search-fade, .search-hide').forEach(i => i.classList.remove('search-fade', 'search-hide')); document.getElementById("search-clear-btn").style.display = "none"; return; }
   document.getElementById("search-clear-btn").style.display = "block";
-  
-  var checkBlock = (el) => {
-    if(!el) return;
-    var n = (el.getAttribute('data-name')||'').toLowerCase(), r = (el.getAttribute('data-role')||'').toLowerCase();
-    if(n.includes(q) || r.includes(q)) el.classList.remove('search-fade'); else el.classList.add('search-fade');
-  };
-  
-  checkBlock(center); checkBlock(wife);
-  
+  if(c) { var n = (c.getAttribute('data-name')||'').toLowerCase(), r = (c.getAttribute('data-role')||'').toLowerCase(); if(n.includes(q) || r.includes(q)) c.classList.remove('search-fade'); else c.classList.add('search-fade'); }
   document.querySelectorAll('.group').forEach(g => {
     var m = false; g.querySelectorAll('.person').forEach(p => {
       var n = (p.getAttribute('data-name')||'').toLowerCase(), r = (p.getAttribute('data-role')||'').toLowerCase();
@@ -1283,12 +1251,7 @@ function applySearchFilter() {
     });
     if(m) g.classList.remove('search-fade', 'search-hide'); else g.classList.add('search-fade');
   });
-  
-  document.querySelectorAll('.level-row').forEach(row => { 
-    if(row.querySelectorAll('.center-card:not(.search-fade), .wife-card:not(.search-fade), .group:not(.search-fade)').length === 0) row.classList.add('search-hide'); 
-    else row.classList.remove('search-hide'); 
-  });
-  
+  document.querySelectorAll('.level-row').forEach(row => { if(row.querySelectorAll('.center-card:not(.search-fade), .group:not(.search-fade)').length === 0) row.classList.add('search-hide'); else row.classList.remove('search-hide'); });
   document.querySelectorAll('.connector').forEach(co => { 
     var next = document.getElementById('level-row-' + co.getAttribute('data-level-conn')); 
     if(next && next.classList.contains('search-hide')) co.classList.add('search-hide'); 
@@ -1304,7 +1267,7 @@ perfToggle.addEventListener('click', () => { var p = document.body.classList.tog
 
 var modalOverlay = document.getElementById('modal-overlay');
 document.addEventListener('click', e => {
-  var t = e.target.closest('.person') || e.target.closest('.center-card') || e.target.closest('.wife-card'); if(!t) return;
+  var t = e.target.closest('.person') || e.target.closest('.center-card'); if(!t) return;
   var n = t.getAttribute('data-name') || "В ожидании...", r = t.getAttribute('data-role') || 'Будущий участник экосистемы', i = t.getAttribute('data-icon') || '💜';
   document.getElementById('modal-avatar').textContent = i; document.getElementById('modal-name').textContent = n; document.getElementById('modal-role').textContent = r;
   document.getElementById('modal-badge').textContent = generateChaosStatus(n, r); var rpg = getRPGStats(n);
@@ -1321,7 +1284,7 @@ var guestbookForm = document.getElementById('guestbook-form'), guestbookMessages
 function loadGuestbook() {
   var msgs = JSON.parse(localStorage.getItem('family_guestbook_msgs') || '[{"name":"did1","text":"Уютный terminal получился. Батя одобряет! 👍"},{"name":"sataney","text":"Подсветка для нас с котиком — просто шикарная! 💜"}]'), h = "";
   for(var i = msgs.length - 1; i >= 0; i--) h += '<div class="gb-msg"><div class="gb-msg-author">' + esc(msgs[i].name) + '</div><div class="gb-msg-text">' + esc(msgs[i].text) + '</div></div>';
-  if(guestbookMessages) guestbookMessages.innerHTML = h;
+  guestbookMessages.innerHTML = h;
 }
 
 guestbookForm.addEventListener('submit', e => {
@@ -1332,17 +1295,15 @@ guestbookForm.addEventListener('submit', e => {
 
 document.addEventListener('mouseover', e => {
   if(document.body.classList.contains('perf-mode')) return;
-  var p = e.target.closest('.person') || e.target.closest('.center-card') || e.target.closest('.wife-card'); if(!p) return;
+  var p = e.target.closest('.person'); if(!p) return;
   var pN = getPartnerName(p.getAttribute('data-name')); if(!pN) return;
-  var pC = document.querySelector('.person[data-name="' + pN + '"]') || document.querySelector('.center-card[data-name="' + pN + '"]') || document.querySelector('.wife-card[data-name="' + pN + '"]');
-  p.classList.add('partner-highlighted'); if(pC) pC.classList.add('partner-highlighted');
+  var pC = document.querySelector('.person[data-name="' + pN + '"]'); p.classList.add('partner-highlighted'); if(pC) pC.classList.add('partner-highlighted');
 });
 
 document.addEventListener('mouseout', e => {
-  var p = e.target.closest('.person') || e.target.closest('.center-card') || e.target.closest('.wife-card'); if(!p) return;
+  var p = e.target.closest('.person'); if(!p) return;
   var pN = getPartnerName(p.getAttribute('data-name')); if(!pN) return;
-  var pC = document.querySelector('.person[data-name="' + pN + '"]') || document.querySelector('.center-card[data-name="' + pN + '"]') || document.querySelector('.wife-card[data-name="' + pN + '"]');
-  p.classList.remove('partner-highlighted'); if(pC) pC.classList.remove('partner-highlighted');
+  var pC = document.querySelector('.person[data-name="' + pN + '"]'); p.classList.remove('partner-highlighted'); if(pC) pC.classList.remove('partner-highlighted');
 });
 
 loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
