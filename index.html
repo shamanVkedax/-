@@ -1126,21 +1126,6 @@ function renderCenter(center) {
   return h;
 }
 
-/* Функция генерации VIP-карточки Жены, дублирующей структуру центральной карты */
-function renderWifeCard(group) {
-  if (!group || !group.people || group.people.length === 0) return "";
-  var p = group.people[0];
-  var wName = p.name || "tatiana_lo";
-  var wRole = p.role || "Любимая жена";
-  var wIcon = p.icon || "👑";
-
-  var h = '<div class="wife-card" data-search-block="true" data-name="' + esc(wName) + '" data-role="' + esc(wRole) + '" data-icon="' + esc(wIcon) + '">';
-  h += '<div class="icon">' + esc(wIcon) + '</div>';
-  h += '<span class="name">' + esc(wName) + '</span>';
-  h += '<span class="role">' + esc(wRole) + '</span></div>';
-  return h;
-}
-
 function populateSidebar(elementId, dataArray) {
   var h = "";
   for (var i = 0; i < dataArray.length; i++) { h += renderGroup(dataArray[i]); }
