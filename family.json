@@ -49,7 +49,9 @@
         {"icon": "⚔️", "name": "John․Wick f3fd", "role": "Брат"},
         {"icon": "💥", "name": "KILLAСБЭУМОЁВСЕ b521", "role": "Брат"},
         {"icon": "🎮", "name": "Jana dcee", "role": "Брат"},
-        {"icon": "🧟", "name": "Andrey_Zombie", "role": "Брат"}
+        {"icon": "🧟", "name": "Andrey_Zombie", "role": "Брат"},
+        {"icon": "🧟", "name": "Danya_Grand-vnl", "role": "Брат"}
+        
       ]
     },
     {
@@ -162,7 +164,8 @@
       "people": [
         {"icon": "🌟", "name": "Velens 5b31", "role": "Лучшая подруга"},
         {"icon": "🦊", "name": "Foxyk_Lishton", "role": "Лучшая подруга"},
-        {"icon": "🌸", "name": "Aiserin", "role": "Лучшая подруга"}
+        {"icon": "🌸", "name": "Aiserin", "role": "Лучшая подруга"},
+        {"icon": "🌸", "name": "Nica_Grand-vnl", "role": "Лучшая подруга"}
       ]
     },
     {
