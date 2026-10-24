@@ -75,7 +75,8 @@
         {"icon": "✨", "name": "∗˸․｡․ 1230", "role": "Любимая дочка"},
         {"icon": "🍬", "name": "Нямка 3f33", "role": "Любимая дочка"},
         {"icon": "🦋", "name": "nikasa․2026 efd4", "role": "Любимая дочка"},
-        {"icon": "⭐", "name": "Qwertyyyz1", "role": "Любимая дочка"}
+        {"icon": "⭐", "name": "Qwertyyyz1", "role": "Любимая дочка"},
+        {"icon": "💥", "name": "Frostii c405", "role": "Любимая дочка"}
       ]
     },
     {
@@ -136,8 +137,7 @@
       "title": "🚪 Ушли, но обещали вернуться",
       "subtitle": "Всегда ждем обратно в нашем уютном хаосе",
       "people": [
-        {"icon": "👑", "name": "sataney", "role": "Сноха"}, 
-{"icon": "💥", "name": "Frostii c405", "role": ""}
+        {"icon": "👑", "name": "sataney", "role": "Сноха"}
       ]
     }
   ],
