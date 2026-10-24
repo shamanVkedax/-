@@ -15,7 +15,7 @@
       "level": 0,
       "people": [
         {"icon": "🎅", "name": "§LAGDAN§", "role": "Любимый дед"},
-        {"icon": "👵", "name": "Frostii c405", "role": "Любимая бабушка"},
+        {"icon": "👵", "name": "", "role": "Любимая бабушка"},
         {"icon": "👑", "name": "vera ba7a", "role": "Дочь деда"}
       ]
     },
@@ -122,7 +122,8 @@
       "people": [
         {"icon": "❤", "name": "bekap_1", "role": "Маленький фембойчик"},
         {"icon": "🐝", "name": "LLlmel`", "role": "Шмель домашний, ручной"},
-        {"icon": "❤", "name": "Smeshen 1", "role": "Тихий омут"}
+        {"icon": "❤", "name": "Smeshen 1", "role": "Тихий омут"}, 
+{"icon": "🤖", "name": "did1", "role": "Робот пылесос и по совместительству отец"},
       ]
     },
     {
@@ -137,7 +138,8 @@
       "title": "🚪 Ушли, но обещали вернуться",
       "subtitle": "Всегда ждем обратно в нашем уютном хаосе",
       "people": [
-        {"icon": "👑", "name": "sataney", "role": "Сноха"}
+        {"icon": "👑", "name": "sataney", "role": "Сноха"}, 
+{"icon": "💥", "name": "Frostii c405", "role": ""}
       ]
     }
   ],
