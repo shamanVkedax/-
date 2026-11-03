@@ -1170,7 +1170,7 @@ function renderWifeCard(group) {
   var peopleCopy = group.people.slice();
   var p = peopleCopy.shift(); 
   
-  var wName = p.name || "tatiana_lo";
+  var wName = p.name || "";
   var wRole = p.role || "Любимая жена";
   var wIcon = p.icon || "❤️";
 
@@ -1201,7 +1201,7 @@ function populateSidebar(elementId, dataArray) {
 }
 
 function getPartnerName(name) {
-  var pairs = {"Diamonita Grand": "EKSOD_GRAND", "EKSOD_GRAND": "Diamonita Grand", "§LAGDAN§": "vera ba7a", "vera ba7a": "§LAGDAN§", "shamanVkedax": "tatiana_lo", "tatiana_lo": "shamanVkedax"};
+  var pairs = {"Diamonita Grand": "EKSOD_GRAND", "EKSOD_GRAND": "Diamonita Grand", "§LAGDAN§": "vera ba7a", "vera ba7a": "§LAGDAN§", "shamanVkedax": "", "": "shamanVkedax"};
   return pairs[name] || null;
 }
 
