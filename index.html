@@ -1038,7 +1038,7 @@ h1 {
         </div>
         <div class="analytics-item">
           <span class="analytics-label">Стабильность</span>
-          <span class="analytics-value" id="stat-stable">100%</span>
+          <span class="analytics-value" id="stat-stable">0%</span>
         </div>
         <div class="analytics-item">
           <span class="analytics-label">Правящий Клан</span>
@@ -1378,28 +1378,49 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     align-items: center;
     justify-content: center;
     text-align: center;
+    
+    /* Шрифт и цвет */
     font-family: system-ui, -apple-system, sans-serif;
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.35);
+    
+    /* Лёгкое размытие и затемнение сайта на фоне */
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    
+    /* Поверх всех элементов */
     z-index: 999999;
-    pointer-events: none;
     user-select: none;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(2px);
+    
+    /* Плавная анимация прозрачности */
+    animation: pulse-overlay 4s ease-in-out infinite;
   }
 
   .main-text {
-    font-size: clamp(3rem, 9vw, 9rem);
+    font-size: clamp(2.8rem, 8.5vw, 8.5rem);
     font-weight: 900;
-    line-height: 1;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
   }
 
   .sub-text {
-    margin-top: 15px;
-    font-size: clamp(1rem, 2.5vw, 2.5rem);
+    margin-top: 16px;
+    font-size: clamp(1rem, 2.2vw, 2.2rem);
     font-weight: 600;
-    letter-spacing: 0.1em;
-    opacity: 0.8;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  @keyframes pulse-overlay {
+    0%, 100% {
+      color: rgba(255, 255, 255, 0.38);
+    }
+    50% {
+      color: rgba(255, 255, 255, 0.18);
+    }
   }
 </style>
 </html>
