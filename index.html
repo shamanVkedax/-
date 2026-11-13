@@ -1365,7 +1365,8 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </script>
 </body>
 <div class="maintenance-overlay">
-  ВОЗМОЖНО СКОРО ВЕРНЕМСЯ,<br>А МОЖЕТ И НЕТ.
+  <div class="main-text">УШЛИ НА ОБЕД.</div>
+  <div class="sub-text">ИЛИ НАВСЕГДА. МЫ ЕЩЁ НЕ РЕШИЛИ.</div>
 </div>
 
 <style>
@@ -1373,26 +1374,30 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     position: fixed;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    
     font-family: system-ui, -apple-system, sans-serif;
-    font-size: clamp(2.5rem, 7vw, 7rem);
-    font-weight: 900;
-    line-height: 1.1;
-    
-    /* Полупрозрачные буквы с легкой обводкой */
-    color: rgba(255, 255, 255, 0.35);
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
-    
-    /* Легкое затемнение и размытие сайта на фоне */
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-    
+    color: rgba(255, 255, 255, 0.25);
     z-index: 999999;
+    pointer-events: none;
     user-select: none;
     padding: 20px;
+  }
+
+  .main-text {
+    font-size: clamp(3rem, 9vw, 9rem);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .sub-text {
+    margin-top: 15px;
+    font-size: clamp(1rem, 2.5vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
   }
 </style>
 </html>
