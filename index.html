@@ -1401,17 +1401,20 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     /* Тёплый золотисто-янтарный цвет текста */
     color: rgba(253, 224, 71, 0.9);
     
-    /* Плотная тёмная тень вокруг букв — чтобы текст читался даже без сильного размытия */
+    /* Плотная тёмная тень вокруг букв — чтобы текст читался поверх любого фона */
     text-shadow: 
       0 2px 10px rgba(0, 0, 0, 0.95),
       0 0 28px rgba(0, 0, 0, 0.85);
     
-    /* Лёгкое затемнение и минимальное размытие (1.5px) — сайт сзади хорошо виден и читается */
-    background: rgba(0, 0, 0, 0.28);
+    /* Лёгкое затемнение и минимальное размытие */
+    background: rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(1.5px);
     -webkit-backdrop-filter: blur(1.5px);
     
     z-index: 999999;
+    
+    /* ВАЖНО: пропускает все клики, нажатия и прокрутку сквозь надпись к сайту */
+    pointer-events: none;
     user-select: none;
     overflow: hidden;
     animation: pulse-overlay 4s ease-in-out infinite;
