@@ -1607,14 +1607,97 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     updateTimer();
     setInterval(updateTimer, 1000);
 
-    // 3. Генератор глубокого эмбиента «Спящая Экосистема»
+    // 3. Генератор мягкого эмбиента + тёплое ночное пианино
     const soundBtn = document.getElementById('ambient-sound-btn');
-    if (soundBtn) soundBtn.textContent = "🌌 Эмбиент хаоса: НАЖМИТЕ ДЛЯ ЗВУКА";
+    if (soundBtn) soundBtn.textContent = "🎹 Ночной эмбиент: НАЖМИТЕ ДЛЯ ЗВУКА";
 
     let audioCtx = null;
     let isInitialized = false;
     let isPlaying = false;
     let manuallyMuted = false;
+
+    // Красивая прогрессия из 4 аккордов (Am7 -> Fmaj7 -> Cmaj7 -> Em7)
+    const chords = [
+      { pad: [110.00, 164.81, 196.00], keys: [261.63, 329.63, 392.00, 493.88, 523.25] }, // Am7
+      { pad: [87.31,  130.81, 174.61], keys: [261.63, 329.63, 349.23, 440.00, 523.25] }, // Fmaj7
+      { pad: [130.81, 164.81, 196.00], keys: [246.94, 293.66, 329.63, 392.00, 493.88] }, // Cmaj7
+      { pad: [82.41,  123.47, 164.81], keys: [246.94, 293.66, 392.00, 440.00, 493.88] }  // Em7
+    ];
+    let currentChordIdx = 0;
+
+    // Функция мягкого звука клавиши пианино с тёплым затуханием
+    function playPianoNote(freq, masterGain) {
+      if (!audioCtx || audioCtx.state !== 'running') return;
+      const now = audioCtx.currentTime;
+
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const noteGain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      // Смешиваем чистый тон и мягкий треугольный обертон для эффекта тёплого пианино
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(freq, now);
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(freq * 2, now); // Октава выше для лёгкой звонкости
+
+      const osc2Gain = audioCtx.createGain();
+      osc2Gain.gain.value = 0.08;
+
+      // Фильтр убирает резкость удара по клавише
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1100, now);
+      filter.frequency.exponentialRampToValueAtTime(280, now + 3.2);
+
+      // Огибающая громкости клавиши (мягкая атака и долгое затухание)
+      noteGain.gain.setValueAtTime(0.0001, now);
+      noteGain.gain.linearRampToValueAtTime(0.14, now + 0.06);
+      noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+
+      osc1.connect(filter);
+      osc2.connect(osc2Gain);
+      osc2Gain.connect(filter);
+      filter.connect(noteGain);
+      noteGain.connect(masterGain);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 4.0);
+      osc2.stop(now + 4.0);
+    }
+
+    // Функция плавной смены фонового аккорда (без гудения на одной ноте)
+    function playWarmPadChord(freqs, masterGain) {
+      if (!audioCtx || audioCtx.state !== 'running') return;
+      const now = audioCtx.currentTime;
+      const duration = 7.5; // Длительность одного аккорда
+
+      freqs.forEach((freq) => {
+        const osc = audioCtx.createOscillator();
+        const padGain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.value = 260;
+
+        // Плавный вдох и выдох аккорда (фейд-ин и фейд-аут)
+        padGain.gain.setValueAtTime(0.0001, now);
+        padGain.gain.linearRampToValueAtTime(0.07, now + 2.5);
+        padGain.gain.linearRampToValueAtTime(0.07, now + duration - 2.5);
+        padGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc.connect(filter);
+        filter.connect(padGain);
+        padGain.connect(masterGain);
+
+        osc.start(now);
+        osc.stop(now + duration + 0.1);
+      });
+    }
 
     function buildAndStartAudio() {
       if (manuallyMuted) return;
@@ -1632,63 +1715,44 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
         isInitialized = true;
 
         const masterGain = audioCtx.createGain();
-        masterGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-        masterGain.gain.exponentialRampToValueAtTime(0.28, audioCtx.currentTime + 2.5);
+        masterGain.gain.value = 0.65;
         masterGain.connect(audioCtx.destination);
 
-        // Тёплый низкий гул «спящего ядра» (Ля-минор)
-        const baseFreqs = [65.41, 130.81, 164.81, 196.00]; // C2, C3, E3, G3
-        baseFreqs.forEach((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const oscGain = audioCtx.createGain();
-          const filter = audioCtx.createBiquadFilter();
-
-          osc.type = idx === 0 ? 'sine' : 'triangle';
-          osc.frequency.value = freq;
-          osc.detune.value = (idx % 2 === 0 ? 5 : -5);
-
-          filter.type = 'lowpass';
-          filter.frequency.value = 380;
-
-          oscGain.gain.value = idx === 0 ? 0.45 : 0.16;
-
-          osc.connect(filter);
-          filter.connect(oscGain);
-          oscGain.connect(masterGain);
-          osc.start();
-        });
-
-        // Мягкие космические переливы каждые 3.5 секунды
-        const scale = [261.63, 329.63, 392.00, 493.88, 523.25, 659.25];
+        // Запускаем первый аккорд сразу и меняем гармонию каждые 6.5 секунд
+        playWarmPadChord(chords[currentChordIdx].pad, masterGain);
         setInterval(() => {
-          if (!isPlaying || !audioCtx || audioCtx.state !== 'running') return;
-          const now = audioCtx.currentTime;
-          const noteOsc = audioCtx.createOscillator();
-          const noteGain = audioCtx.createGain();
+          if (!isPlaying || audioCtx.state !== 'running') return;
+          currentChordIdx = (currentChordIdx + 1) % chords.length;
+          playWarmPadChord(chords[currentChordIdx].pad, masterGain);
+        }, 6500);
 
-          noteOsc.type = 'sine';
-          noteOsc.frequency.value = scale[Math.floor(Math.random() * scale.length)];
+        // Запускаем редкие, нежные ноты пианино в тон текущему аккорду
+        setTimeout(() => {
+          if (isPlaying) {
+            const firstKeys = chords[currentChordIdx].keys;
+            playPianoNote(firstKeys[Math.floor(Math.random() * firstKeys.length)], masterGain);
+          }
+        }, 1200);
 
-          noteGain.gain.setValueAtTime(0.0001, now);
-          noteGain.gain.exponentialRampToValueAtTime(0.08, now + 0.6);
-          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
-
-          noteOsc.connect(noteGain);
-          noteGain.connect(masterGain);
-
-          noteOsc.start(now);
-          noteOsc.stop(now + 4.0);
-        }, 3500);
+        setInterval(() => {
+          if (!isPlaying || audioCtx.state !== 'running') return;
+          // Небольшой шанс паузы, чтобы мелодия звучала естественно и не как робот
+          if (Math.random() > 0.22) {
+            const currentKeys = chords[currentChordIdx].keys;
+            const randomFreq = currentKeys[Math.floor(Math.random() * currentKeys.length)];
+            playPianoNote(randomFreq, masterGain);
+          }
+        }, 2400);
       }
 
       isPlaying = true;
       if (soundBtn) {
-        soundBtn.textContent = "🌌 Эмбиент хаоса: ВКЛ";
+        soundBtn.textContent = "🎹 Ночной эмбиент: ВКЛ";
         soundBtn.style.borderColor = "rgba(253, 224, 71, 0.85)";
       }
     }
 
-    // Запуск при первом же клике, касании или нажатии клавиши на странице
+    // Запуск при первом взаимодействии со страницей
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       window.addEventListener(evt, () => {
         if (!isPlaying && !manuallyMuted) {
@@ -1697,7 +1761,7 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
       }, { passive: true });
     });
 
-    // Управление по кнопке внизу экрана
+    // Кнопка ручного переключения
     if (soundBtn) {
       soundBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1705,7 +1769,7 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
           if (audioCtx) audioCtx.suspend();
           isPlaying = false;
           manuallyMuted = true;
-          soundBtn.textContent = "🌌 Эмбиент хаоса: ВЫКЛ";
+          soundBtn.textContent = "🎹 Ночной эмбиент: ВЫКЛ";
           soundBtn.style.borderColor = "rgba(253, 224, 71, 0.35)";
         } else {
           manuallyMuted = false;
