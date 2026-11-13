@@ -1364,12 +1364,19 @@ document.addEventListener('mouseout', e => {
 loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </script>
 </body>
+<!-- Плавающие тёплые огоньки на фоне -->
+<div class="ambient-sparks" aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<!-- Основная плашка поверх экрана -->
 <div class="maintenance-overlay">
   <div class="status-badge">● ЭКОСИСТЕМА ОФЛАЙН</div>
   <div class="main-text">ЗДЕСЬ БЫЛО УЮТНО.</div>
   <div class="sub-text">СПАСИБО ВСЕМ, КТО БЫЛ ЧАСТЬЮ ЭТОЙ ИСТОРИИ.</div>
   <div class="story-text">
-  Пусть это останется либо тихой паузой перед новой главой,<br>либо красивым финалом.
+    Пусть это останется либо тихой паузой перед новой главой,<br>либо красивым финалом.
   </div>
   <div class="tech-note">
     ПРОТОКОЛ ХАОСА НА ПАУЗЕ • ГЕНЕРАЦИЯ УЮТА ПРИОСТАНОВЛЕНА
@@ -1397,23 +1404,16 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
       max(18px, env(safe-area-inset-left));
     
     font-family: system-ui, -apple-system, sans-serif;
-    
-    /* Тёплый золотисто-янтарный цвет текста */
     color: rgba(253, 224, 71, 0.9);
-    
-    /* Плотная тёмная тень вокруг букв — чтобы текст читался поверх любого фона */
     text-shadow: 
       0 2px 10px rgba(0, 0, 0, 0.95),
       0 0 28px rgba(0, 0, 0, 0.85);
     
-    /* Лёгкое затемнение и минимальное размытие */
     background: rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(1.5px);
     -webkit-backdrop-filter: blur(1.5px);
     
     z-index: 999999;
-    
-    /* ВАЖНО: пропускает все клики, нажатия и прокрутку сквозь надпись к сайту */
     pointer-events: none;
     user-select: none;
     overflow: hidden;
@@ -1432,6 +1432,7 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     margin-bottom: clamp(12px, 2.5vh, 22px);
     white-space: nowrap;
     text-shadow: none;
+    animation: badge-glow 3s ease-in-out infinite;
   }
 
   .main-text {
@@ -1474,6 +1475,37 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     line-height: 1.5;
   }
 
+  /* Плавающие огоньки */
+  .ambient-sparks {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999998;
+    overflow: hidden;
+  }
+
+  .ambient-sparks span {
+    position: absolute;
+    bottom: -15px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(253, 224, 71, 0.65);
+    box-shadow: 0 0 8px rgba(253, 224, 71, 0.8);
+    animation: float-up linear infinite;
+  }
+
+  .ambient-sparks span:nth-child(1)  { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+  .ambient-sparks span:nth-child(2)  { left: 22%; animation-duration: 16s; animation-delay: 2s; width: 3px; height: 3px; }
+  .ambient-sparks span:nth-child(3)  { left: 35%; animation-duration: 11s; animation-delay: 4s; }
+  .ambient-sparks span:nth-child(4)  { left: 48%; animation-duration: 18s; animation-delay: 1s; width: 5px; height: 5px; }
+  .ambient-sparks span:nth-child(5)  { left: 60%; animation-duration: 14s; animation-delay: 5s; }
+  .ambient-sparks span:nth-child(6)  { left: 72%; animation-duration: 15s; animation-delay: 3s; width: 3px; height: 3px; }
+  .ambient-sparks span:nth-child(7)  { left: 84%; animation-duration: 13s; animation-delay: 6s; }
+  .ambient-sparks span:nth-child(8)  { left: 92%; animation-duration: 17s; animation-delay: 2.5s; }
+  .ambient-sparks span:nth-child(9)  { left: 16%; animation-duration: 19s; animation-delay: 7s; width: 3px; height: 3px; }
+  .ambient-sparks span:nth-child(10) { left: 66%; animation-duration: 12.5s; animation-delay: 1.5s; }
+
   @media (max-width: 480px) {
     .status-badge {
       letter-spacing: 0.1em;
@@ -1501,11 +1533,35 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
   }
 
   @keyframes pulse-overlay {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+
+  @keyframes badge-glow {
     0%, 100% {
-      opacity: 1;
+      box-shadow: 0 0 8px rgba(248, 113, 113, 0.25);
+      border-color: rgba(248, 113, 113, 0.65);
     }
     50% {
-      opacity: 0.82;
+      box-shadow: 0 0 18px rgba(248, 113, 113, 0.55);
+      border-color: rgba(248, 113, 113, 0.95);
+    }
+  }
+
+  @keyframes float-up {
+    0% {
+      transform: translateY(0) scale(0.8);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.85;
+    }
+    80% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(-105vh) scale(1.2);
+      opacity: 0;
     }
   }
 </style>
