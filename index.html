@@ -1576,13 +1576,18 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </style>
 <script>
   (function() {
-    // 1. Случайные фразы при обновлении страницы
+        // 1. Случайные фразы при обновлении страницы (в стиле Хроник Экосистемы)
     const notes = [
       "ПРОТОКОЛ ХАОСА НА ПАУЗЕ • ГЕНЕРАЦИЯ УЮТА ПРИОСТАНОВЛЕНА",
-      "СОХРАНЯЕМ ТЁПЛЫЕ ВОСПОМИНАНИЯ В ТИШИНЕ • НЕ ДУШНИТЕ",
-      "КОРМИМ ХВОСТИКОВ • ПЕРЕЗАГРУЖАЕМ СМЫСЛ ЭКОСИСТЕМЫ",
-      "СЕРВЕР СПИТ • ХРОНИКИ ПОСЕТИТЕЛЕЙ ПОД НАДЁЖНОЙ ОХРАНОЙ",
-      "СТАБИЛЬНОСТЬ НА НУЛЕ • УРОВЕНЬ НОСТАЛЬГИИ: 100%"
+      "ИММУНИТЕТ К ДУШНОТЕ: 100% • ЭКОСИСТЕМА УШЛА В ТИШИНУ",
+      "ХВОСТИКИ НАКОРМЛЕНЫ • СЕМЕЙНОЕ ДРЕВО В СПЯЩЕМ РЕЖИМЕ",
+      "СТАБИЛЬНОСТЬ 0% • УРОВЕНЬ ТЕПЛЫХ ВОСПОМИНАНИЙ: МАКСИМУМ",
+      "ПРАВЯЩИЙ КЛАН ОТДЫХАЕТ • ХРОНИКИ ПОСЕТИТЕЛЕЙ В АРХИВЕ",
+      "УРОН ХАОСОМ ОБНУЛЁН • СОХРАНЯЕМ УЮТ ДО СЛЕДУЮЩЕЙ ГЛАВЫ",
+      "БАЗА ДАННЫХ ДРЕВА ЗАКРЫТА НА НОЧЬ • СВЕТ ПОГАШЕН",
+      "СЕРВЕР ЭКОСИСТЕМЫ СПИТ • НЕ ДУШНИТЕ В ТИШИНЕ",
+      "ГЕНЕРАТОР СЛУЧАЙНЫХ ФАКТОВ В ОТПУСКЕ • ВРЕМЯ ВЫДОХНУТЬ",
+      "АРХИВ ХРОНИК ОПЕЧАТАН • СПАСИБО ВСЕМ, КТО НАГОНЯЛ УЮТ"
     ];
     const noteEl = document.getElementById('random-tech-note');
     if (noteEl) {
@@ -1616,7 +1621,6 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     let isPlaying = false;
     let manuallyMuted = false;
 
-    // Красивая прогрессия из 4 аккордов (Am7 -> Fmaj7 -> Cmaj7 -> Em7)
     const chords = [
       { pad: [110.00, 164.81, 196.00], keys: [261.63, 329.63, 392.00, 493.88, 523.25] }, // Am7
       { pad: [87.31,  130.81, 174.61], keys: [261.63, 329.63, 349.23, 440.00, 523.25] }, // Fmaj7
@@ -1625,7 +1629,7 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     ];
     let currentChordIdx = 0;
 
-    // Функция мягкого звука клавиши пианино с тёплым затуханием
+    // Мягкие клавиши ночного пианино (главный акцент)
     function playPianoNote(freq, masterGain) {
       if (!audioCtx || audioCtx.state !== 'running') return;
       const now = audioCtx.currentTime;
@@ -1635,25 +1639,23 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
       const noteGain = audioCtx.createGain();
       const filter = audioCtx.createBiquadFilter();
 
-      // Смешиваем чистый тон и мягкий треугольный обертон для эффекта тёплого пианино
       osc1.type = 'sine';
       osc1.frequency.setValueAtTime(freq, now);
 
       osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(freq * 2, now); // Октава выше для лёгкой звонкости
+      osc2.frequency.setValueAtTime(freq * 2, now);
 
       const osc2Gain = audioCtx.createGain();
-      osc2Gain.gain.value = 0.08;
+      osc2Gain.gain.value = 0.09;
 
-      // Фильтр убирает резкость удара по клавише
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(1100, now);
-      filter.frequency.exponentialRampToValueAtTime(280, now + 3.2);
+      filter.frequency.setValueAtTime(1250, now);
+      filter.frequency.exponentialRampToValueAtTime(300, now + 3.2);
 
-      // Огибающая громкости клавиши (мягкая атака и долгое затухание)
+      // Пианино звучит чётко и тепло (0.20)
       noteGain.gain.setValueAtTime(0.0001, now);
-      noteGain.gain.linearRampToValueAtTime(0.14, now + 0.06);
-      noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+      noteGain.gain.linearRampToValueAtTime(0.20, now + 0.05);
+      noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.6);
 
       osc1.connect(filter);
       osc2.connect(osc2Gain);
@@ -1663,15 +1665,15 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 
       osc1.start(now);
       osc2.start(now);
-      osc1.stop(now + 4.0);
-      osc2.stop(now + 4.0);
+      osc1.stop(now + 3.8);
+      osc2.stop(now + 3.8);
     }
 
-    // Функция плавной смены фонового аккорда (без гудения на одной ноте)
+    // Короткий, едва слышный фоновый аккорд без затяжного гудения
     function playWarmPadChord(freqs, masterGain) {
       if (!audioCtx || audioCtx.state !== 'running') return;
       const now = audioCtx.currentTime;
-      const duration = 7.5; // Длительность одного аккорда
+      const duration = 4.2; // Короткое дыхание вместо длинного гула
 
       freqs.forEach((freq) => {
         const osc = audioCtx.createOscillator();
@@ -1682,12 +1684,11 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
         osc.frequency.setValueAtTime(freq, now);
 
         filter.type = 'lowpass';
-        filter.frequency.value = 260;
+        filter.frequency.value = 210;
 
-        // Плавный вдох и выдох аккорда (фейд-ин и фейд-аут)
+        // Тихий фон (0.022) с быстрым уходом в тишину
         padGain.gain.setValueAtTime(0.0001, now);
-        padGain.gain.linearRampToValueAtTime(0.07, now + 2.5);
-        padGain.gain.linearRampToValueAtTime(0.07, now + duration - 2.5);
+        padGain.gain.linearRampToValueAtTime(0.022, now + 1.2);
         padGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
         osc.connect(filter);
@@ -1715,34 +1716,34 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
         isInitialized = true;
 
         const masterGain = audioCtx.createGain();
-        masterGain.gain.value = 0.65;
+        masterGain.gain.value = 0.75;
         masterGain.connect(audioCtx.destination);
 
-        // Запускаем первый аккорд сразу и меняем гармонию каждые 6.5 секунд
+        // Аккорд мягко касается фона каждые 6 секунд и полностью затихает за 4.2 сек
         playWarmPadChord(chords[currentChordIdx].pad, masterGain);
         setInterval(() => {
           if (!isPlaying || audioCtx.state !== 'running') return;
           currentChordIdx = (currentChordIdx + 1) % chords.length;
           playWarmPadChord(chords[currentChordIdx].pad, masterGain);
-        }, 6500);
+        }, 6000);
 
-        // Запускаем редкие, нежные ноты пианино в тон текущему аккорду
+        // Первая нота пианино звучит почти сразу
         setTimeout(() => {
           if (isPlaying) {
             const firstKeys = chords[currentChordIdx].keys;
             playPianoNote(firstKeys[Math.floor(Math.random() * firstKeys.length)], masterGain);
           }
-        }, 1200);
+        }, 700);
 
+        // Клавиши пианино перебирают мелодию каждые 2.2 секунды
         setInterval(() => {
           if (!isPlaying || audioCtx.state !== 'running') return;
-          // Небольшой шанс паузы, чтобы мелодия звучала естественно и не как робот
-          if (Math.random() > 0.22) {
+          if (Math.random() > 0.18) {
             const currentKeys = chords[currentChordIdx].keys;
             const randomFreq = currentKeys[Math.floor(Math.random() * currentKeys.length)];
             playPianoNote(randomFreq, masterGain);
           }
-        }, 2400);
+        }, 2200);
       }
 
       isPlaying = true;
@@ -1752,7 +1753,6 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
       }
     }
 
-    // Запуск при первом взаимодействии со страницей
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       window.addEventListener(evt, () => {
         if (!isPlaying && !manuallyMuted) {
@@ -1761,7 +1761,6 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
       }, { passive: true });
     });
 
-    // Кнопка ручного переключения
     if (soundBtn) {
       soundBtn.addEventListener('click', (e) => {
         e.stopPropagation();
