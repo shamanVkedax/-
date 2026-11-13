@@ -1288,7 +1288,7 @@ function loadFamily() {
   var s = document.getElementById("status");
   fetch(JSON_FILE + "?v=" + Date.now(), {cache: "no-store"})
     .then(r => r.text())
-    .then(t => { if(t !== lastJSON) { render(JSON.parse(t)); lastJSON = t; } s.innerHTML = '<span class="dot"></span>Экосистема активна'; })
+    .then(t => { if(t !== lastJSON) { render(JSON.parse(t)); lastJSON = t; } s.innerHTML = '<span class="dot"></span>Экосистема офлайн'; })
     .catch(e => { s.innerHTML = '<span class="dot" style="background:#f87171;"></span>Сбой'; });
 }
 
@@ -1384,6 +1384,8 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     pointer-events: none;
     user-select: none;
     padding: 20px;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2px);
   }
 
   .main-text {
