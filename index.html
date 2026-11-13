@@ -1576,7 +1576,7 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </style>
 <script>
   (function() {
-    // 1. Случайные фразы при каждом обновлении страницы
+    // 1. Случайные фразы при обновлении страницы
     const notes = [
       "ПРОТОКОЛ ХАОСА НА ПАУЗЕ • ГЕНЕРАЦИЯ УЮТА ПРИОСТАНОВЛЕНА",
       "СОХРАНЯЕМ ТЁПЛЫЕ ВОСПОМИНАНИЯ В ТИШИНЕ • НЕ ДУШНИТЕ",
@@ -1607,34 +1607,37 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
     updateTimer();
     setInterval(updateTimer, 1000);
 
-    // 3. Генератор глубокого эмбиента «Спящая Экосистема» (Web Audio API)
+    // 3. Генератор глубокого эмбиента «Спящая Экосистема»
     const soundBtn = document.getElementById('ambient-sound-btn');
-    if (soundBtn) soundBtn.textContent = "🌌 Эмбиент хаоса: ОЖИДАНИЕ...";
+    if (soundBtn) soundBtn.textContent = "🌌 Эмбиент хаоса: НАЖМИТЕ ДЛЯ ЗВУКА";
 
     let audioCtx = null;
-    let masterGain = null;
+    let isInitialized = false;
     let isPlaying = false;
     let manuallyMuted = false;
-    let chimeInterval = null;
 
-    function startEcosystemAmbient() {
-      if (isPlaying || manuallyMuted) return;
-      try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        if (audioCtx.state !== 'running') return;
+    function buildAndStartAudio() {
+      if (manuallyMuted) return;
 
-        masterGain = audioCtx.createGain();
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      if (!isInitialized) {
+        isInitialized = true;
+
+        const masterGain = audioCtx.createGain();
         masterGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-        masterGain.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + 3); // Плавное нарастание за 3 сек
+        masterGain.gain.exponentialRampToValueAtTime(0.28, audioCtx.currentTime + 2.5);
         masterGain.connect(audioCtx.destination);
 
-        // Тёплый низкий гул «спящего ядра» (аккорд Ля-минор с лёгкой расстройкой)
-        const baseFreqs = [55.0, 110.0, 130.81, 164.81]; // A1, A2, C3, E3
+        // Тёплый низкий гул «спящего ядра» (Ля-минор)
+        const baseFreqs = [65.41, 130.81, 164.81, 196.00]; // C2, C3, E3, G3
         baseFreqs.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const oscGain = audioCtx.createGain();
@@ -1642,12 +1645,12 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 
           osc.type = idx === 0 ? 'sine' : 'triangle';
           osc.frequency.value = freq;
-          osc.detune.value = (idx % 2 === 0 ? 4 : -4); // Лёгкий эффект хоруса/пространства
+          osc.detune.value = (idx % 2 === 0 ? 5 : -5);
 
           filter.type = 'lowpass';
-          filter.frequency.value = 320; // Срезаем резкие высокие частоты
+          filter.frequency.value = 380;
 
-          oscGain.gain.value = idx === 0 ? 0.35 : 0.12;
+          oscGain.gain.value = idx === 0 ? 0.45 : 0.16;
 
           osc.connect(filter);
           filter.connect(oscGain);
@@ -1655,10 +1658,10 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
           osc.start();
         });
 
-        // Редкие космические «сигналы» экосистемы (мягкие колокольчики раз в несколько секунд)
-        const scale = [220.0, 261.63, 329.63, 392.0, 440.0, 523.25];
-        chimeInterval = setInterval(() => {
-          if (!isPlaying || audioCtx.state !== 'running') return;
+        // Мягкие космические переливы каждые 3.5 секунды
+        const scale = [261.63, 329.63, 392.00, 493.88, 523.25, 659.25];
+        setInterval(() => {
+          if (!isPlaying || !audioCtx || audioCtx.state !== 'running') return;
           const now = audioCtx.currentTime;
           const noteOsc = audioCtx.createOscillator();
           const noteGain = audioCtx.createGain();
@@ -1667,57 +1670,46 @@ loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
           noteOsc.frequency.value = scale[Math.floor(Math.random() * scale.length)];
 
           noteGain.gain.setValueAtTime(0.0001, now);
-          noteGain.gain.exponentialRampToValueAtTime(0.06, now + 0.8);
-          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
+          noteGain.gain.exponentialRampToValueAtTime(0.08, now + 0.6);
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
 
           noteOsc.connect(noteGain);
           noteGain.connect(masterGain);
 
           noteOsc.start(now);
-          noteOsc.stop(now + 4.6);
-        }, 4200);
+          noteOsc.stop(now + 4.0);
+        }, 3500);
+      }
 
-        isPlaying = true;
-        if (soundBtn) {
-          soundBtn.textContent = "🌌 Эмбиент хаоса: ВКЛ";
-          soundBtn.style.borderColor = "rgba(253, 224, 71, 0.85)";
-        }
-      } catch (e) {}
+      isPlaying = true;
+      if (soundBtn) {
+        soundBtn.textContent = "🌌 Эмбиент хаоса: ВКЛ";
+        soundBtn.style.borderColor = "rgba(253, 224, 71, 0.85)";
+      }
     }
 
-    // Пробуем запустить сразу
-    startEcosystemAmbient();
-
-    // Умный автозапуск при первом касании/клике/скролле
-    ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
+    // Запуск при первом же клике, касании или нажатии клавиши на странице
+    ['click', 'touchstart', 'keydown'].forEach(evt => {
       window.addEventListener(evt, () => {
         if (!isPlaying && !manuallyMuted) {
-          startEcosystemAmbient();
+          buildAndStartAudio();
         }
       }, { passive: true });
     });
 
-    // Кнопка ручного включения/выключения
+    // Управление по кнопке внизу экрана
     if (soundBtn) {
       soundBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (isPlaying) {
           if (audioCtx) audioCtx.suspend();
-          clearInterval(chimeInterval);
           isPlaying = false;
           manuallyMuted = true;
           soundBtn.textContent = "🌌 Эмбиент хаоса: ВЫКЛ";
           soundBtn.style.borderColor = "rgba(253, 224, 71, 0.35)";
         } else {
           manuallyMuted = false;
-          if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-            isPlaying = true;
-            soundBtn.textContent = "🌌 Эмбиент хаоса: ВКЛ";
-            soundBtn.style.borderColor = "rgba(253, 224, 71, 0.85)";
-          } else {
-            startEcosystemAmbient();
-          }
+          buildAndStartAudio();
         }
       });
     }
