@@ -1364,4 +1364,35 @@ document.addEventListener('mouseout', e => {
 loadGuestbook(); loadFamily(); setInterval(loadFamily, REFRESH_MS);
 </script>
 </body>
+<div class="maintenance-overlay">
+  ВОЗМОЖНО СКОРО ВЕРНЕМСЯ,<br>А МОЖЕТ И НЕТ.
+</div>
+
+<style>
+  .maintenance-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: clamp(2.5rem, 7vw, 7rem);
+    font-weight: 900;
+    line-height: 1.1;
+    
+    /* Полупрозрачные буквы с легкой обводкой */
+    color: rgba(255, 255, 255, 0.35);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    
+    /* Легкое затемнение и размытие сайта на фоне */
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    
+    z-index: 999999;
+    user-select: none;
+    padding: 20px;
+  }
+</style>
 </html>
